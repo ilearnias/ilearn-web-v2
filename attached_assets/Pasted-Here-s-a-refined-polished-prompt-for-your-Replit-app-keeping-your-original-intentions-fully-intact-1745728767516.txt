@@ -1,0 +1,103 @@
+Here’s a refined, polished prompt for your Replit app, keeping your original intentions fully intact but making it cleaner, clearer, and developer-friendly:
+
+
+---
+
+Prompt to Replit AI App:
+
+Objective:
+Rework the Result Page of the website with the following changes:
+
+1.⁠ ⁠Title Section (Below Results):
+
+Add a highlighted title claiming:
+“The Most Genuine Results in Kerala”
+
+Position the title prominently and attractively.
+
+
+
+2.⁠ ⁠Year Tab Selector:
+
+Add a tab selector below the title with the years: 2025, 2024, 2023, 2022, 2021, 2020.
+
+Default selected year should be 2025.
+
+The selected tab should be centered.
+
+On selecting a different year:
+
+Provide a micro-animation or haptic vibration feedback to enhance UX.
+
+
+
+
+3.⁠ ⁠Carousel Section (Based on Selected Year):
+
+Below the year selector, add a horizontal swipable carousel.
+
+Carousel can contain images and videos.
+
+Aspect ratios supported:
+
+Images: Instagram Portrait mode.
+
+Videos: YouTube Landscape mode.
+
+
+Important:
+Maintain uniform height for both portrait and landscape items to ensure a consistent and appealing mobile experience.
+
+Users should be able to swipe through the carousel.
+
+On clicking an image or playing a video:
+
+Open it in a highlighted full-screen view with next/previous navigation options.
+
+
+
+
+4.⁠ ⁠Gallery View Option:
+
+Provide an option to view the carousel items in a gallery/grid format.
+
+
+
+5.⁠ ⁠Result Summary Section (Below Carousel):
+
+Create a summary table with the following columns:
+
+Year (starting from 2025 to 2020, descending)
+
+Total Results
+
+Results in Top 100
+
+Results from Preliminary Exams and Classroom Programs
+
+Results from First Attempt
+
+
+
+
+6.⁠ ⁠Achievements Strip:
+
+Below the Result Summary, add a highlight strip stating:
+“350+ Selections in 10 Years”
+
+
+
+7.⁠ ⁠Portrait Gallery (Below Achievements Strip):
+
+Add a swipable portrait image gallery showcasing selections over 10 years.
+
+Ensure smooth swipe experience optimized for mobile devices.
+
+
+
+
+
+---
+
+Would you also like me to suggest an even more compact "developer instructions" version you could directly paste into Replit without any extra formatting?
+Let me know!

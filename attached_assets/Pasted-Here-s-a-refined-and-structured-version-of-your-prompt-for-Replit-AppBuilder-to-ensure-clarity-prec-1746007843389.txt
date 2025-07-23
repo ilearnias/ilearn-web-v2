@@ -1,0 +1,69 @@
+Here’s a refined and structured version of your prompt for Replit AppBuilder to ensure clarity, precision, and better implementation by the AI agent:
+
+⸻
+
+Prompt for Replit AppBuilder: Admin Dashboard (No-Code)
+
+I want you to build a no-code admin dashboard for a website. Each page of the site should be represented as a category in the dashboard. Start by building the dashboard controls for the Home Page with the following editable sections:
+
+⸻
+
+1. Hero Section
+	•	Allow editing of all text content (headings, subheadings, buttons).
+	•	Enable video embedding by URL or file upload.
+	•	Display an info card next to the video embed input field specifying:
+	•	Recommended Aspect Ratio (16:9)
+	•	Resolution Guide (1920x1080 for best playback)
+
+⸻
+
+2. Social Proof Section
+	•	Allow editing of the main heading:
+"Civil Service Examination 2024 Result Highlights"
+	•	Enable editing of 3 stat cards:
+	1.	Top 100 Ranks (e.g., 5 students)
+	2.	Classroom Success (e.g., 22 selections)
+	3.	Total Selections (e.g., 44 overall selections in CSE 2024)
+
+⸻
+
+3. Results Carousel Section
+	•	Allow editing of:
+	•	Section heading: "Our Proud Achievers"
+	•	Subtitle: "Success stories of India's future leaders"
+	•	Add a horizontally scrollable carousel:
+	•	Admin can upload photos and text content for each achiever.
+	•	Admin can control number of elements, their order, and visibility.
+
+⸻
+
+4. Media Shoutouts Section
+	•	Allow editing of section heading: "iLearn in Media"
+	•	Admin can upload:
+	•	Images (landscape/portrait)
+	•	Videos (landscape/portrait)
+	•	Enable control over the number of items, their order, and type (image/video).
+
+⸻
+
+5. Testimonial Ticker Section
+	•	Admin can upload testimonial images.
+	•	Enable control over count, order, and display speed of ticker.
+
+⸻
+
+6. Student Testimonials Section
+	•	Admin can upload photos and videos of student testimonials (landscape/portrait).
+	•	Allow arrangement and ordering of media assets.
+
+⸻
+
+7. Program Teasers Section
+	•	This section should dynamically pull content from the “Programs” page.
+	•	On the “Programs” page:
+	•	Admin can select which programs appear on the Home Page Teaser section.
+	•	Admin can arrange the display order of selected programs.
+
+⸻
+
+Let me know if you’d like this structured as a JSON schema or UI wireframe format. Would you also like to include role-based access control for editing?

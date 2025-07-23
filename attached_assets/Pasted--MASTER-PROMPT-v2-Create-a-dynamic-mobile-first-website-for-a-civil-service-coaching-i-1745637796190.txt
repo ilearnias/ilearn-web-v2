@@ -1,0 +1,86 @@
+
+
+### ✨ MASTER PROMPT v2 
+
+> **Create a dynamic, mobile-first website for a civil-service coaching institute in Trivandrum, Kerala, aimed at Gen-Z aspirants.**  
+> **Brand essence:** supportive, results-driven, modern, trustworthy.  
+> **Colour palette (derive from logo):**  
+> ```txt
+> – Primary Red  #E21A24   /* CTA buttons, accent icons   */
+> – Primary Blue #20468D   /* headings, links, timeline   */
+> – Light Grey   #F4F5F7   /* section backgrounds        */
+> – Dark Grey    #333333   /* body text                  */
+> – Pure White   #FFFFFF   /* card + negative space      */
+> ```  
+> Use CSS variables so staff can tweak shades later.
+>
+> **Overall requirements**  
+> – Multi-page SPA/MPA hybrid with smooth page transitions.  
+> – Headless CMS / no-code dashboard so non-technical staff can login and update all content (text, photos, videos, timelines, programs, gallery, results).  
+> – SEO-optimised metadata, fast-loading, accessible (WCAG 2.1 AA).  
+> – Sticky top-nav, burger menu on mobile, scroll progress bar, floating WhatsApp/chat CTA.  
+> – Consistent buttons: “Join Now”, “Book a Counselling Call”, “Download iLearn IAS App”.  
+> – Connect Google Analytics 4 & Meta Pixel.  
+>
+> **Pages & key components**  
+> 1. **Home (/)**  
+>    • Hero: headline “[Best Genuine Results in Kerala]”, sub-headline, two CTAs (Join / Download App), aspirant-friendly hero image or looping video.  
+>    • Results carousel: portrait + landscape topper photos with rank, year, program.  
+>    • Media shout-outs: masonry grid of newspaper clippings & TV screenshots (click = lightbox).  
+>    • Written testimonial ticker.  
+>    • Video testimonial grid (filter: portrait | landscape).  
+>    • Program teaser cards: title, 30-word hook, “See Details” link.  
+>    • Social-proof strip (selections, years, faculty strength).  
+>    • Footer: quick links, address, WhatsApp, socials.  
+>
+> 2. **About (/about)**  
+>    • Short intro + team photo.  
+>    • **Interactive timeline (2015-PRESENT):** horizontal scroll on desktop, vertical swipe mobile; nodes show year, text, optional image.  
+>    • Mission–Vision–Values with icons.  
+>
+> 3. **Results (/results)**  
+>    • Filters: year, rank range, program.  
+>    • Dynamic grid/list of achievers; modal reveals photo, testimonial, PDF score-card.  
+>    • Auto-generated year-wise stats chart (feeds from CMS).  
+>
+> 4. **Programs (/programs)**  
+>    **For each program record from CMS render:**  
+>    • Hero block: title, duration, brief USP bullet list.  
+>    • **Embedded explainer video** (YouTube/Vimeo/link).  
+>    • Section: **written testimonials specific to this program** (slider or accordion).  
+>    • Section: **video testimonials specific to this program** (responsive grid; mix portrait & landscape).  
+>    • Fees & “Enroll” button.  
+>    • Accordion FAQ.  
+>
+> 5. **iLearn IAS App (/app)**  
+>    • Split hero: phone mock-up + feature list.  
+>    • Deep-link buttons: Google Play | App Store.  
+>    • Ratings carousel.  
+>
+> 6. **Media Gallery (/media)**  
+>    • Tabs: Photos | Videos | Press.  
+>    • Filter by year / event.  
+>    • Lightbox viewer with swipe.  
+>
+> 7. **Contact Us (/contact)**  
+>    • Google Map (Trivandrum HQ).  
+>    • Form (Name, Email, Phone, Query).  
+>    • Direct call & WhatsApp quick-tap buttons.  
+>    • Office hours, address, email.  
+>
+> **Back-end / CMS**  
+> – Roles: Admin (full), Editor (update only).  
+> – Collections: Home Highlights, Results, Testimonials (global & per-program), Timeline, Programs (fields: description, video-URL, fees, testimonials[]), Media, Contact Info.  
+> – Drag-and-drop ordering, rich-text WYSIWYG, one-click media upload with auto-compress (WebP/MP4).  
+> – Version history & undo.  
+>
+> **Tech-stack suggestion**  
+> – Front-end: Next.js + Tailwind.  
+> – CMS: Strapi, Directus, or Lovable’s built-in.  
+> – Hosting: Vercel/Netlify, auto-deploy on publish.  
+>
+> **Populate with placeholder content where details are missing.**  
+> **Await my edits before final deployment.**
+
+---
+

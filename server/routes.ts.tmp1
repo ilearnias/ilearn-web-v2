@@ -1,0 +1,100 @@
+import type { Express, Request, Response, NextFunction } from "express";
+import { createServer, type Server } from "http";
+import { storage } from "./storage";
+import { 
+  insertTopperSchema, 
+  insertTestimonialSchema, 
+  insertProgramSchema, 
+  insertMediaSchema, 
+  insertContactSchema,
+  insertAppFeatureSchema,
+  insertAppRatingSchema,
+  insertSiteSettingSchema,
+  insertBlogCategorySchema,
+  insertBlogPostSchema
+} from "@shared/schema";
+import { ZodError } from "zod";
+
+// Simple auth middleware
+const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  if (req.session && req.session.authenticated) {
+    return next();
+  }
+  res.status(401).json({ message: "Unauthorized" });
+};
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  // Authentication routes
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      if (!username || !password) {
+        return res.status(400).json({ message: "Username and password are required" });
+      }
+      
+      // For development, use hardcoded credentials
+      // In production, replace with proper authentication
+      if (username === "admin" && password === "admin") {
+        if (req.session) {
+          req.session.authenticated = true;
+          req.session.userId = 1; // mock admin user ID
+        }
+        return res.json({ message: "Authentication successful" });
+      }
+      
+      const user = await storage.getUserByUsername(username);
+      
+      if (user && user.password === password) {
+        if (req.session) {
+          req.session.authenticated = true;
+          req.session.userId = user.id;
+        }
+        return res.json({ message: "Authentication successful" });
+      }
+      
+      res.status(401).json({ message: "Invalid credentials" });
+    } catch (err) {
+      console.error("Login error:", err);
+      res.status(500).json({ message: "Authentication failed" });
+    }
+  });
+  
+  app.get("/api/auth/check", (req, res) => {
+    if (req.session && req.session.authenticated) {
+      return res.json({ authenticated: true });
+    }
+    res.status(401).json({ authenticated: false });
+  });
+  
+  app.post("/api/auth/logout", (req, res) => {
+    if (req.session) {
+      req.session.destroy((err) => {
+        if (err) {
+          return res.status(500).json({ message: "Failed to logout" });
+        }
+        res.json({ message: "Logged out successfully" });
+      });
+    } else {
+      res.json({ message: "Not logged in" });
+    }
+  });
+
+  // Error handler for validation
+  const handleValidationError = (err: unknown, res: Response) => {
+    if (err instanceof ZodError) {
+      return res.status(400).json({ 
+        message: "Validation error", 
+        errors: err.errors 
+      });
+    }
+    console.error("API Error:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  };
+
+  // TESTIMONIALS ROUTES
+  app.get("/api/testimonials", async (_req, res) => {
+    try {
+      const testimonials = await storage.getTestimonials();
+      res.json(testimonials);
+    } catch (err) {

@@ -1,0 +1,398 @@
+Detailed Admin Dashboard Section Breakdown for Documentation
+1. Home Page Components
+1.1 Hero Section
+Video Background: Upload/replace hero video
+Poster Image: Set fallback image for video
+Headline Text: Update main headline copy
+Subheading: Modify supporting text
+Call-to-Action Buttons: Edit text and links for primary/secondary buttons
+Mobile View Options: Configure how hero appears on smaller screens
+1.2 Testimonials Section
+Text Testimonials Management:
+Create/edit/delete text testimonials
+Student name, rank, program, year
+Testimonial quote content
+Optional student photo
+Display order configuration
+Video Testimonials Management:
+Upload/link video testimonials
+Portrait vs. landscape orientation handling
+Thumbnail image selection
+Caption and attribution information
+Video metadata (length, format)
+1.3 Toppers & Results Section
+Toppers Carousel:
+Add/edit/delete topper profiles
+Name, rank, program, year, photo
+Achievement details and highlights
+Testimonial connection (if applicable)
+Results Statistics:
+Success rate numbers/percentages
+Year comparison data
+Visual display options (charts vs. numbers)
+Featured Results:
+Highlighted achievements
+Special callouts for exceptional performance
+1.4 Media Coverage Section
+Media Item Management:
+Add/edit/delete media mentions
+Media type (news, TV, magazine, online)
+Publication name and date
+Title and description
+Link to original coverage
+Image/thumbnail options
+Drag-and-Drop Reordering:
+Change display order of media items
+Priority positioning for important coverage
+Media Filter Options:
+Configure filtering categories
+Year-based grouping
+Publication-based grouping
+1.5 Call-to-Action Section
+CTA Banner Content:
+Headline and subtext
+Button text and link destination
+Background options (color/image)
+Promotional Information:
+Limited time offers
+Special program highlights
+Contact information display options
+2. About Page Components
+2.1 Overview Section
+Institute Introduction:
+Main descriptive text
+Mission statement excerpt
+Key differentiators
+Founding information
+History Timeline:
+Add/edit/delete milestone events
+Year and description inputs
+Optional images for milestones
+Statistics Highlight:
+Years in operation
+Students trained
+Success rate
+Faculty strength
+2.2 Mission & Vision Section
+Mission Statement:
+Full text editor for mission
+Supporting points
+Vision Statement:
+Full text editor for vision
+Future goals and aspirations
+Values/Philosophy:
+Core principles
+Educational approach
+Student development philosophy
+2.3 Team Section
+Faculty Profiles:
+Add/edit/delete faculty members
+Name, designation, expertise areas
+Educational background
+Experience highlights
+Photo upload
+Contact information (optional)
+Leadership Team:
+Separate section for founders/directors
+Enhanced profile details
+Hierarchical organization
+Profile Sorting/Grouping:
+Department-based grouping
+Experience-based sorting
+Role-based categorization
+2.4 Facilities Section
+Infrastructure Details:
+Building facilities
+Classroom specifications
+Technology provisions
+Study areas
+Photo Gallery:
+Facility image management
+Caption and description options
+Virtual tour integration (if available)
+Amenities List:
+Student services
+Learning resources
+Support facilities
+3. Results Page Components
+3.1 Toppers Section
+Top Achievers Profiles:
+Comprehensive list of all toppers
+Detailed achievements
+Interview/success story links
+Contact permission options (for aspirants)
+Rankings Showcase:
+All India Rank display
+State rank highlighting
+Merit list inclusions
+Success Stories:
+Extended narratives of the journey
+Preparation strategy insights
+Testimonial integration
+3.2 Statistics Section
+Performance Metrics:
+Success rate percentages
+Comparison with national averages
+Year-on-year improvement data
+Visual Representations:
+Chart type selection (bar, pie, line)
+Color scheme options
+Downloadable data formats
+Category Breakdowns:
+Program-wise performance
+Demographic analysis
+Special category achievements
+3.3 Year-wise Results Section
+Annual Results Archive:
+Year-based organization
+Complete results listing
+Downloadable record formats
+Trend Analysis:
+Multi-year comparisons
+Growth trajectory
+Program evolution data
+Historical Highlights:
+Record-breaking performances
+Institutional milestones
+Legacy achievements
+4. Programs Page Components
+4.1 Programs List Section
+Program Cards Management:
+Add/edit/delete program offerings
+Short description and highlights
+Duration and format details
+Fee structure information
+Eligibility criteria
+Display Options:
+Grid vs. list view
+Sorting criteria (popularity, duration, etc.)
+Featured program highlighting
+4.2 Categories Section
+Category Management:
+Create/edit/delete program categories
+Hierarchical organization options
+Category description and scope
+Program Assignments:
+Assign programs to categories
+Multiple category association
+Primary category designation
+Navigation Structure:
+Category menu organization
+Filter implementation
+Search integration
+4.3 Program Details Section
+Comprehensive Content:
+Detailed program description
+Learning objectives
+Syllabus breakdown
+Teaching methodology
+Assessment pattern
+Faculty Assignment:
+Program instructors
+Guest faculty information
+Subject expert details
+Resource Information:
+Study materials
+Online resources
+Required/recommended readings
+Success Metrics:
+Past performance data
+Notable alumni
+Placement/success stories
+5. Blog Page Components
+5.1 Posts Section
+Article Management:
+Create/edit/delete blog posts
+Rich text editor with formatting
+Image embedding capability
+Title and meta description
+Featured image selection
+Publication date and scheduling
+Author Information:
+Author profiles
+Attribution options
+Guest author management
+Content Organization:
+Draft and published states
+Featured posts designation
+Related posts configuration
+5.2 Categories Section
+Category Structure:
+Create/edit/delete blog categories
+Hierarchical structure (parent/child)
+Category descriptions
+SEO settings per category
+Post Assignment:
+Assign posts to categories
+Bulk category assignment
+Category reorganization tools
+5.3 Tags Section
+Tag Management:
+Create/edit/delete content tags
+Tag descriptions
+Usage statistics
+Related tag suggestions
+Auto-tagging Options:
+Keyword-based suggestions
+Tag consistency enforcement
+Tag merging capabilities
+6. iLearn APP Page Components
+6.1 App Features Section
+Feature Management:
+Add/edit/delete app features
+Feature title and description
+Icon selection/upload
+Priority/order configuration
+Feature Grouping:
+Categorize features by function
+Core vs. premium features
+New/upcoming feature designation
+6.2 App Screenshots Section
+Screenshot Management:
+Upload/replace app screenshots
+Captions and descriptions
+Screen sequence organization
+Device frame options (phone/tablet)
+Feature Highlighting:
+Annotation capabilities
+Feature callout options
+Guided tour configuration
+6.3 App Ratings Section
+Review Management:
+Add/edit/moderate user reviews
+Star rating system
+Review verification options
+Response management
+Aggregate Metrics:
+Overall rating calculation
+Rating breakdown by feature
+Trend analysis over time
+Testimonial Integration:
+Featured user stories
+Before/after experiences
+Success attributions
+7. Gallery Page Components
+7.1 Photos Section
+Image Management:
+Upload/edit/delete photos
+Batch upload capabilities
+Metadata editing (caption, date, location)
+Alt text for accessibility
+Image optimization options
+Display Configuration:
+Grid layout options
+Lightbox settings
+Thumbnail generation
+7.2 Videos Section
+Video Management:
+Upload/link/embed videos
+Hosting options (YouTube, Vimeo, self-hosted)
+Thumbnail selection
+Caption and description fields
+Categorization tools
+Playback Configuration:
+Autoplay settings
+Player customization
+Playlist creation
+7.3 Albums Section
+Album Organization:
+Create/edit/delete albums
+Cover image selection
+Album description
+Date and location information
+Media Assignment:
+Add photos/videos to albums
+Bulk assignment tools
+Re-ordering capabilities
+Viewing Options:
+Album display templates
+Access restrictions (if needed)
+Sharing configurations
+8. Contact Us Page Components
+8.1 Contact Info Section
+Location Details:
+Primary address
+Multiple branch locations
+Map embedding and configuration
+Directions information
+Communication Channels:
+Phone numbers (categorized)
+Email addresses (department-wise)
+Operating hours
+Response time expectations
+8.2 Inquiries Section
+Form Submissions:
+View/manage incoming inquiries
+Status tracking (new, in-progress, resolved)
+Assignment to staff members
+Response templates
+Analytics Dashboard:
+Inquiry volume metrics
+Response time tracking
+Topic categorization
+Conversion tracking
+8.3 Locations Section
+Branch Management:
+Add/edit/delete center locations
+Contact details per location
+Facility information
+Staff directory
+Map Integration:
+Interactive map configuration
+Custom marker options
+Geographic region settings
+Distance calculation tools
+9. Site Settings Components
+9.1 Hero Settings
+Global Video Settings:
+Default video URL
+Poster image
+Autoplay configuration
+Mobile optimization
+Text Elements:
+Default headline options
+Subheading library
+Call-to-action presets
+9.2 SEO Settings
+Metadata Configuration:
+Site title format
+Meta description templates
+Keyword strategy
+Canonical URL settings
+Search Engine Tools:
+Verification codes
+Sitemap configuration
+Robots.txt management
+Structured data options
+9.3 Contact Settings
+Global Contact Information:
+Primary contact details
+Social media profiles
+WhatsApp business number
+Contact form recipients
+Communication Preferences:
+Preferred contact methods
+Auto-response settings
+Notification configuration
+9.4 Social Media Settings
+Social Profile Management:
+Platform URLs
+Display icon selection
+Share button configuration
+Post embedding options
+Integration Settings:
+API keys (if needed)
+Feed display options
+Cross-posting configuration
+9.5 Other Settings
+General Website Options:
+Favicon
+Logo variations
+Copyright information
+Legal pages (privacy policy, terms)
+Functionality Toggles:
+Feature enablement switches
+Maintenance mode
+Cookie consent settings
+Cache management
+This detailed breakdown provides a comprehensive framework for implementing each component of the admin dashboard, covering all content management needs for the website.
