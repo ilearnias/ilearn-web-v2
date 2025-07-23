@@ -31,4 +31,14 @@ export default defineConfig({
     outDir: path.resolve(__dirname, "dist/public"),
     emptyOutDir: true,
   },
+  server: {
+    allowedHosts: [
+      "ilearn.bairuhatech.com",
+      "localhost",
+      "127.0.0.1",
+      ".bairuhatech.com",
+    ],
+    host: "0.0.0.0",
+    port: 3024,
+  },
 });
