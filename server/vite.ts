@@ -38,7 +38,16 @@ export async function setupVite(app: Express, server: Server) {
         process.exit(1);
       },
     },
-    server: serverOptions,
+    server: {
+      ...serverOptions,
+      allowedHosts: [
+        "ilearn.bairuhatech.com",
+        "localhost",
+        "127.0.0.1",
+        ".bairuhatech.com",
+      ],
+      host: "0.0.0.0",
+    },
     appType: "custom",
   });
 
