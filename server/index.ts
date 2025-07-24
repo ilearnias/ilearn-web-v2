@@ -110,11 +110,17 @@ app.use((req, res, next) => {
   server.listen(
     {
       port,
-      host: "0.0.0.0",
-      reusePort: true,
+      host: "localhost",
     },
     () => {
-      log(`serving on port ${port}`);
+      log(`Server running at http://localhost:${port}`);
     }
-  );
+  ).on('error', (error: any) => {
+    if (error.code === 'EADDRINUSE') {
+      log(`Port ${port} is already in use. Please try a different port.`);
+    } else {
+      log(`Error starting server: ${error.message}`);
+    }
+    process.exit(1);
+  });
 })();
