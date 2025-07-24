@@ -23,12 +23,13 @@ import BlogPostPage from "@/pages/BlogPostPage";
 import AdminPage from "@/pages/AdminPage";
 import PcmProgramPage from "@/pages/PcmProgramPage";
 import CanaProgramPage from "@/pages/CanaProgramPage";
+import JuniorPage from "@/pages/JuniorPage";
 import NotFound from "@/pages/not-found";
 
 function Router() {
   // Scroll to top on route change
   const [location, setLocation] = useState<string>(window.location.pathname);
-  
+
   useEffect(() => {
     // Update location state when pathname changes
     const handleLocationChange = () => {
@@ -39,30 +40,30 @@ function Router() {
         window.scrollTo({
           top: 0,
           left: 0,
-          behavior: 'auto'
+          behavior: "auto",
         });
       }
     };
-    
+
     // Listen for popstate (back/forward navigation)
-    window.addEventListener('popstate', handleLocationChange);
-    
+    window.addEventListener("popstate", handleLocationChange);
+
     // Create a custom hook to intercept Link clicks from wouter
     const originalPushState = history.pushState;
     // @ts-ignore TypeScript doesn't handle this type of function override well
-    history.pushState = function() {
+    history.pushState = function () {
       // @ts-ignore
       const result = originalPushState.apply(this, arguments);
       handleLocationChange();
       return result;
     };
-    
+
     return () => {
-      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener("popstate", handleLocationChange);
       history.pushState = originalPushState;
     };
   }, [location]);
-  
+
   return (
     <Switch>
       <Route path="/" component={HomePage} />
@@ -70,7 +71,10 @@ function Router() {
       <Route path="/results" component={ResultsPage} />
       <Route path="/programs" component={ProgramsPage} />
       <Route path="/programs/prelims-cum-mains" component={PcmProgramPage} />
-      <Route path="/programs/current-affairs-news-analysis" component={CanaProgramPage} />
+      <Route
+        path="/programs/current-affairs-news-analysis"
+        component={CanaProgramPage}
+      />
       <Route path="/programs/:slug" component={ProgramDetailPage} />
       <Route path="/app" component={AppPage} />
       <Route path="/gallery" component={GalleryPage} />
@@ -80,6 +84,7 @@ function Router() {
       <Route path="/blog/tag/:tag" component={BlogPage} />
       <Route path="/blog/:slug" component={BlogPostPage} />
       <Route path="/admin" component={AdminPage} />
+      <Route path="/junior" component={JuniorPage} />
       <Route component={NotFound} />
     </Switch>
   );
