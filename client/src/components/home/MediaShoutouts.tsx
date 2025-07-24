@@ -71,6 +71,10 @@ const MediaShoutouts = () => {
   };
 
   // Fetch paginated media videos from API
+
+
+
+
   const { data: apiData, isLoading } = useQuery<MediaApiResponse>({
     queryKey: [QUERY_KEY.MEDIA, page],
     queryFn: async () => {

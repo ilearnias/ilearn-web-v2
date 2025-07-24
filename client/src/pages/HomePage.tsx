@@ -5,7 +5,6 @@ import MediaShoutouts from '@/components/home/MediaShoutouts';
 import TestimonialTicker from '@/components/home/TestimonialTicker';
 import VideoTestimonials from '@/components/home/VideoTestimonials';
 import ProgramTeasers from '@/components/home/ProgramTeasers';
-import SocialProof from '@/components/home/SocialProof';
 import CallToAction from '@/components/home/CallToAction';
 import { Helmet } from 'react-helmet';
 
@@ -20,7 +19,6 @@ const HomePage = () => {
       
       <PageTransition>
         <Hero />
-        <SocialProof />
         <ResultsCarousel />
         <MediaShoutouts />
         <VideoTestimonials />

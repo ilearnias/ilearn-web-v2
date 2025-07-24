@@ -41,17 +41,20 @@ export const NAV_LINKS = [
 export type Testimonial = {
   id: number;
   name: string;
-  rank: string;
-  program: string;
-  quote: string;
-  year: number;
+  description: string;
+  details: string;
   image?: string;
-  video?: string;
-  gender?: 'male' | 'female';
-  type: 'text' | 'portrait-video' | 'landscape-video';
-  // Properties for sorting and ordering (matching MediaItem structure)
-  displayOrder?: number;
+  order?: number;
+  isActive?: boolean;
   createdAt?: string;
+  // Keep backward compatibility with existing fields
+  rank?: string;
+  program?: string;
+  quote?: string;
+  year?: number;
+  video?: string;
+  type?: 'text' | 'portrait-video' | 'landscape-video';
+  displayOrder?: number;
 };
 
 export type Topper = {

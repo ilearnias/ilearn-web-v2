@@ -34,6 +34,7 @@ import parvathyImage from '../assets/faculty/Parvathy.png';
 import vishnuImage from '../assets/faculty/Vishnu.png';
 import martinImage from '../assets/faculty/Marteshhh.png';
 import abiSundarImage from '../assets/faculty/Abi Sundar.png';
+import MediaShoutouts from '@/components/home/MediaShoutouts';
 
 const AboutPage = () => {
   // Fetch images for different sections of the About page
@@ -661,7 +662,8 @@ const AboutPage = () => {
         </section>
         
         {/* Media Gallery Integration */}
-        <AboutMediaCarousel />
+        {/* <AboutMediaCarousel /> */}
+        <MediaShoutouts />
         
         {/* Closing Call-to-Action Section */}
         <section className="py-16 md:py-24 bg-gradient-to-br from-primary-blue/10 to-primary-red/10 relative overflow-hidden">

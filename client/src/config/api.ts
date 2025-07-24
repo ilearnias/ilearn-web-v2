@@ -6,5 +6,8 @@ export const API = {
 
     TOP_ACHIEVERS: "admin/achievers",
     MEDIA : "media",
+    SUCCESS_STORIES: "admin/success-stories",
+    JOURNEY:"journey",
+    TEAM_MEMBERS:"team-members"
   }
   
