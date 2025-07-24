@@ -1,180 +1,77 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Testimonial } from '@/lib/constants';
-import { apiRequest } from '@/lib/queryClient';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { extractYoutubeVideoId, getYoutubeThumbnailUrl, getYoutubeEmbedUrl } from '@/lib/media-helpers';
+import apiClient from '@/config/apiClient';
+import QUERY_KEY from '@/config/queryKeys';
+import { API } from '@/config/api';
 
-// Mock data for display until API connection is ready
-const MockVideoTestimonials: Testimonial[] = [
-  {
-    id: 1,
-    name: 'Meera',
-    rank: 'UPSC Rank 32',
-    program: 'Advanced Program',
-    quote: "How iLearn IAS helped her achieve Rank 32",
-    year: 2023,
-    image: 'https://images.unsplash.com/photo-1593697821028-7cc59cfd7399?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    video: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    type: 'portrait-video'
-  },
-  {
-    id: 2,
-    name: 'Anoop',
-    rank: 'KAS Rank 8',
-    program: 'KAS Special Program',
-    quote: "Anoop shares his preparation strategy",
-    year: 2023,
-    image: 'https://images.unsplash.com/photo-1556157382-97eda2f9e8b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    video: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    type: 'portrait-video'
-  },
-  {
-    id: 3,
-    name: 'Lakshmi',
-    rank: 'UPSC Rank 67',
-    program: 'Foundation Program',
-    quote: "Lakshmi's inspiring UPSC journey",
-    year: 2023,
-    image: 'https://images.unsplash.com/photo-1609749481768-534ff971a738?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    video: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    type: 'portrait-video'
-  },
-  {
-    id: 4,
-    name: 'Faculty Panel',
-    rank: '',
-    program: 'All Programs',
-    quote: "Interview Preparation Tips",
-    year: 2023,
-    image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    video: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    type: 'landscape-video'
-  },
-  {
-    id: 5,
-    name: 'Director Interview',
-    rank: '',
-    program: 'All Programs',
-    quote: "Understanding the UPSC pattern",
-    year: 2023,
-    image: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    video: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    type: 'landscape-video'
-  },
-  {
-    id: 6,
-    name: 'Study Workshop',
-    rank: '',
-    program: 'Foundation Program',
-    quote: "Effective time management for aspirants",
-    year: 2023,
-    image: 'https://images.unsplash.com/photo-1531545514256-b1400bc00f31?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    video: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    type: 'landscape-video'
-  }
-];
+interface ApiTestimonial {
+  id: string;
+  description: string;
+  video: string;
+  isActive: boolean;
+  isTestimonial: boolean;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: null | string;
+}
+
+interface Testimonial {
+  id: string;
+  name: string;
+  program?: string;
+  quote?: string;
+  year?: number;
+  image?: string;
+  video: string;
+  type: 'portrait-video' | 'landscape-video';
+  displayOrder?: number;
+  description: string;
+  details?: string;
+  createdAt?: string; // Added to fix type error
+}
 
 const VideoTestimonials = () => {
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [selectedTestimonial, setSelectedTestimonial] = useState<Testimonial | null>(null);
   const [isVideoDialogOpen, setIsVideoDialogOpen] = useState(false);
 
-  // No database queries - using only static video data to prevent continuous loading
-  const data: Testimonial[] = [];
-  const isLoading = false;
-  
-  // Create testimonials for the 8 YouTube video links
-  const newVideoTestimonials = React.useMemo(() => {
-    const videoLinks = [
-      {
-        id: 1001,
-        name: "Student Success Story",
-        videoUrl: "https://youtu.be/G9kM2g_Mul8?si=gSzq1Asg1VfTb93l",
-        quote: "Inspiring journey of UPSC preparation and success",
-        displayOrder: 1
-      },
-      {
-        id: 1002,
-        name: "Interview Experience",
-        videoUrl: "https://youtu.be/zLwkn6BLJ4U?si=CgKQitQTaw4nVsz3",
-        quote: "Sharing valuable interview tips and experiences",
-        displayOrder: 2
-      },
-      {
-        id: 1003,
-        name: "Preparation Strategy",
-        videoUrl: "https://youtu.be/4eYOMR6X53w?si=qrBYtw95nCJFr55L",
-        quote: "Effective study methods and preparation techniques",
-        displayOrder: 3
-      },
-      {
-        id: 1004,
-        name: "Malavika G Nair",
-        videoUrl: "https://youtu.be/F2uRDZuo0Tc?si=Dm-vsPZOeF_cKU9b",
-        quote: "Interview journey and preparation strategy insights",
-        displayOrder: 4
-      },
-      {
-        id: 1005,
-        name: "Success Journey",
-        videoUrl: "https://youtu.be/sXr_B4RZK6o?si=51qTWZbFf6ZH8ibH",
-        quote: "From aspirant to achiever - a motivational story",
-        displayOrder: 5
-      },
-      {
-        id: 1006,
-        name: "Study Tips",
-        videoUrl: "https://youtu.be/dOt8taqXL3k?si=zeS4UryW4wst2e0t",
-        quote: "Practical study tips for UPSC preparation",
-        displayOrder: 6
-      },
-      {
-        id: 1007,
-        name: "Achievement Story",
-        videoUrl: "https://youtu.be/Zoy_vFdzrAE?si=y-QklHALD8nubo-P",
-        quote: "Celebrating success in civil services examination",
-        displayOrder: 7
-      },
-      {
-        id: 1008,
-        name: "Guidance Session",
-        videoUrl: "https://youtu.be/iYh3iczW0CQ?si=FNjTz_j0-CATv2J5",
-        quote: "Expert guidance for UPSC aspirants",
-        displayOrder: 8
-      }
-    ];
+  // Fetch testimonials from API
+  const { data: apiData, isLoading } = useQuery({
+    queryKey: [QUERY_KEY?.MEDIA],
+    queryFn: async () => {
+      const response = await apiClient.get(API?.MEDIA);
+      return response.data;
+    },
+  });
 
-    const testimonials = [];
-    
-    videoLinks.forEach(video => {
-      const videoId = extractYoutubeVideoId(video.videoUrl);
-      if (videoId) {
-        testimonials.push({
-          id: video.id,
-          name: video.name,
-          rank: "", // Empty rank to not show the AIR badge
-          program: "UPSC CSE",
-          quote: video.quote,
-          year: 2023,
-          image: getYoutubeThumbnailUrl(video.videoUrl, 'maxresdefault'),
-          video: video.videoUrl,
-          videoUrl: video.videoUrl,
-          embedUrl: getYoutubeEmbedUrl(video.videoUrl),
-          type: "landscape-video",
-          aspectRatio: "landscape",
-          displayOrder: video.displayOrder
-        } as Testimonial);
-      }
-    });
-    
-    return testimonials;
-  }, []);
-
-  // Use only the static video testimonials - no database data
+  // Transform API data to Testimonial format
   const testimonials: Testimonial[] = React.useMemo(() => {
-    return newVideoTestimonials || [];
-  }, [newVideoTestimonials]);
+    if (!apiData?.data) return [];
+
+    return apiData.data
+      .filter((item: ApiTestimonial) => item.isActive && item.isTestimonial)
+      .map((item: ApiTestimonial): Testimonial => {
+        const videoId = extractYoutubeVideoId(item.video);
+        const thumbnailUrl = videoId ? getYoutubeThumbnailUrl(item.video, 'maxresdefault') : undefined;
+        
+        return {
+          id: item.id,
+          name: item.description, // Using description as name as specified
+          video: item.video,
+          type: 'landscape-video', // Default to landscape
+          displayOrder: item.order,
+          description: item.description,
+          image: thumbnailUrl || undefined, // Handle null case
+          details: item.description,
+          program: 'UPSC CSE', // Default program
+          createdAt: item.createdAt // Add createdAt for sorting
+        };
+      })
+      .sort((a: Testimonial, b: Testimonial) => (a.displayOrder || 0) - (b.displayOrder || 0));
+  }, [apiData]);
   
   // Show the final testimonials for debugging
   React.useEffect(() => {
@@ -266,7 +163,7 @@ const VideoTestimonials = () => {
     console.log("Render card - start:", video.id, video.name, video.type);
     
     // Special handling for Devika's video
-    const isDevika = video.id === 16;
+    const isDevika = video.id === "16"; // Assuming "16" is the ID for Devika
     
     // Determine if the video is portrait or landscape
     const isPortrait = video.type === 'portrait-video';
@@ -371,14 +268,8 @@ const VideoTestimonials = () => {
           className="p-5 bg-white flex flex-col justify-center"
           style={{ height: `${INFO_HEIGHT}px` }}
         >
-          {video.rank && video.rank.trim() !== '' && (
-            <div className="mb-2">
-              <div className="bg-primary-blue/90 backdrop-blur-sm text-white text-xs font-medium px-3 py-1.5 rounded-full inline-flex items-center gap-1">
-                <span className="w-1.5 h-1.5 bg-white/80 rounded-full"></span>
-                <span>AIR {video.rank.replace(/AIR |UPSC |Rank /gi, '')}</span>
-              </div>
-            </div>
-          )}
+          {/* The original code had a rank display, but the new API data doesn't include it.
+              Keeping the structure but removing the rank display as it's not available. */}
           <h3 className="font-semibold text-base text-neutral-800 line-clamp-2">{video.name}</h3>
         </div>
       </div>
@@ -427,24 +318,24 @@ const VideoTestimonials = () => {
                     // Filter out Dias testimonials - IDs 10, 11, 12
                     // Also filter out Lincoln testimonial - ID 7
                     // Also filter out Thumpassery Joseph Abraham (AIR Fir 6739) - ID 15
-                    ![10, 11, 12, 7, 15].includes(item.id)
+                    !["10", "11", "12", "7", "15"].includes(item.id)
                   );
                   console.log("After removing duplicates:", uniqueItems.map(t => `${t.id}-${t.name}`));
                   
                   // Custom order for specific testimonials in the requested sequence
                   // Using explicit ordering numbers 1-4 to ensure desired sequence
-                  const customOrder: Record<number, number> = {
-                    8: 1,    // Reenu Anna Mathew - First position
-                    16: 2,   // Devika Priyadersini - Second position
-                    998: 3,  // Malavika G Nair - Third position
-                    999: 4   // Rajath R - Fourth position
+                  const customOrder: Record<string, number> = {
+                    "8": 1,    // Reenu Anna Mathew - First position
+                    "16": 2,   // Devika Priyadersini - Second position
+                    "998": 3,  // Malavika G Nair - Third position
+                    "999": 4   // Rajath R - Fourth position
                   };
                   
                   // Sort items with custom order
-                  const sortedItems = [...uniqueItems].sort((a, b) => {
+                  const sortedItems = [...uniqueItems].sort((a: Testimonial, b: Testimonial) => {
                     // First check if either item has a custom order
-                    const orderA = customOrder[a.id as keyof typeof customOrder];
-                    const orderB = customOrder[b.id as keyof typeof customOrder];
+                    const orderA = customOrder[a.id];
+                    const orderB = customOrder[b.id];
                     
                     // If both have custom order, sort by that
                     if (orderA && orderB) {

@@ -23,6 +23,7 @@ import BlogPostPage from "@/pages/BlogPostPage";
 import AdminPage from "@/pages/AdminPage";
 import PcmProgramPage from "@/pages/PcmProgramPage";
 import CanaProgramPage from "@/pages/CanaProgramPage";
+import FoundationCoursePage from "@/pages/FoundationCoursePage";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -71,6 +72,7 @@ function Router() {
       <Route path="/programs" component={ProgramsPage} />
       <Route path="/programs/prelims-cum-mains" component={PcmProgramPage} />
       <Route path="/programs/current-affairs-news-analysis" component={CanaProgramPage} />
+      <Route path="/programs/foundation-course" component={FoundationCoursePage} />
       <Route path="/programs/:slug" component={ProgramDetailPage} />
       <Route path="/app" component={AppPage} />
       <Route path="/gallery" component={GalleryPage} />

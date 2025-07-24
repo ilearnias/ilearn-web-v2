@@ -4,8 +4,21 @@ import { apiRequest } from '@/lib/queryClient';
 import type { Milestone, MilestoneImage } from '@shared/schema';
 import MilestoneToppersImage from './MilestoneToppersImage';
 import Milestone2024Image from './Milestone2024Image';
+import QUERY_KEY from '@/config/queryKeys';
+import apiClient from '@/config/apiClient';
+import { API } from '@/config/api';
 
 const MilestoneTimeline = () => {
+
+  const { data, isLoading } = useQuery({
+    queryKey: [QUERY_KEY?.JOURNEY],
+    queryFn: async () => {
+      const response = await apiClient.get(API?.JOURNEY);
+      return response.data.data; // Return only the array of toppers
+    },
+  });
+
+
   // State for active milestone
   const [activeMilestoneId, setActiveMilestoneId] = useState<number | null>(null);
   const [touchStart, setTouchStart] = useState(0);
