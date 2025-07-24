@@ -8,7 +8,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
 import ProgressBar from "@/components/layout/ProgressBar";
-
+import IgnitePage from "@/pages/ignitePage";
 // Pages
 import HomePage from "@/pages/HomePage";
 import AboutPage from "@/pages/AboutPage";
@@ -76,6 +76,7 @@ function Router() {
       <Route path="/gallery" component={GalleryPage} />
       <Route path="/contact" component={ContactPage} />
       <Route path="/blog" component={BlogPage} />
+      <Route path="/ignite" component={IgnitePage} />
       <Route path="/blog/category/:categorySlug" component={BlogPage} />
       <Route path="/blog/tag/:tag" component={BlogPage} />
       <Route path="/blog/:slug" component={BlogPostPage} />
