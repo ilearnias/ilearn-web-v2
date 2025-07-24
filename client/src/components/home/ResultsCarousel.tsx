@@ -2,82 +2,42 @@ import { useState, useRef, useEffect } from 'react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
-import { Topper } from '@/lib/constants';
+import { API } from "@/config/api";
+import apiClient from "@/config/apiClient";
+import QUERY_KEY from "@/config/queryKeys";
 
-// iLearn IAS Academy's Proud Achievers with authentic data and images
-const iLearnAchievers: Topper[] = [
-  {
-    id: 1,
-    name: 'Midhun Premraj IAS',
-    rank: 12,
-    program: 'PCM Program',
-    year: 2024,
-    image: '/attached_assets/Mithun Premraj.JPG',
-  },
-  {
-    id: 2,
-    name: 'Dileep Kainikkara IAS',
-    rank: 21,
-    program: 'PCM Program', 
-    year: 2024,
-    image: '/attached_assets/photo_4_2025-03-22_11-18-25.jpg',
-  },
-  {
-    id: 3,
-    name: 'Alfred OV IAS',
-    rank: 57,
-    program: 'PCM Program',
-    year: 2024,
-    image: '/attached_assets/Alfred OV.png',
-  },
-  {
-    id: 4,
-    name: 'Reenu Anna Mathew',
-    rank: 81,
-    program: 'PCM Program',
-    year: 2024,
-    image: '/attached_assets/DSC07378.JPG',
-  },
-  {
-    id: 5,
-    name: 'Annie George',
-    rank: 93,
-    program: 'PCM Program',
-    year: 2024,
-    image: '/attached_assets/annie george.JPG',
-  },
-  {
-    id: 6,
-    name: 'Devika Priyadersini',
-    rank: 95,
-    program: 'PCM Program',
-    year: 2024,
-    image: '/attached_assets/DSC02542.jpg',
-  },
-  {
-    id: 7,
-    name: 'Jayakrishnan IAS',
-    rank: 444,
-    program: 'PCM Program',
-    year: 2024,
-    image: '/attached_assets/photo_8_2025-03-22_11-18-25.jpg',
-  },
-];
+// Update Topper type for new API structure
+// Remove import of Topper from '@/lib/constants' and define a local type
+
+type Topper = {
+  id: string;
+  name: string;
+  details: string;
+  description: string;
+  image: string;
+  order: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+};
 
 const ResultsCarousel = () => {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
-  // Fetch toppers data from API
+  // Fetch toppers data from API using TanStack Query and apiClient
   const { data, isLoading } = useQuery({
-    queryKey: ['/api/toppers'],
-    queryFn: () => apiRequest<Topper[]>({ url: '/api/toppers' }),
+    queryKey: [QUERY_KEY?.TOP_ACHIEVERS],
+    queryFn: async () => {
+      const response = await apiClient.get(API?.TOP_ACHIEVERS);
+      return response.data.data; // Return only the array of toppers
+    },
   });
   
-  // Use iLearn achievers as fallback when API data is not available
-  const toppers = Array.isArray(data) && data.length > 0 ? data : iLearnAchievers;
+  // Remove the fallback to iLearnAchievers, only use API data
+  const toppers = data;
 
   // Check scroll position to update button visibility
   const checkScrollPosition = () => {
@@ -140,7 +100,7 @@ const ResultsCarousel = () => {
                 className="flex overflow-x-auto pb-4 snap-x snap-mandatory gap-4 hide-scrollbar"
                 aria-label="Toppers carousel"
               >
-                {toppers.map((topper) => (
+                {toppers && toppers.map((topper: Topper) => (
                   <div 
                     key={topper.id}
                     className="snap-start shrink-0 w-56 h-[320px] rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-all duration-300 group"
@@ -152,19 +112,14 @@ const ResultsCarousel = () => {
                         className="w-full h-56 object-cover object-center transform transition-transform duration-300 group-hover:scale-[1.02]"
                         width="224"
                         height="224"
-                        style={topper.image.includes('midhun_premraj_new.jpg') ? { objectPosition: '50% 25%' } : 
-                              (topper.image.includes('alfred.webp') ? { objectPosition: '50% 30%' } : 
-                              (topper.image.includes('devika_priyadersini') ? { objectPosition: '50% 20%' } :
-                              (topper.image.includes('reenu_anna_mathew') ? { objectPosition: '50% 30%' } : 
-                              (topper.image.includes('dileep_kainikkara.jpg') ? { objectPosition: '50% 25%' } : 
-                              (topper.image.includes('jayakrishnan_ias.jpg') ? { objectPosition: '50% 15%' } : {})))))}
                       />
-                      {/* No overlay gradient */}
                     </div>
                     <div className="p-5 flex flex-col items-start gap-2">
                       <div className="bg-primary-red/90 backdrop-blur-sm text-white text-xs font-medium px-3 py-1.5 rounded-full inline-flex items-center gap-1">
                         <span className="w-1.5 h-1.5 bg-white/80 rounded-full"></span>
-                        <span>AIR {topper.rank.toString().replace(/AIR |UPSC |Rank /gi, '')}</span>
+                        <span>
+                          {typeof topper.order === 'number' ? `AIR ${topper.order}` : ''}
+                        </span>
                       </div>
                       <h3 className="font-semibold text-base text-neutral-800 line-clamp-2">
                         {topper.name}

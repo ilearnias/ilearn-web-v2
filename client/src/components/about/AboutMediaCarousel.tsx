@@ -203,7 +203,7 @@ const AboutMediaCarousel = () => {
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center mb-10">
           <h2 className="text-2xl md:text-3xl font-bold mb-2 relative inline-block">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-blue via-primary-blue to-primary-red">iLearn in Media</span>
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-blue via-primary-blue to-primary-red">iLearn in Media 1233</span>
             <span className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-primary-blue to-primary-red rounded-full transform origin-left"></span>
           </h2>
           <p className="text-neutral-600 mt-3">Our presence across media platforms</p>
