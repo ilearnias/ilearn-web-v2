@@ -54,7 +54,7 @@ const Hero = () => {
                 <span className="text-[#20468D] block">
                   we make <span className="relative inline-block">
                     <span className="relative z-10">genuine</span>
-                    <span className="absolute bottom-0 left-0 h-full bg-[#ffff00] z-0 animate-highlightLeftToRight"></span>
+                    <span className="absolute bottom-0 left-0 h-full  z-0"></span>
                   </span>
                 </span>
                 <span className="text-[#20468D] block">

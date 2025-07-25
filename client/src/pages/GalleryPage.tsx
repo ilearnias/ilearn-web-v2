@@ -46,7 +46,7 @@ const GalleryPage = () => {
   const { data, isLoading, isError } = useQuery<GalleryApiResponse>({
     queryKey: [QUERY_KEY.GALLERY, page],
     queryFn: async () => {
-      const response = await apiClient.get(`${API.GALLERY}?page=${page}`);
+      const response = await apiClient.get(`${API.GALLERY}?isActive=true&page=${page}`);
       return response.data;
     },
   });

@@ -56,7 +56,7 @@ export default function BlogPage() {
   const { data: categoriesResponse, isLoading: categoriesLoading } = useQuery<CategoryApiResponse>({
     queryKey: ["blog-categories"],
     queryFn: async () => {
-      const response = await apiClient.get(API?.BLOG_CATEGORIES);
+      const response = await apiClient.get(API?.BLOG_CATEGORIES + "?isActive=true");
       return response.data;
     },
   });
@@ -71,7 +71,7 @@ export default function BlogPage() {
         limit: postsPerPage,
       };
       if (selectedCategoryId) params.categoryId = selectedCategoryId;
-      const response = await apiClient.get(API?.BLOG, { params });
+      const response = await apiClient.get(API?.BLOG + "?isActive=true", { params });
       return response.data;
     },
   });

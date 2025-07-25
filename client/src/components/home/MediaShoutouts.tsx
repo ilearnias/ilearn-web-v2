@@ -79,7 +79,7 @@ const MediaShoutouts = () => {
   const { data: apiData, isLoading } = useQuery<MediaApiResponse>({
     queryKey: [QUERY_KEY.MEDIA, page],
     queryFn: async () => {
-      const response = await apiClient.get(`${API.MEDIA}?isTestimonial=false&page=${page}`);
+      const response = await apiClient.get(`${API.MEDIA}?isTestimonial=false&isActive=true&page=${page}`);
       return response.data;
     },
     // keepPreviousData removed due to linter error

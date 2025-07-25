@@ -39,7 +39,7 @@ const MilestoneTimeline = () => {
   const { data, isLoading } = useQuery({
     queryKey: [QUERY_KEY?.JOURNEY],
     queryFn: async () => {
-      const response = await apiClient.get(API?.JOURNEY);
+      const response = await apiClient.get(API?.JOURNEY + "?isActive=true");
       return response.data.data; // Return only the array of toppers
     },
   });

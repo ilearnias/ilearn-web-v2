@@ -188,7 +188,7 @@ const CarouselMediaItem = ({ item, onOpen }: CarouselMediaItemProps) => {
   const { data, isLoading } = useQuery({
     queryKey: [QUERY_KEY?.RESULT_SUMMARY],
     queryFn: async () => {
-      const response = await apiClient.get(API?.RESULT_SUMMARY);
+      const response = await apiClient.get(API?.RESULT_SUMMARY );
       return response.data.data; // Return only the array of toppers
     },
   });
@@ -197,7 +197,7 @@ const CarouselMediaItem = ({ item, onOpen }: CarouselMediaItemProps) => {
   const { data: toppersData, isLoading: toppersLoading } = useQuery({
     queryKey: [QUERY_KEY?.TOP_ACHIEVERS],
     queryFn: async () => {
-      const response = await apiClient.get(API?.TOP_ACHIEVERS);
+      const response = await apiClient.get(API?.TOP_ACHIEVERS + "?isActive=true");
       return response.data.data; // Return only the array of toppers
     },
   });
@@ -288,7 +288,7 @@ const ResultsPage = () => {
   useEffect(() => {
     async function fetchMedia() {
       try {
-        const response = await apiClient.get(API.RESULT); // Use the correct API endpoint
+        const response = await apiClient.get(API.RESULT + "?isActive=true"); // Use the correct API endpoint
         const apiMedia = response.data.data; // Array of media items
         // Group by year and map fields
         const grouped: Record<string, any[]> = {};
@@ -400,7 +400,7 @@ const ResultsPage = () => {
   const { data: toppersData, isLoading: toppersLoading } = useQuery({
     queryKey: [QUERY_KEY?.TOP_ACHIEVERS],
     queryFn: async () => {
-      const response = await apiClient.get(API?.TOP_ACHIEVERS);
+      const response = await apiClient.get(API?.TOP_ACHIEVERS + "?isActive=true");
       return response.data.data; // Return only the array of toppers
     },
   });

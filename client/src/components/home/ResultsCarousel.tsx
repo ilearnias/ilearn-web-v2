@@ -31,7 +31,7 @@ const ResultsCarousel = () => {
   const { data, isLoading } = useQuery({
     queryKey: [QUERY_KEY?.TOP_ACHIEVERS],
     queryFn: async () => {
-      const response = await apiClient.get(API?.TOP_ACHIEVERS);
+      const response = await apiClient.get(API?.TOP_ACHIEVERS + "?isActive=true");
       return response.data.data; // Return only the array of toppers
     },
   });

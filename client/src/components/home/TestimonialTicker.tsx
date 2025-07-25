@@ -8,7 +8,7 @@ const TestimonialTicker = () => {
   const { data: testimonials = [], isLoading } = useQuery({
     queryKey: [QUERY_KEY?.SUCCESS_STORIES],
     queryFn: async () => {
-      const response = await apiClient.get(API?.SUCCESS_STORIES);
+      const response = await apiClient.get(API?.SUCCESS_STORIES + "?isActive=true");
       // Add error logging to help debug API response
       console.log('API Response:', response.data);
       return response.data.data || []; // Return empty array if data is undefined

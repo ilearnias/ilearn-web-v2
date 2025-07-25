@@ -230,7 +230,7 @@ const AboutPage = () => {
   const { data: teamData, isLoading: isLoadingTeam, isError: isErrorTeam } = useQuery({
     queryKey: [QUERY_KEY.TEAM_MEMBERS],
     queryFn: async () => {
-      const response = await apiClient.get(API.TEAM_MEMBERS);
+      const response = await apiClient.get(API.TEAM_MEMBERS + "?isActive=true");
       return response.data;
     },
   });
