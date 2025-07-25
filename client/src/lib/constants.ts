@@ -66,6 +66,8 @@ export type Topper = {
   image: string;
   testimonial?: string;
   scorecard?: string;
+  details?: string; // AIR or rank string
+  description?: string; // e.g. 'UPSC CSE 2024'
 };
 
 export type Program = {

@@ -6,8 +6,9 @@ const QUERY_KEY = {
     TEAM_MEMBERS: "team-members",
     GALLERY: "gallery",
     BLOG: "blog",
-     BLOG_CATEGORIES: "blog-categories",
-    RESULT_SUMMARY:"result-summary"
+    BLOG_CATEGORIES: "blog-categories",
+    RESULT_SUMMARY:"result-summary",
+    RESULT:"result"
 }
 
 
