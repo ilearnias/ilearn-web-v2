@@ -8,6 +8,146 @@ import { apiRequest } from '@/lib/queryClient';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { getYearRange, getYoutubeEmbedUrl } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import QUERY_KEY from '@/config/queryKeys';
+import apiClient from '@/config/apiClient';
+import { API } from '@/config/api';
+
+// Mock data for gallery events and media
+const mockGalleryEvents = [
+  {
+    id: 1,
+    title: "Life at iLearn",
+    description: "Daily life and activities at iLearn IAS Academy",
+    mediaIds: [1, 2, 3, 4],
+    displayOrder: 0,
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 2,
+    title: "Onam at iLearn",
+    description: "Onam celebrations at iLearn IAS Academy",
+    mediaIds: [5, 6, 7, 8],
+    displayOrder: 1,
+    createdAt: new Date().toISOString()
+  }
+];
+
+const mockMediaItems = [
+  // Life at iLearn media items
+  {
+    id: 1,
+    title: "Classroom Teaching Session",
+    description: "Interactive classroom session with students",
+    type: "image",
+    aspectRatio: "landscape",
+    mediaUrl: "/uploads/DSC03892.JPG",
+    thumbnailUrl: "/uploads/DSC03892.JPG",
+    displayOrder: 0,
+    eventId: 1,
+    category: "life-at-iLearn",
+    event: "Life at iLearn",
+    year: "2024"
+  },
+  {
+    id: 2,
+    title: "Student Group Discussion",
+    description: "Students engaged in group discussion",
+    type: "image",
+    aspectRatio: "landscape",
+    mediaUrl: "/uploads/DSC06441.JPG",
+    thumbnailUrl: "/uploads/DSC06441.JPG",
+    displayOrder: 1,
+    eventId: 1,
+    category: "life-at-iLearn",
+    event: "Life at iLearn",
+    year: "2024"
+  },
+  {
+    id: 3,
+    title: "Campus Life",
+    description: "Students in campus environment",
+    type: "image",
+    aspectRatio: "landscape",
+    mediaUrl: "/uploads/DSC08345.JPG",
+    thumbnailUrl: "/uploads/DSC08345.JPG",
+    displayOrder: 2,
+    eventId: 1,
+    category: "life-at-iLearn",
+    event: "Life at iLearn",
+    year: "2024"
+  },
+  {
+    id: 4,
+    title: "Student Activities",
+    description: "Various student activities",
+    type: "image",
+    aspectRatio: "landscape",
+    mediaUrl: "/uploads/DSC08659.JPG",
+    thumbnailUrl: "/uploads/DSC08659.JPG",
+    displayOrder: 3,
+    eventId: 1,
+    category: "life-at-iLearn",
+    event: "Life at iLearn",
+    year: "2024"
+  },
+  // Onam Celebration media items
+  {
+    id: 5,
+    title: "Onam Celebration 2024",
+    description: "Students celebrating Onam festival",
+    type: "image",
+    aspectRatio: "landscape",
+    mediaUrl: "/uploads/DSC04400.JPG",
+    thumbnailUrl: "/uploads/DSC04400.JPG",
+    displayOrder: 0,
+    eventId: 2,
+    category: "testing-order",
+    event: "Onam at iLearn",
+    year: "2024"
+  },
+  {
+    id: 6,
+    title: "Traditional Dance Performance",
+    description: "Students performing traditional dance",
+    type: "video",
+    aspectRatio: "landscape",
+    mediaUrl: "https://www.youtube.com/watch?v=example1",
+    thumbnailUrl: "/uploads/DSC04559.JPG",
+    displayOrder: 1,
+    eventId: 2,
+    category: "testing-order",
+    event: "Onam at iLearn",
+    year: "2024"
+  },
+  {
+    id: 7,
+    title: "Pookalam Competition",
+    description: "Students making traditional flower rangoli",
+    type: "image",
+    aspectRatio: "landscape",
+    mediaUrl: "/uploads/DSC06117.JPG",
+    thumbnailUrl: "/uploads/DSC06117.JPG",
+    displayOrder: 2,
+    eventId: 2,
+    category: "testing-order",
+    event: "Onam at iLearn",
+    year: "2024"
+  },
+  {
+    id: 8,
+    title: "Onam Feast",
+    description: "Traditional Onam Sadhya celebration",
+    type: "video",
+    aspectRatio: "portrait",
+    mediaUrl: "https://www.youtube.com/shorts/example2",
+    thumbnailUrl: "/uploads/DSC06426.JPG",
+    displayOrder: 3,
+    eventId: 2,
+    category: "testing-order",
+    event: "Onam at iLearn",
+    year: "2024"
+  }
+];
 
 // Define base categories for the gallery based on content purpose
 // These categories will be sorted based on their event's displayOrder
@@ -19,6 +159,16 @@ const galleryCategories = [
 ];
 
 const GalleryPage = () => {
+
+  // GALLERY DATA API CALL
+  const { data, isLoading } = useQuery({
+    queryKey: [QUERY_KEY?.GALLERY],
+    queryFn: async () => {
+      const response = await apiClient.get(API?.GALLERY);
+      return response.data.data; // Return only the array of toppers
+    },
+  });
+  
   // For lightbox/modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState<MediaItem | null>(null);
@@ -35,11 +185,12 @@ const GalleryPage = () => {
   const { data: galleryEvents = [], isLoading: isLoadingEvents } = useQuery({
     queryKey: ['/api/gallery-events'],
     queryFn: () => apiRequest<any[]>('/api/gallery-events'),
+    initialData: mockGalleryEvents // Use mock data as initial data
   });
   
   // Store all media items from gallery events
-  const [eventMediaItems, setEventMediaItems] = useState<MediaItem[]>([]);
-  const [isMediaLoading, setIsMediaLoading] = useState(true);
+  const [eventMediaItems, setEventMediaItems] = useState<MediaItem[]>(mockMediaItems); // Initialize with mock data
+  const [isMediaLoading, setIsMediaLoading] = useState(false); // Set to false since we have mock data
   
   // State for sorted categories - starts with default order
   // But will be updated based on gallery events display order
@@ -55,18 +206,11 @@ const GalleryPage = () => {
     const fetchAllEventMedia = async () => {
       try {
         setIsMediaLoading(true);
-        const mediaPromises = galleryEvents.map(event => 
-          apiRequest<MediaItem[]>(`/api/gallery-events/${event.id}/media`)
-          .then(media => {
-            // Return both the event and its media items together
-            return { 
-              event, 
-              media 
-            };
-          })
-        );
-        
-        const results = await Promise.all(mediaPromises);
+        // Use mock data instead of making API calls
+        const results = galleryEvents.map(event => ({
+          event,
+          media: mockMediaItems.filter(item => item.eventId === event.id)
+        }));
         
         // Process each event's media separately without flattening
         const allEventMedia = results.flatMap((result) => {
@@ -169,6 +313,8 @@ const GalleryPage = () => {
         setEventMediaItems(allEventMedia);
       } catch (error) {
         console.error('Error fetching media items:', error);
+        // Use mock data as fallback
+        setEventMediaItems(mockMediaItems);
       } finally {
         setIsMediaLoading(false);
       }

@@ -10,5 +10,11 @@ export const API = {
     JOURNEY:"journey",
     TEAM_MEMBERS:"admin/team",
     PROGRAMS:"admin/programs",
+    RESULT_SUMMARY:"result-summary",
+    RESULT:"admin/results",
+    GALLERY:"admin/gallery",
+    BLOG:"admin/blog/posts",
+    BLOG_CATEGORIES: "admin/blog/categories"
+   
   }
   

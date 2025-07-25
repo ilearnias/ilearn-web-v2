@@ -8,7 +8,7 @@ import { BookOpen } from 'lucide-react';
 const foundationPrograms = [
   {
     id: 1,
-    slug: 'ignite',
+    slug: 'foundation/ignite',
     title: 'iLearn IAS Ignite',
     description: 'An Exclusive UPSC Foundation Program for College Students',
     icon: 'ri-award-line',
@@ -18,7 +18,7 @@ const foundationPrograms = [
   },
   {
     id: 2,
-    slug: 'junior',
+    slug: 'foundation/junior',
     title: 'iLearn IAS Junior',
     description: 'A Flagship IAS Skill Development Program for School Students',
     icon: 'ri-graduation-cap-line',
@@ -118,7 +118,7 @@ const FoundationCoursePage = () => {
                       
                       {/* Call to action */}
                       <Link 
-                        to={`/contact?program=${program.slug}`}
+                        to={`/${program.slug}`}
                         className="w-full block text-center bg-primary-blue-50 hover:bg-primary-blue-100 text-primary-blue font-medium rounded-full py-2.5 transition-colors text-sm"
                       >
                         VIEW PROGRAM DETAILS

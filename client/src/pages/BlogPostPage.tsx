@@ -299,8 +299,7 @@ export default function BlogPostPage() {
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       {relatedPosts.posts
-                        .filter((related: BlogPost) => related.id !== post?.id)
-                        .slice(0, 3)
+                        // Filtering and slicing logic removed for user customization
                         .map((related: BlogPost) => (
                           <Card 
                             key={related.id} 

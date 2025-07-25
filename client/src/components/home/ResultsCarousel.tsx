@@ -118,7 +118,7 @@ const ResultsCarousel = () => {
                       <div className="bg-primary-red/90 backdrop-blur-sm text-white text-xs font-medium px-3 py-1.5 rounded-full inline-flex items-center gap-1">
                         <span className="w-1.5 h-1.5 bg-white/80 rounded-full"></span>
                         <span>
-                          {typeof topper.order === 'number' ? `AIR ${topper.order}` : ''}
+                          {typeof topper.order === 'number' ? `AIR ${topper.details}` : ''}
                         </span>
                       </div>
                       <h3 className="font-semibold text-base text-neutral-800 line-clamp-2">
