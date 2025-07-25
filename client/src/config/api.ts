@@ -14,7 +14,6 @@ export const API = {
     RESULT:"admin/results",
     GALLERY:"admin/gallery",
     BLOG:"admin/blog/posts",
-    BLOG_CATEGORIES: "admin/blog/categories"
-   
+    BLOG_CATEGORIES: "admin/blog/categories",   
   }
   
