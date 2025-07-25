@@ -9,6 +9,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { getYearRange, getYoutubeEmbedUrl } from '@/lib/utils';
 import useEmblaCarousel from 'embla-carousel-react';
+import QUERY_KEY from '@/config/queryKeys';
+import apiClient from '@/config/apiClient';
+import { API } from '@/config/api';
 
 // iLearn IAS Academy's Authentic Top Achievers with genuine photos and data
 const iLearnTopAchievers: Topper[] = [
@@ -137,14 +140,7 @@ const mockMediaData = {
 };
 
 // Stats data for results summary table
-const resultsData = {
-  2025: { totalSelections: 46, top100: 6, pcrClassroom: 11, firstAttempt: 1 },
-  2024: { totalSelections: 28, top100: 4, pcrClassroom: 12, firstAttempt: 2 },
-  2023: { totalSelections: 65, top100: 18, pcrClassroom: 52, firstAttempt: 25 },
-  2022: { totalSelections: 48, top100: 12, pcrClassroom: 36, firstAttempt: 20 },
-  2021: { totalSelections: 35, top100: 8, pcrClassroom: 28, firstAttempt: 15 },
-  2020: { totalSelections: 18, top100: 5, pcrClassroom: 14, firstAttempt: 8 }
-};
+
 
 interface CarouselMediaItemProps {
   item: any;
@@ -152,6 +148,22 @@ interface CarouselMediaItemProps {
 }
 
 const CarouselMediaItem = ({ item, onOpen }: CarouselMediaItemProps) => {
+  const { data, isLoading } = useQuery({
+    queryKey: [QUERY_KEY?.RESULT_SUMMARY],
+    queryFn: async () => {
+      const response = await apiClient.get(API?.RESULT_SUMMARY);
+      return response.data.data; // Return only the array of toppers
+    },
+  });
+  const resultsData = data
+// {
+//   2025: { totalSelections: 46, topRanks: 6, pcmClassroom: 11, firstAttempt: 1 },
+//   2024: { totalSelections: 28, topRanks: 4, pcmClassroom: 12, firstAttempt: 2 },
+//   2023: { totalSelections: 65, topRanks: 18, pcmClassroom: 52, firstAttempt: 25 },
+//   2022: { totalSelections: 48, topRanks: 12, pcmClassroom: 36, firstAttempt: 20 },
+//   2021: { totalSelections: 35, topRanks: 8, pcmClassroom: 28, firstAttempt: 15 },
+//   2020: { totalSelections: 18, topRanks: 5, pcmClassroom: 14, firstAttempt: 8 }
+// };
   const isVideo = item.type === 'video';
   // Detect YouTube URL pattern
   const isYoutubeVideo = item.url && (item.url.includes('youtube.com') || item.url.includes('youtu.be'));
@@ -221,14 +233,35 @@ const ResultsPage = () => {
   
   // Modal state
   const [selectedTopper, setSelectedTopper] = useState<Topper | null>(null);
+
+  
+  
+  // Fetch results summary data for the results table and year tabs
+  const { data: resultsData = {} } = useQuery({
+    queryKey: [QUERY_KEY?.RESULT_SUMMARY],
+    queryFn: async () => {
+      const response = await apiClient.get(API?.RESULT_SUMMARY);
+      return response.data.data;
+    },
+  });
   
   // Get years array for tabs
-  const yearTabs = Object.keys(resultsData).sort((a, b) => parseInt(b) - parseInt(a));
-  
-  // Total selections across all years
-  const totalSelections = Object.values(resultsData).reduce(
-    (sum, year) => sum + year.totalSelections, 0
-  );
+  let yearEntries: [string, any][] = [];
+  let totalSelections = 0;
+  if (Array.isArray(resultsData)) {
+    // If resultsData is an array, map with year property
+    yearEntries = resultsData.map((item: any) => [String(item.year), item]);
+    totalSelections = resultsData.reduce(
+      (sum: number, year: any) => sum + (year.totalSelections || year.totalSelection || 0), 0
+    );
+  } else if (resultsData && typeof resultsData === 'object') {
+    // If resultsData is an object, use Object.entries
+    yearEntries = Object.entries(resultsData);
+    totalSelections = Object.values(resultsData).reduce(
+      (sum: number, year: any) => sum + (year.totalSelections || year.totalSelection || 0), 0
+    );
+  }
+  const yearTabs = yearEntries.map(([year]) => year).sort((a, b) => parseInt(b) - parseInt(a));
   
   // Define type for years in mockMediaData
   type MediaYear = keyof typeof mockMediaData;
@@ -417,7 +450,7 @@ const ResultsPage = () => {
                               </div>
                             )}
                             <div className="absolute top-2 left-2 z-20">
-                              <div className="bg-white/90 backdrop-blur-sm text-primary-blue px-2 py-0.5 rounded-full text-xs font-medium shadow-sm opacity-80 group-hover:opacity-100">
+                              <div className="bg-white/90  backdrop-blur-sm text-primary-blue px-2 py-0.5 rounded-full text-xs font-medium shadow-sm opacity-80 group-hover:opacity-100">
                                 {item.year}
                               </div>
                             </div>
@@ -455,22 +488,25 @@ const ResultsPage = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {Object.entries(resultsData).sort((a, b) => parseInt(b[0]) - parseInt(a[0])).map(([year, stats], index) => (
-                        <tr 
-                          key={year} 
-                          className={`transition-colors hover:bg-blue-50 ${parseInt(year) === 2025 ? 'bg-blue-50/50' : ''} ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}
-                        >
-                          <td className="py-3 px-4 font-medium text-primary-blue">{year}</td>
-                          <td className="py-3 px-4 text-center text-gray-800 font-medium">
-                            <span className="bg-green-50 text-green-700 py-1 px-2 rounded-full text-xs">
-                              {stats.totalSelections}
-                            </span>
-                          </td>
-                          <td className="py-3 px-4 text-center text-gray-800">{stats.top100}</td>
-                          <td className="py-3 px-4 text-center text-gray-800">{stats.pcrClassroom}</td>
-                          <td className="py-3 px-4 text-center text-gray-800">{stats.firstAttempt}</td>
-                        </tr>
-                      ))}
+                      {yearEntries.sort((a, b) => parseInt(b[0]) - parseInt(a[0])).map(([year, stats], index) => {
+                        const s = stats as { totalSelections?: number; totalSelection?: number; topRanks: number; pcmClassroom: number; firstAttempt: number };
+                        return (
+                          <tr 
+                            key={year} 
+                            className={`transition-colors hover:bg-blue-50 ${parseInt(year) === 2025 ? 'bg-blue-50/50' : ''} ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}
+                          >
+                            <td className="py-3 px-4 font-medium text-primary-blue">{year}</td>
+                            <td className="py-3 px-4 text-center text-gray-800 font-medium">
+                              <span className="bg-green-50 text-green-700 py-1 px-2 rounded-full text-xs">
+                                {s.totalSelections ?? s.totalSelection}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4 text-center text-gray-800">{s.topRanks}</td>
+                            <td className="py-3 px-4 text-center text-gray-800">{s.pcmClassroom}</td>
+                            <td className="py-3 px-4 text-center text-gray-800">{s.firstAttempt}</td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

@@ -9,6 +9,7 @@ export const API = {
     SUCCESS_STORIES: "admin/success-stories",
     JOURNEY:"journey",
     TEAM_MEMBERS:"team-members",
+    RESULT_SUMMARY:"result-summary",,
     GALLERY:"admin/gallery",
     BLOG:"admin/blog/posts",
     BLOG_CATEGORIES: "admin/blog/categories"
