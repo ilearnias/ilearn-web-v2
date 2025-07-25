@@ -89,74 +89,78 @@ import { API } from '@/config/api';
 // ];
 
 // Mock media data for the results page
-const mockMediaData = {
-  2025: [
-    {
-      id: 1, title: "UPSC CSE 2024 Success Story", type: "video", year: 2025, event: "UPSC Results",
-      url: "https://youtube.com/shorts/7FGDoedTd9w?si=rHFdg-jOLJoQ0d-Z",
-      thumbnailUrl: "https://img.youtube.com/vi/7FGDoedTd9w/hqdefault.jpg",
-      aspectRatio: "portrait"
-    },
-    {
-      id: 2, title: "iLearn Top Rankers Interview", type: "video", year: 2025, event: "UPSC Results",
-      url: "https://youtu.be/pmunw8qu03M?si=fcAQ7oxpjwYr95fv",
-      thumbnailUrl: "https://img.youtube.com/vi/pmunw8qu03M/hqdefault.jpg",
-      aspectRatio: "landscape"
-    },
-    {
-      id: 3, title: "UPSC CSE Success Journey", type: "video", year: 2025, event: "UPSC Results",
-      url: "https://youtube.com/shorts/GxvrKTSrZbc?si=bb23jpk7L5kT-3zJ",
-      thumbnailUrl: "https://img.youtube.com/vi/GxvrKTSrZbc/hqdefault.jpg",
-      aspectRatio: "portrait"
-    }
-  ],
-  2024: [
-    {
-      id: 4, title: "CSE 2024 Celebration", type: "photo", year: 2024, event: "UPSC Results",
-      url: "https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?q=80&w=1470&auto=format&fit=crop",
-      thumbnailUrl: "https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?q=80&w=1470&auto=format&fit=crop",
-      aspectRatio: "landscape"
-    },
-    {
-      id: 5, title: "CSE 2024 Interviews", type: "video", year: 2024, event: "UPSC Results",
-      url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      thumbnailUrl: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1471&auto=format&fit=crop",
-      aspectRatio: "landscape"
-    }
-  ],
-  2023: [
-    {
-      id: 6, title: "CSE 2023 Toppers", type: "photo", year: 2023, event: "UPSC Results",
-      url: "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=1470&auto=format&fit=crop",
-      thumbnailUrl: "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=1470&auto=format&fit=crop",
-      aspectRatio: "landscape"
-    }
-  ],
-  2022: [
-    {
-      id: 7, title: "CSE 2022 Toppers", type: "photo", year: 2022, event: "UPSC Results",
-      url: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1470&auto=format&fit=crop",
-      thumbnailUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1470&auto=format&fit=crop",
-      aspectRatio: "portrait"
-    }
-  ],
-  2021: [
-    {
-      id: 8, title: "CSE 2021 Celebration", type: "photo", year: 2021, event: "UPSC Results",
-      url: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1632&auto=format&fit=crop",
-      thumbnailUrl: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1632&auto=format&fit=crop",
-      aspectRatio: "landscape"
-    }
-  ],
-  2020: [
-    {
-      id: 9, title: "CSE 2020 Toppers", type: "photo", year: 2020, event: "UPSC Results",
-      url: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=1470&auto=format&fit=crop",
-      thumbnailUrl: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=1470&auto=format&fit=crop",
-      aspectRatio: "landscape"
-    }
-  ]
-};
+// const mockMediaData = {
+//   2025: [
+//     {
+//       id: 1, title: "UPSC CSE 2024 Success Story", type: "video", year: 2025, event: "UPSC Results",
+//       url: "https://youtube.com/shorts/7FGDoedTd9w?si=rHFdg-jOLJoQ0d-Z",
+//       thumbnailUrl: "https://img.youtube.com/vi/7FGDoedTd9w/hqdefault.jpg",
+//       aspectRatio: "portrait"
+//     },
+//     {
+//       id: 2, title: "iLearn Top Rankers Interview", type: "video", year: 2025, event: "UPSC Results",
+//       url: "https://youtu.be/pmunw8qu03M?si=fcAQ7oxpjwYr95fv",
+//       thumbnailUrl: "https://img.youtube.com/vi/pmunw8qu03M/hqdefault.jpg",
+//       aspectRatio: "landscape"
+//     },
+//     {
+//       id: 3, title: "UPSC CSE Success Journey", type: "video", year: 2025, event: "UPSC Results",
+//       url: "https://youtube.com/shorts/GxvrKTSrZbc?si=bb23jpk7L5kT-3zJ",
+//       thumbnailUrl: "https://img.youtube.com/vi/GxvrKTSrZbc/hqdefault.jpg",
+//       aspectRatio: "portrait"
+//     }
+//   ],
+//   2024: [
+//     {
+//       id: 4, title: "CSE 2024 Celebration", type: "photo", year: 2024, event: "UPSC Results",
+//       url: "https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?q=80&w=1470&auto=format&fit=crop",
+//       thumbnailUrl: "https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?q=80&w=1470&auto=format&fit=crop",
+//       aspectRatio: "landscape"
+//     },
+//     {
+//       id: 5, title: "CSE 2024 Interviews", type: "video", year: 2024, event: "UPSC Results",
+//       url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+//       thumbnailUrl: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1471&auto=format&fit=crop",
+//       aspectRatio: "landscape"
+//     }
+//   ],
+//   2023: [
+//     {
+//       id: 6, title: "CSE 2023 Toppers", type: "photo", year: 2023, event: "UPSC Results",
+//       url: "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=1470&auto=format&fit=crop",
+//       thumbnailUrl: "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=1470&auto=format&fit=crop",
+//       aspectRatio: "landscape"
+//     }
+//   ],
+//   2022: [
+//     {
+//       id: 7, title: "CSE 2022 Toppers", type: "photo", year: 2022, event: "UPSC Results",
+//       url: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1470&auto=format&fit=crop",
+//       thumbnailUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1470&auto=format&fit=crop",
+//       aspectRatio: "portrait"
+//     }
+//   ],
+//   2021: [
+//     {
+//       id: 8,
+//        title: "CSE 2021 Celebration",
+//         type: "photo",
+//          year: 2021,
+//           event: "UPSC Results",
+//      url: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1632&auto=format&fit=crop",
+//      thumbnailUrl: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1632&auto=format&fit=crop",
+//      aspectRatio: "landscape"
+//    }
+//  ],
+//  2020: [
+//    {
+//      id: 9, title: "CSE 2020 Toppers", type: "photo", year: 2020, event: "UPSC Results",
+//      url: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=1470&auto=format&fit=crop",
+//      thumbnailUrl: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=1470&auto=format&fit=crop",
+//      aspectRatio: "landscape"
+//    }
+//  ]
+// };
 
 // Stats data for results summary table
 
@@ -277,6 +281,42 @@ const ResultsPage = () => {
   // Modal state
   const [selectedTopper, setSelectedTopper] = useState<Topper | null>(null);
 
+  // Add state for media data
+  const [mediaData, setMediaData] = useState<Record<string, any[]>>({});
+
+  // Fetch media data from API (replace with your actual API call)
+  useEffect(() => {
+    async function fetchMedia() {
+      try {
+        const response = await apiClient.get(API.RESULT); // Use the correct API endpoint
+        const apiMedia = response.data.data; // Array of media items
+        // Group by year and map fields
+        const grouped: Record<string, any[]> = {};
+        apiMedia.forEach((item: any) => {
+          const year = String(item.year);
+          const isVideo =
+            typeof item.media === 'string' &&
+            (item.media.includes('youtube.com') || item.media.includes('youtu.be') || item.media.match(/\.(mp4|mov|avi|webm)$/i));
+          const mapped = {
+            id: item.id,
+            title: item.title,
+            year: item.year,
+            event: item.description,
+            url: item.media,
+            thumbnailUrl: item.thumbnail,
+            aspectRatio: item.aspectRatio,
+            type: isVideo ? 'video' : 'photo',
+          };
+          if (!grouped[year]) grouped[year] = [];
+          grouped[year].push(mapped);
+        });
+        setMediaData(grouped);
+      } catch (e) {
+        // handle error
+      }
+    }
+    fetchMedia();
+  }, []);
 
 
   // Fetch results summary data for the results table and year tabs
@@ -288,42 +328,38 @@ const ResultsPage = () => {
     },
   });
 
-  // Get years array for tabs
+  // Use years from mediaData (RESULT API) for yearTabs
+  const yearTabs = Object.keys(mediaData).sort((a, b) => parseInt(b) - parseInt(a));
+
+  // For the summary table, still use resultsData as before
   let yearEntries: [string, any][] = [];
   let totalSelections = 0;
   if (Array.isArray(resultsData)) {
-    // If resultsData is an array, map with year property
     yearEntries = resultsData.map((item: any) => [String(item.year), item]);
     totalSelections = resultsData.reduce(
       (sum: number, year: any) => sum + (year.totalSelections || year.totalSelection || 0), 0
     );
   } else if (resultsData && typeof resultsData === 'object') {
-    // If resultsData is an object, use Object.entries
     yearEntries = Object.entries(resultsData);
     totalSelections = Object.values(resultsData).reduce(
       (sum: number, year: any) => sum + (year.totalSelections || year.totalSelection || 0), 0
     );
   }
-  const yearTabs = yearEntries.map(([year]) => year).sort((a, b) => parseInt(b) - parseInt(a));
 
   // Define type for years in mockMediaData
-  type MediaYear = keyof typeof mockMediaData;
+  type MediaYear = keyof typeof mediaData;
 
   // Get current year's media
-  const currentYearMedia = mockMediaData[activeTab as keyof typeof mockMediaData] || [];
+  const currentYearMedia = mediaData[activeTab] || [];
 
 
 
   // Handle tab change with haptic feedback
   const handleTabChange = (year: string) => {
-    // Only allow 2025 tab to be selected, ignore other years
-    if (year === "2025") {
-      setActiveTab(year);
-
-      // Simulate haptic feedback if supported
-      if (window.navigator && window.navigator.vibrate) {
-        window.navigator.vibrate(50); // Vibrate for 50ms
-      }
+    setActiveTab(year);
+    // Simulate haptic feedback if supported
+    if (window.navigator && window.navigator.vibrate) {
+      window.navigator.vibrate(50); // Vibrate for 50ms
     }
   };
 
@@ -397,116 +433,119 @@ const ResultsPage = () => {
 
             {/* Year Tab Selector */}
             <div className="mb-8">
-              <Tabs defaultValue="2025" className="w-full max-w-3xl mx-auto" value={activeTab || "2025"} onValueChange={handleTabChange}>
-                <TabsList className="grid grid-cols-6 bg-white">
+              {yearTabs.length > 0 ? (
+                <Tabs defaultValue={yearTabs[0]} className="w-full max-w-3xl mx-auto" value={activeTab || yearTabs[0]} onValueChange={handleTabChange}>
+                  <TabsList className={`grid grid-cols-${yearTabs.length} bg-white`}>
+                    {yearTabs.map(year => (
+                      <TabsTrigger
+                        key={year}
+                        value={year}
+                        className="text-sm"
+                      >
+                        {year}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+
                   {yearTabs.map(year => (
-                    <TabsTrigger
+                    <TabsContent
                       key={year}
                       value={year}
-                      className={`text-sm ${year !== "2025" ? "opacity-60 cursor-not-allowed" : ""}`}
-                      disabled={year !== "2025"}
+                      onTouchStart={(e) => {
+                        touchStartXRef.current = e.touches[0].clientX;
+                      }}
+                      onTouchEnd={(e) => {
+                        if (touchStartXRef.current === null) return;
+
+                        const touchEndX = e.changedTouches[0].clientX;
+                        const diffX = touchStartXRef.current - touchEndX;
+
+                        // If swipe distance is significant, change the year tab
+                        if (Math.abs(diffX) > 50) {
+                          const currentIndex = yearTabs.indexOf(year);
+
+                          // Swipe left (next/newer year)
+                          if (diffX > 0 && currentIndex > 0) {
+                            handleTabChange(yearTabs[currentIndex - 1]);
+                          }
+                          // Swipe right (previous/older year)
+                          else if (diffX < 0 && currentIndex < yearTabs.length - 1) {
+                            handleTabChange(yearTabs[currentIndex + 1]);
+                          }
+                        }
+
+                        touchStartXRef.current = null;
+                      }}
                     >
-                      {year}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-
-                {yearTabs.map(year => (
-                  <TabsContent
-                    key={year}
-                    value={year}
-                    onTouchStart={(e) => {
-                      touchStartXRef.current = e.touches[0].clientX;
-                    }}
-                    onTouchEnd={(e) => {
-                      if (touchStartXRef.current === null) return;
-
-                      const touchEndX = e.changedTouches[0].clientX;
-                      const diffX = touchStartXRef.current - touchEndX;
-
-                      // If swipe distance is significant, change the year tab
-                      if (Math.abs(diffX) > 50) {
-                        const currentIndex = yearTabs.indexOf(year);
-
-                        // Swipe left (next/newer year)
-                        if (diffX > 0 && currentIndex > 0) {
-                          handleTabChange(yearTabs[currentIndex - 1]);
-                        }
-                        // Swipe right (previous/older year)
-                        else if (diffX < 0 && currentIndex < yearTabs.length - 1) {
-                          handleTabChange(yearTabs[currentIndex + 1]);
-                        }
-                      }
-
-                      touchStartXRef.current = null;
-                    }}
-                  >
-                    {/* View Mode Toggle */}
-                    <div className="flex justify-end mb-3">
-                      <div className="bg-white inline-flex rounded-md shadow p-1">
-                        <button
-                          className={`px-3 py-1 text-xs rounded ${viewMode === 'carousel' ? 'bg-primary-blue text-white' : 'bg-transparent text-dark-grey'}`}
-                          onClick={() => setViewMode('carousel')}
-                        >
-                          <i className="ri-film-line mr-1"></i> Carousel
-                        </button>
-                        <button
-                          className={`px-3 py-1 text-xs rounded ${viewMode === 'gallery' ? 'bg-primary-blue text-white' : 'bg-transparent text-dark-grey'}`}
-                          onClick={() => setViewMode('gallery')}
-                        >
-                          <i className="ri-layout-grid-line mr-1"></i> Gallery
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Media Display Section */}
-                    {viewMode === 'carousel' ? (
-                      <div className="overflow-hidden" ref={emblaRef}>
-                        <div className="flex">
-                          {mockMediaData[year as MediaYear]?.map((item: MediaItem) => (
-                            <CarouselMediaItem key={item.id} item={item} onOpen={handleOpenMedia} />
-                          ))}
+                      {/* View Mode Toggle */}
+                      <div className="flex justify-end mb-3">
+                        <div className="bg-white inline-flex rounded-md shadow p-1">
+                          <button
+                            className={`px-3 py-1 text-xs rounded ${viewMode === 'carousel' ? 'bg-primary-blue text-white' : 'bg-transparent text-dark-grey'}`}
+                            onClick={() => setViewMode('carousel')}
+                          >
+                            <i className="ri-film-line mr-1"></i> Carousel
+                          </button>
+                          <button
+                            className={`px-3 py-1 text-xs rounded ${viewMode === 'gallery' ? 'bg-primary-blue text-white' : 'bg-transparent text-dark-grey'}`}
+                            onClick={() => setViewMode('gallery')}
+                          >
+                            <i className="ri-layout-grid-line mr-1"></i> Gallery
+                          </button>
                         </div>
                       </div>
-                    ) : (
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-1">
-                        {mockMediaData[year as MediaYear]?.map((item: MediaItem) => (
-                          <div
-                            key={item.id}
-                            className="cursor-pointer relative rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 group bg-white"
-                            onClick={() => handleOpenMedia(item)}
-                            style={{ aspectRatio: item.aspectRatio === 'portrait' ? '3/4' : '16/9' }}
-                          >
-                            <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
-                            <img
-                              src={item.thumbnailUrl}
-                              alt={item.title}
-                              className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
-                            />
-                            {item.type === 'video' && (
-                              <div className="absolute inset-0 flex items-center justify-center z-20">
-                                <div className="bg-primary-red/80 backdrop-blur-sm rounded-full p-2 shadow-md transform scale-90 group-hover:scale-100 transition-transform duration-300">
-                                  <svg className="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M8 5.14v14l11-7-11-7z" />
-                                  </svg>
+
+                      {/* Media Display Section */}
+                      {viewMode === 'carousel' ? (
+                        <div className="overflow-hidden" ref={emblaRef}>
+                          <div className="flex">
+                            {(mediaData[year as MediaYear] || []).map((item: MediaItem) => (
+                              <CarouselMediaItem key={item.id} item={item} onOpen={handleOpenMedia} />
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-1">
+                          {(mediaData[year as MediaYear] || []).map((item: MediaItem) => (
+                            <div
+                              key={item.id}
+                              className="cursor-pointer relative rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 group bg-white"
+                              onClick={() => handleOpenMedia(item)}
+                              style={{ aspectRatio: item.aspectRatio === 'portrait' ? '3/4' : '16/9' }}
+                            >
+                              <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
+                              <img
+                                src={item.thumbnailUrl}
+                                alt={item.title}
+                                className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
+                              />
+                              {item.type === 'video' && (
+                                <div className="absolute inset-0 flex items-center justify-center z-20">
+                                  <div className="bg-primary-red/80 backdrop-blur-sm rounded-full p-2 shadow-md transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                                    <svg className="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                      <path d="M8 5.14v14l11-7-11-7z" />
+                                    </svg>
+                                  </div>
+                                </div>
+                              )}
+                              <div className="absolute top-2 left-2 z-20">
+                                <div className="bg-white/90  backdrop-blur-sm text-primary-blue px-2 py-0.5 rounded-full text-xs font-medium shadow-sm opacity-80 group-hover:opacity-100">
+                                  {item.year}
                                 </div>
                               </div>
-                            )}
-                            <div className="absolute top-2 left-2 z-20">
-                              <div className="bg-white/90  backdrop-blur-sm text-primary-blue px-2 py-0.5 rounded-full text-xs font-medium shadow-sm opacity-80 group-hover:opacity-100">
-                                {item.year}
+                              <div className="absolute bottom-0 left-0 right-0 p-2 bg-white/90 backdrop-blur-sm transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-20">
+                                <h3 className="text-gray-800 text-xs font-medium truncate">{item.title}</h3>
                               </div>
                             </div>
-                            <div className="absolute bottom-0 left-0 right-0 p-2 bg-white/90 backdrop-blur-sm transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-20">
-                              <h3 className="text-gray-800 text-xs font-medium truncate">{item.title}</h3>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </TabsContent>
-                ))}
-              </Tabs>
+                          ))}
+                        </div>
+                      )}
+                    </TabsContent>
+                  ))}
+                </Tabs>
+              ) : (
+                <div className="text-center text-gray-500 py-8">No results available for any year.</div>
+              )}
             </div>
 
             {/* Results Summary - Material Design 3 Style */}
