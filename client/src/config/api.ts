@@ -8,6 +8,10 @@ export const API = {
     MEDIA : "media",
     SUCCESS_STORIES: "admin/success-stories",
     JOURNEY:"journey",
-    TEAM_MEMBERS:"team-members"
+    TEAM_MEMBERS:"team-members",
+    GALLERY:"admin/gallery",
+    BLOG:"admin/blog/posts",
+    BLOG_CATEGORIES: "admin/blog/categories"
+   
   }
   

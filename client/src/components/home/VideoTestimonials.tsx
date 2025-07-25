@@ -16,6 +16,7 @@ interface ApiTestimonial {
   createdAt: string;
   updatedAt: string;
   deletedAt: null | string;
+  thumbnail?: string; // Added thumbnail to the interface
 }
 
 interface Testimonial {
@@ -55,7 +56,8 @@ const VideoTestimonials = () => {
       .filter((item: ApiTestimonial) => item.isActive && item.isTestimonial)
       .map((item: ApiTestimonial): Testimonial => {
         const videoId = extractYoutubeVideoId(item.video);
-        const thumbnailUrl = videoId ? getYoutubeThumbnailUrl(item.video, 'maxresdefault') : undefined;
+        const fallbackThumbnail = videoId ? getYoutubeThumbnailUrl(item.video, 'maxresdefault') : undefined;
+        const thumbnailUrl = item.thumbnail ? item.thumbnail : fallbackThumbnail;
         
         return {
           id: item.id,
@@ -64,7 +66,7 @@ const VideoTestimonials = () => {
           type: 'landscape-video', // Default to landscape
           displayOrder: item.order,
           description: item.description,
-          image: thumbnailUrl || undefined, // Handle null case
+          image: thumbnailUrl || undefined, // Use API thumbnail if present, else fallback
           details: item.description,
           program: 'UPSC CSE', // Default program
           createdAt: item.createdAt // Add createdAt for sorting
@@ -181,7 +183,7 @@ const VideoTestimonials = () => {
     // Generate the YouTube thumbnail URL from the video URL
     const videoUrl = video.video || '';
     const embedUrl = getYoutubeEmbedUrl(videoUrl) || videoUrl;
-    const thumbnailUrl = getYoutubeThumbnailUrl(videoUrl, 'hqdefault') || video.image || '';
+    const thumbnailUrl = video.image || '';
     console.log("URLs generated:", { videoUrl, embedUrl, thumbnailUrl });
     
     // Material Design 3 elevation and surface styling

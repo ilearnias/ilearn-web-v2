@@ -77,7 +77,7 @@ function Router() {
         component={CanaProgramPage}
       />
       <Route
-        path="/programs/foundation-course"
+        path="/foundation"
         component={FoundationCoursePage}
       />
       <Route
@@ -89,12 +89,12 @@ function Router() {
       <Route path="/gallery" component={GalleryPage} />
       <Route path="/contact" component={ContactPage} />
       <Route path="/blog" component={BlogPage} />
-      <Route path="/ignite" component={IgnitePage} />
+      <Route path="foundation/ignite" component={IgnitePage} />
       <Route path="/blog/category/:categorySlug" component={BlogPage} />
       <Route path="/blog/tag/:tag" component={BlogPage} />
       <Route path="/blog/:slug" component={BlogPostPage} />
       <Route path="/admin" component={AdminPage} />
-      <Route path="/junior" component={JuniorPage} />
+      <Route path="foundation/junior" component={JuniorPage} />
       <Route component={NotFound} />
     </Switch>
   );

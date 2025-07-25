@@ -15,7 +15,61 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Types
-import type { BlogPost, BlogCategory } from "@shared/schema";
+import QUERY_KEY from "@/config/queryKeys";
+import apiClient from "@/config/apiClient";
+import { API } from "@/config/api";
+
+// Types for the new API response
+interface BlogPost {
+  id: string;
+  categoryId: string;
+  title: string;
+  subTitle: string;
+  description: string;
+  image: string;
+  tags: string;
+  link: string;
+  order: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: null | string;
+  category: {
+    id: string;
+    title: string;
+  };
+}
+
+interface BlogCategory {
+  id: string;
+  title: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: null | string;
+}
+
+interface PaginationMeta {
+  limit: number;
+  itemCount: number;
+  page: number;
+  totalPages: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+}
+
+interface ApiResponse {
+  status: boolean;
+  message: string;
+  data: BlogPost[];
+  meta: PaginationMeta;
+}
+
+interface CategoryApiResponse {
+  status: boolean;
+  message: string;
+  data: BlogCategory[];
+}
 
 // Utility function to format date
 const formatDate = (dateString: string | Date | null) => {
@@ -24,81 +78,121 @@ const formatDate = (dateString: string | Date | null) => {
 };
 
 // Excerpts should be limited in length
-const truncateExcerpt = (text: string, maxLength: number = 150) => {
+const truncateText = (text: string, maxLength: number = 150) => {
   if (text.length <= maxLength) return text;
   return text.substring(0, maxLength) + "...";
 };
 
 // Blog list page component
 export default function BlogPage() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const params = useParams();
-  const { categorySlug, tag } = params;
+  // Get the category from URL parameters - it will be in the format /blog/category/:title
+  const categoryFromUrl = params["*"]?.split("/")?.[2] || null;
+  const tag = params.tag;
   
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 6;
+  const postsPerPage = 9;
   
   // Reset pagination when filter changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [categorySlug, tag]);
-  
-  // Fetch blog categories for sidebar
+  }, [categoryFromUrl, tag]);
+
+  // Fetch categories
   const { 
-    data: categories, 
+    data: categoriesResponse,
     isLoading: categoriesLoading 
-  } = useQuery({
-    queryKey: ['/api/blog/categories'],
-    staleTime: 5 * 60 * 1000, // 5 minutes
+  } = useQuery<CategoryApiResponse>({
+    queryKey: ['blog-categories'],
+    queryFn: async () => {
+      const response = await apiClient.get(API?.BLOG_CATEGORIES);
+      return response.data;
+    },
   });
-  
-  // Fetch blog posts with filters and pagination
+
+  // Get category ID from title
+  const categories = categoriesResponse?.data || [];
+  const selectedCategory = categoryFromUrl 
+    ? categories.find(cat => cat.title.toLowerCase() === decodeURIComponent(categoryFromUrl).toLowerCase())
+    : null;
+
+  // Debug logging for category matching
+  useEffect(() => {
+    if (categoryFromUrl) {
+      console.log('Looking for category:', decodeURIComponent(categoryFromUrl));
+      console.log('Available categories:', categories.map(c => ({ id: c.id, title: c.title })));
+      console.log('Selected category:', selectedCategory);
+    }
+  }, [categoryFromUrl, categories, selectedCategory]);
+
+  // Fetch blog posts (no categoryId or tag in params)
   const { 
-    data: postData, 
+    data: apiResponse, 
     isLoading: postsLoading,
     isFetching
-  } = useQuery({
-    queryKey: ['/api/blog/posts', { category_slug: categorySlug, tag, limit: postsPerPage, offset: (currentPage - 1) * postsPerPage }],
-    staleTime: 60 * 1000, // 1 minute
+  } = useQuery<ApiResponse>({
+    queryKey: [QUERY_KEY?.BLOG, { page: currentPage }],
+    queryFn: async () => {
+      const response = await apiClient.get(API?.BLOG, {
+        params: {
+          page: currentPage,
+          limit: postsPerPage,
+        }
+      });
+      return response.data;
+    },
+    enabled: !categoriesLoading,
   });
+
+  const posts = apiResponse?.data || [];
+  const meta = apiResponse?.meta;
+
+  // Client-side filter by category title
+  const filteredPosts = categoryFromUrl && selectedCategory
+    ? posts.filter(post => post.category?.title?.toLowerCase() === selectedCategory.title.toLowerCase())
+    : posts;
   
-  const posts = postData?.posts || [];
-  const totalPosts = postData?.total || 0;
-  const totalPages = Math.ceil(totalPosts / postsPerPage);
+  // Extract unique tags from posts
+  const uniqueTags = Array.from(
+    new Set(posts.map(post => post.tags))
+  ).filter(Boolean);
   
   // Build page title based on filters
   let pageTitle = "Blog";
-  if (categorySlug && categories) {
-    const category = categories.find((cat: BlogCategory) => cat.slug === categorySlug);
-    if (category) pageTitle = `${category.name} - Blog`;
+  if (categoryFromUrl && selectedCategory) {
+    pageTitle = `${selectedCategory.title} - Blog`;
   } else if (tag) {
     pageTitle = `#${tag} - Blog`;
   }
-  
-  // Get all unique tags from posts for tag cloud
-  const getAllTags = (posts: BlogPost[]) => {
-    const allTags = posts.flatMap(post => post.tags || []);
-    const uniqueTags = [...new Set(allTags)];
-    return uniqueTags;
+
+  // Handle category click
+  const handleCategoryClick = (catTitle: string | null) => {
+    console.log('Category clicked:', catTitle);
+    if (catTitle) {
+      const encodedTitle = encodeURIComponent(catTitle.trim());
+      console.log('Navigating to:', `/blog/category/${encodedTitle}`);
+      setLocation(`/blog/category/${encodedTitle}`);
+    } else {
+      setLocation('/blog');
+    }
+    setCurrentPage(1);
   };
-  
-  // Get current active category
-  const activeCategory = categorySlug && categories 
-    ? categories.find((cat: BlogCategory) => cat.slug === categorySlug) 
-    : null;
-  
+
+  // Handle tag click
+  const handleTagClick = (tagName: string) => {
+    setLocation(`/blog/tag/${encodeURIComponent(tagName)}`);
+    setCurrentPage(1);
+  };
+
+  const isLoading = categoriesLoading || postsLoading;
+
   return (
     <main className="min-h-screen py-12 bg-gray-50">
       <Helmet>
         <title>{pageTitle} | iLearn IAS Academy</title>
         <meta name="description" content="Read the latest articles, study notes, and current affairs analysis for UPSC Civil Services Examination." />
-        <meta property="og:title" content={`${pageTitle} | iLearn IAS Academy`} />
-        <meta property="og:description" content="Read the latest articles, study notes, and current affairs analysis for UPSC Civil Services Examination." />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${pageTitle} | iLearn IAS Academy`} />
-        <meta name="twitter:description" content="Read the latest articles, study notes, and current affairs analysis for UPSC Civil Services Examination." />
       </Helmet>
 
       <div className="container px-4 mx-auto">
@@ -108,14 +202,14 @@ export default function BlogPage() {
             Home
           </Link>
           <ChevronRight className="mx-2 h-4 w-4" />
-          {categorySlug ? (
+          {categoryFromUrl ? (
             <>
               <Link href="/blog" className="hover:text-primary-blue transition-colors">
                 Blog
               </Link>
               <ChevronRight className="mx-2 h-4 w-4" />
               <span className="text-gray-900 font-medium">
-                {activeCategory ? activeCategory.name : "Category"}
+                {selectedCategory ? selectedCategory.title : "Category"}
               </span>
             </>
           ) : tag ? (
@@ -131,21 +225,17 @@ export default function BlogPage() {
           )}
         </div>
 
-        {/* Page Title */}
+        Page Title
         <div className="mb-12 text-center">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {categorySlug && activeCategory
-              ? activeCategory.name
+            {categoryFromUrl && selectedCategory
+              ? selectedCategory.title
               : tag
               ? `Posts tagged #${tag}`
               : "iLearn IAS Blog"}
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {categorySlug && activeCategory
-              ? activeCategory.description
-              : tag
-              ? `Articles related to ${tag} for UPSC preparation`
-              : "Latest articles, study notes and current affairs for UPSC Civil Services Examination preparation"}
+            Latest articles, study notes and current affairs for UPSC Civil Services Examination preparation
           </p>
         </div>
 
@@ -156,7 +246,7 @@ export default function BlogPage() {
               <h2 className="text-xl font-bold mb-4">Categories</h2>
               <Separator className="mb-4" />
               
-              {categoriesLoading ? (
+              {isLoading ? (
                 Array(6).fill(0).map((_, i) => (
                   <div key={i} className="mb-2">
                     <Skeleton className="h-6 w-full" />
@@ -166,23 +256,29 @@ export default function BlogPage() {
                 <ScrollArea className="h-64">
                   <ul className="space-y-2">
                     <li>
-                      <Link 
-                        href="/blog" 
-                        className={`block p-2 rounded-md hover:bg-primary-blue/10 select-none transition-colors ${!categorySlug ? 'bg-primary-blue/10 text-primary-blue font-medium' : ''}`}
+                      <button 
+                        onClick={() => handleCategoryClick(null)}
+                        className={`block w-full text-left p-2 rounded-md hover:bg-primary-blue/10 select-none transition-colors ${location === '/blog' ? 'bg-primary-blue/10 text-primary-blue font-medium' : 'text-gray-700'}`}
                       >
                         All Posts
-                      </Link>
+                      </button>
                     </li>
-                    {categories?.map((category: BlogCategory) => (
-                      <li key={category.id}>
-                        <Link 
-                          href={`/blog/category/${category.slug}`} 
-                          className={`block p-2 rounded-md hover:bg-primary-blue/10 select-none transition-colors ${categorySlug === category.slug ? 'bg-primary-blue/10 text-primary-blue font-medium' : ''}`}
-                        >
-                          {category.name}
-                        </Link>
-                      </li>
-                    ))}
+                    {categories
+                      .filter(cat => cat.isActive)
+                      .sort((a, b) => a.title.localeCompare(b.title))
+                      .map((category) => {
+                        const categoryPath = `/blog/category/${encodeURIComponent(category.title)}`;
+                        return (
+                          <li key={category.id}>
+                            <button 
+                              onClick={() => handleCategoryClick(category.title)}
+                              className={`block w-full text-left p-2 rounded-md hover:bg-primary-blue/10 select-none transition-colors ${location === categoryPath ? 'bg-primary-blue/10 text-primary-blue font-medium' : 'text-gray-700'}`}
+                            >
+                              {category.title}
+                            </button>
+                          </li>
+                        );
+                      })}
                   </ul>
                 </ScrollArea>
               )}
@@ -190,7 +286,7 @@ export default function BlogPage() {
               <h2 className="text-xl font-bold mb-4 mt-8">Popular Tags</h2>
               <Separator className="mb-4" />
               
-              {postsLoading ? (
+              {isLoading ? (
                 <div className="flex flex-wrap gap-2">
                   {Array(8).fill(0).map((_, i) => (
                     <Skeleton key={i} className="h-8 w-20" />
@@ -198,15 +294,19 @@ export default function BlogPage() {
                 </div>
               ) : (
                 <div className="flex flex-wrap gap-2">
-                  {getAllTags(posts).map((tagName) => (
-                    <Link key={tagName} href={`/blog/tag/${tagName}`}>
+                  {uniqueTags.map((tagName) => (
+                    <button
+                      key={tagName}
+                      onClick={() => handleTagClick(tagName)}
+                      className="inline-flex"
+                    >
                       <Badge 
                         variant={tag === tagName ? "default" : "outline"}
                         className="cursor-pointer hover:bg-primary-blue hover:text-white transition-colors"
                       >
                         {tagName}
                       </Badge>
-                    </Link>
+                    </button>
                   ))}
                 </div>
               )}
@@ -215,7 +315,7 @@ export default function BlogPage() {
 
           {/* Blog Posts */}
           <div className="lg:col-span-3">
-            {postsLoading ? (
+            {isLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                 {Array(6).fill(0).map((_, i) => (
                   <Card key={i} className="overflow-hidden h-96">
@@ -234,11 +334,11 @@ export default function BlogPage() {
                   </Card>
                 ))}
               </div>
-            ) : posts.length === 0 ? (
+            ) : filteredPosts.length === 0 ? (
               <div className="text-center py-16">
                 <h3 className="text-2xl font-semibold text-gray-800 mb-4">No posts found</h3>
                 <p className="text-gray-600 mb-8">
-                  {categorySlug 
+                  {categoryFromUrl 
                     ? "There are no posts in this category yet." 
                     : tag 
                     ? `There are no posts with the tag #${tag}.`
@@ -252,15 +352,15 @@ export default function BlogPage() {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {posts.map((post: BlogPost) => (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredPosts.map((post) => (
                     <Card key={post.id} className="overflow-hidden flex flex-col h-full hover:shadow-md transition-shadow">
                       <CardHeader className="p-0">
-                        {post.featuredImage && (
+                        {post.image && (
                           <div className="relative h-48 overflow-hidden">
                             <img 
-                              src={post.featuredImage} 
-                              alt={post.featuredImageAlt || post.title} 
+                              src={post.image} 
+                              alt={post.title} 
                               className="w-full h-full object-cover"
                             />
                           </div>
@@ -270,41 +370,25 @@ export default function BlogPage() {
                         <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
                           <div className="flex items-center">
                             <Calendar className="mr-1 h-4 w-4" />
-                            <span>{formatDate(post.publishedAt)}</span>
+                            <span>{formatDate(post.createdAt)}</span>
                           </div>
-                          {post.categoryIds && post.categoryIds.length > 0 && categories && (
-                            <div className="flex items-center">
-                              <User className="mr-1 h-4 w-4" />
-                              <span>
-                                {categories
-                                  .filter((cat: BlogCategory) => post.categoryIds?.includes(cat.id))
-                                  .map((cat: BlogCategory) => cat.name)
-                                  .join(", ")}
-                              </span>
-                            </div>
-                          )}
+                          <div className="flex items-center">
+                            <Tag className="mr-1 h-4 w-4" />
+                            <span>{post.category.title}</span>
+                          </div>
                         </div>
-                        <Link href={`/blog/${post.slug}`} className="hover:text-primary-blue transition-colors">
+                        <Link href={`/blog/${post.id}`} className="hover:text-primary-blue transition-colors">
                           <CardTitle className="mb-2 text-xl">{post.title}</CardTitle>
                         </Link>
                         <CardDescription className="text-gray-600 mb-4">
-                          {truncateExcerpt(post.excerpt)}
+                          {truncateText(post.description)}
                         </CardDescription>
                       </CardContent>
                       <CardFooter className="px-6 pb-6 pt-0 flex items-center justify-between">
-                        <div className="flex flex-wrap gap-2">
-                          {post.tags && post.tags.slice(0, 3).map(tag => (
-                            <Link key={tag} href={`/blog/tag/${tag}`}>
-                              <Badge variant="outline" className="hover:bg-primary-blue hover:text-white transition-colors">
-                                {tag}
-                              </Badge>
-                            </Link>
-                          ))}
-                          {post.tags && post.tags.length > 3 && (
-                            <Badge variant="outline">+{post.tags.length - 3}</Badge>
-                          )}
-                        </div>
-                        <Link href={`/blog/${post.slug}`} className="text-primary-blue hover:underline text-sm font-medium inline-flex items-center">
+                        <Badge variant="outline" className="hover:bg-primary-blue hover:text-white transition-colors">
+                          {post.tags}
+                        </Badge>
+                        <Link href={`/blog/${post.id}`} className="text-primary-blue hover:underline text-sm font-medium inline-flex items-center">
                           Read more
                           <ChevronRight className="ml-1 h-4 w-4" />
                         </Link>
@@ -314,32 +398,31 @@ export default function BlogPage() {
                 </div>
 
                 {/* Pagination */}
-                {totalPages > 1 && (
+                {meta && meta.totalPages > 1 && (
                   <Pagination className="mt-12">
                     <PaginationContent>
-                      {currentPage > 1 && (
+                      {meta.hasPreviousPage && (
                         <PaginationItem>
                           <PaginationPrevious 
                             href="#" 
                             onClick={(e) => {
                               e.preventDefault();
                               setCurrentPage(p => Math.max(1, p - 1));
+                              window.scrollTo(0, 0);
                             }} 
                           />
                         </PaginationItem>
                       )}
                       
-                      {Array.from({ length: totalPages }, (_, i) => i + 1)
+                      {Array.from({ length: meta.totalPages }, (_, i) => i + 1)
                         .filter(page => {
-                          // Show current page, first, last, and 1 page on either side of current
                           return (
                             page === 1 || 
-                            page === totalPages || 
+                            page === meta.totalPages || 
                             Math.abs(page - currentPage) <= 1
                           );
                         })
                         .map((page, index, array) => {
-                          // Add ellipsis where there are gaps
                           const showEllipsisBefore = index > 0 && array[index - 1] !== page - 1;
                           
                           return (
@@ -366,13 +449,13 @@ export default function BlogPage() {
                           );
                         })}
                       
-                      {currentPage < totalPages && (
+                      {meta.hasNextPage && (
                         <PaginationItem>
                           <PaginationNext 
                             href="#" 
                             onClick={(e) => {
                               e.preventDefault();
-                              setCurrentPage(p => Math.min(totalPages, p + 1));
+                              setCurrentPage(p => Math.min(meta.totalPages, p + 1));
                               window.scrollTo(0, 0);
                             }} 
                           />

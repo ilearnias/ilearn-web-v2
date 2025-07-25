@@ -125,7 +125,7 @@ const iLearnPrograms: Program[] = [
   },
   {
     id: 5,
-    slug: 'foundation-course',
+    slug: 'foundation',
     title: 'Foundation Course for Civil Services',
     description: 'Comprehensive foundation program for beginners starting their civil services preparation journey with basic concepts and fundamentals.',
     icon: 'ri-book-open-line',
@@ -365,7 +365,7 @@ const ProgramsPage = () => {
                         
                         {/* Call to action */}
                         <Link 
-                          to={`/programs/${program.slug}`} 
+                          to={program.slug === 'foundation' ? `/${program.slug}` : `/programs/${program.slug}`} 
                           className="w-full block text-center bg-primary-blue-50 hover:bg-primary-blue-100 text-primary-blue font-medium rounded-full py-2.5 transition-colors text-sm"
                         >
                           View Program Details
