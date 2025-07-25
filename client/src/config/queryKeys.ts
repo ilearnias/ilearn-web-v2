@@ -4,6 +4,7 @@ const QUERY_KEY = {
     SUCCESS_STORIES: "success-stories",
     JOURNEY: "journey",
     TEAM_MEMBERS: "team-members",
+    PROGRAMS: "programs",
 }
 
 

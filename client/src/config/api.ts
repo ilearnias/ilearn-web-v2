@@ -8,6 +8,7 @@ export const API = {
     MEDIA : "media",
     SUCCESS_STORIES: "admin/success-stories",
     JOURNEY:"journey",
-    TEAM_MEMBERS:"team-members"
+    TEAM_MEMBERS:"admin/team",
+    PROGRAMS:"admin/programs",
   }
   

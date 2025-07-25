@@ -17,6 +17,7 @@ interface MediaVideo {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
+  thumbnail: string; // Added thumbnail field
 }
 
 interface MediaApiResponse {
@@ -78,7 +79,7 @@ const MediaShoutouts = () => {
   const { data: apiData, isLoading } = useQuery<MediaApiResponse>({
     queryKey: [QUERY_KEY.MEDIA, page],
     queryFn: async () => {
-      const response = await apiClient.get(`${API.MEDIA}?page=${page}`);
+      const response = await apiClient.get(`${API.MEDIA}?isTestimonial=false&page=${page}`);
       return response.data;
     },
     // keepPreviousData removed due to linter error
@@ -134,7 +135,7 @@ const MediaShoutouts = () => {
                     {/* Video Thumbnail */}
                     <div className="relative overflow-hidden">
                       <img
-                        src={getYoutubeThumbnail(video.video)}
+                        src={video.thumbnail}
                         alt={video.description}
                         className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
@@ -176,7 +177,7 @@ const MediaShoutouts = () => {
           {selectedVideo && (
             <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
               <iframe
-                src={selectedVideo.video}
+                src={getYoutubeEmbedUrl(selectedVideo.video)}
                 title={selectedVideo.description}
                 className="absolute inset-0 w-full h-full"
                 frameBorder="0"
