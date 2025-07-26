@@ -47,7 +47,7 @@ const GalleryPage = () => {
     queryKey: [QUERY_KEY.GALLERY, page],
     queryFn: async () => {
       const response = await apiClient.get(`${API.GALLERY}?isActive=true&page=${page}`);
-      return response.data;
+      return response?.data;
     },
   });
 
@@ -149,8 +149,8 @@ const GalleryPage = () => {
                                   className="w-full h-full object-cover"
                                 />
                                 
-                                {/* Always visible overlay with subtitle and description */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent">
+                                {/* Hover overlay with subtitle and description */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                   <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
                                     {img?.subtitle && (
                                       <h3 className="text-lg font-bold mb-1 leading-tight">
