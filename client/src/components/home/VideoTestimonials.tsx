@@ -43,7 +43,7 @@ const VideoTestimonials = () => {
   const { data: apiData, isLoading } = useQuery({
     queryKey: [QUERY_KEY?.MEDIA],
     queryFn: async () => {
-      const response = await apiClient.get(API?.MEDIA);
+      const response = await apiClient.get(API?.MEDIA + "?isActive=true");
       return response.data;
     },
   });

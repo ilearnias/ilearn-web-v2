@@ -176,7 +176,7 @@ const CarouselMediaItem = ({ item, onOpen }: CarouselMediaItemProps) => {
   const { data: resultData, isLoading: resultLoading } = useQuery({
     queryKey: [QUERY_KEY?.RESULT],
     queryFn: async () => {
-      const response = await apiClient.get(API?.RESULT);
+      const response = await apiClient.get(API?.RESULT + "?isActive=true");
       return response.data.data; // Return only the array of toppers
     },
   });
