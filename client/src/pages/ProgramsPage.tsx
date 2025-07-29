@@ -26,7 +26,7 @@ const ProgramsPage = () => {
   const { data: apiData, isLoading, isError } = useQuery({
     queryKey: [QUERY_KEY.PROGRAMS],
     queryFn: async () => {
-      const response = await apiClient.get(API?.PROGRAMS + "?isActive=true");
+      const response = await apiClient.get(API?.PROGRAMS + "?isActive=true&page=1&limit=50");
       return response?.data;
     },
   });

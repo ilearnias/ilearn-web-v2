@@ -24,6 +24,13 @@ import AdminPage from "@/pages/AdminPage";
 import PcmProgramPage from "@/pages/PcmProgramPage";
 import CanaProgramPage from "@/pages/CanaProgramPage";
 import FoundationCoursePage from "@/pages/FoundationCoursePage";
+import InterviewGuidanceProgram from "@/pages/Interview_Guidance_Program ";
+import IntegratedPrelimsTestSeries from "@/pages/Integrated_Prelims_Test_Series";
+import GeographyOptional from "@/pages/Geography_Optional";
+import SociologyOptional from "@/pages/sociology-optional";
+import PoliticalScienceIROptional from "@/pages/Political_Science_IR_Optional";
+import MalayalamOptional from "@/pages/Malayalam_Optional";
+import PublicAdministrationOptional from "@/pages/Public_Administration_Optional";
 import JuniorPage from "@/pages/JuniorPage";
 import NotFound from "@/pages/not-found";
 
@@ -52,11 +59,22 @@ function Router() {
     // Create a custom hook to intercept Link clicks from wouter
     const originalPushState = history.pushState;
     // @ts-ignore TypeScript doesn't handle this type of function override well
-    history.pushState = function () {
-      // @ts-ignore
-      const result = originalPushState.apply(this, arguments);
-      handleLocationChange();
-      return result;
+    history.pushState = function (state, title, url) {
+      // Only call original pushState if we have valid parameters
+      if (originalPushState && typeof url === 'string' && url.startsWith('/')) {
+        try {
+          const result = originalPushState.call(this, state, title, url);
+          handleLocationChange();
+          return result;
+        } catch (error) {
+          console.warn('pushState error:', error);
+          // Fallback to just calling handleLocationChange
+          handleLocationChange();
+        }
+      } else {
+        // If invalid URL, just call handleLocationChange without pushState
+        handleLocationChange();
+      }
     };
 
     return () => {
@@ -83,6 +101,35 @@ function Router() {
       <Route
         path="/programs/current-affairs-news-analysis"
         component={CanaProgramPage}
+      />
+      <Route
+        path="/programs/interview-guidance-program"
+        component={InterviewGuidanceProgram}
+      />
+      <Route
+        path="/programs/integrated-prelims-test-series"
+        component={IntegratedPrelimsTestSeries}
+      />
+
+      <Route
+        path="/programs/geography-optional"
+        component={GeographyOptional}
+      />
+      <Route
+        path="/programs/sociology-optional"
+        component={SociologyOptional}
+      />
+      <Route
+        path="/programs/political-science-ir-optional"
+        component={PoliticalScienceIROptional}
+      />
+      <Route
+        path="/programs/malayalam-optional"
+        component={MalayalamOptional}
+      />
+      <Route
+        path="/programs/public-administration-optional"
+        component={PublicAdministrationOptional}
       />
       <Route path="/programs/:slug" component={ProgramDetailPage} />
       <Route path="/app" component={AppPage} />
