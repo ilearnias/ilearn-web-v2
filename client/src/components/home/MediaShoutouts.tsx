@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Play } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import apiClient from '@/config/apiClient';
 import { API } from '@/config/api';
 import QUERY_KEY from '@/config/queryKeys';
+import VideoModal from '@/components/common/VideoModal';
+import VideoThumbnail from '@/components/common/VideoThumbnail';
 
 // API response types
 interface MediaVideo {
@@ -34,29 +35,13 @@ interface MediaApiResponse {
   };
 }
 
-// Helper to extract YouTube video ID from a URL
-function extractYoutubeId(url: string): string | null {
-  const regExp = /^.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#&?]*).*/;
-  const match = url.match(regExp);
-  return match && match[1].length === 11 ? match[1] : null;
-}
 
-const getYoutubeThumbnail = (url: string) => {
-  const id = extractYoutubeId(url);
-  return id ? `https://img.youtube.com/vi/${id}/maxresdefault.jpg` : '';
-};
-
-// For the embed, use the direct YouTube link from the API (video field)
-const getYoutubeEmbedUrl = (url: string) => {
-  // If it's already an embed link, use as is, else convert to embed
-  const id = extractYoutubeId(url);
-  return id ? `https://www.youtube.com/embed/${id}?autoplay=1&rel=0` : url;
-};
 
 const MediaShoutouts = () => {
   const [isVideoDialogOpen, setIsVideoDialogOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<MediaVideo | null>(null);
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(50);
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -77,9 +62,9 @@ const MediaShoutouts = () => {
 
 
   const { data: apiData, isLoading } = useQuery<MediaApiResponse>({
-    queryKey: [QUERY_KEY.MEDIA, page],
+    queryKey: [QUERY_KEY.MEDIA, page, limit],
     queryFn: async () => {
-      const response = await apiClient.get(`${API.MEDIA}?isTestimonial=false&isActive=true&page=${page}`);
+      const response = await apiClient.get(`${API.MEDIA}?isTestimonial=false&isActive=true&page=${page}&limit=${limit}`);
       return response.data;
     },
     // keepPreviousData removed due to linter error
@@ -134,11 +119,11 @@ const MediaShoutouts = () => {
                   >
                     {/* Video Thumbnail */}
                     <div className="relative overflow-hidden">
-                      <img
-                        src={video.thumbnail}
+                      <VideoThumbnail
+                        url={video.video}
                         alt={video.description}
                         className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
-                        loading="lazy"
+                        fallbackImage={video.thumbnail}
                       />
                       {/* Play Button Overlay */}
                       <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -172,22 +157,13 @@ const MediaShoutouts = () => {
         </div>
       </section>
       {/* Video Modal */}
-      <Dialog open={isVideoDialogOpen} onOpenChange={closeVideoDialog}>
-        <DialogContent className="max-w-4xl w-[95vw] p-0 bg-black">
-          {selectedVideo && (
-            <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-              <iframe
-                src={getYoutubeEmbedUrl(selectedVideo.video)}
-                title={selectedVideo.description}
-                className="absolute inset-0 w-full h-full"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      <VideoModal
+        isOpen={isVideoDialogOpen}
+        onClose={closeVideoDialog}
+        videoUrl={selectedVideo?.video || ''}
+        title={selectedVideo?.description}
+        description={selectedVideo?.description}
+      />
     </>
   );
 };

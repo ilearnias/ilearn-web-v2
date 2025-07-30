@@ -7,6 +7,7 @@ import Milestone2024Image from './Milestone2024Image';
 import QUERY_KEY from '@/config/queryKeys';
 import apiClient from '@/config/apiClient';
 import { API } from '@/config/api';
+import VideoPlayer from '@/components/common/VideoPlayer';
 
 type Milestone = BaseMilestone & {
   isImage: boolean;
@@ -39,7 +40,7 @@ const MilestoneTimeline = () => {
   const { data, isLoading } = useQuery({
     queryKey: [QUERY_KEY?.JOURNEY],
     queryFn: async () => {
-      const response = await apiClient.get(API?.JOURNEY + "?isActive=true");
+      const response = await apiClient.get(API?.JOURNEY + "?isActive=true&page=1&limit=50");
       return response.data.data; // Return only the array of toppers
     },
   });
@@ -262,14 +263,12 @@ const MilestoneTimeline = () => {
                     />
                   ) : (
                     <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
-                      <iframe
-                        src={getYouTubeEmbedUrl(activeMilestone.media)}
+                      <VideoPlayer
+                        url={activeMilestone.media}
                         title="Milestone video"
-                        frameBorder="0"
-                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      ></iframe>
+                        className="absolute inset-0 w-full h-full"
+                        allowFullScreen={true}
+                      />
                     </div>
                   )
                 ) : (

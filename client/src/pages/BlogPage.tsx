@@ -56,7 +56,7 @@ export default function BlogPage() {
   const { data: categoriesResponse, isLoading: categoriesLoading } = useQuery<CategoryApiResponse>({
     queryKey: ["blog-categories"],
     queryFn: async () => {
-      const response = await apiClient.get(API?.BLOG_CATEGORIES + "?isActive=true");
+      const response = await apiClient.get(API?.BLOG_CATEGORIES + "?isActive=true&page=1&limit=50");
       return response.data;
     },
   });

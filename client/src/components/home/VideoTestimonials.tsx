@@ -5,6 +5,8 @@ import { extractYoutubeVideoId, getYoutubeThumbnailUrl, getYoutubeEmbedUrl } fro
 import apiClient from '@/config/apiClient';
 import QUERY_KEY from '@/config/queryKeys';
 import { API } from '@/config/api';
+import VideoThumbnail from '@/components/common/VideoThumbnail';
+import VideoModal from '@/components/common/VideoModal';
 
 interface ApiTestimonial {
   id: string;
@@ -43,7 +45,7 @@ const VideoTestimonials = () => {
   const { data: apiData, isLoading } = useQuery({
     queryKey: [QUERY_KEY?.MEDIA],
     queryFn: async () => {
-      const response = await apiClient.get(API?.MEDIA + "?isActive=true");
+      const response = await apiClient.get(API?.MEDIA + "?isActive=true&page=1&limit=50");
       return response.data;
     },
   });
@@ -242,22 +244,22 @@ const VideoTestimonials = () => {
               className="w-full h-full relative overflow-hidden flex justify-center items-center bg-black"
               style={{ aspectRatio: '9/16' }}  /* YouTube Shorts aspect ratio */
             >
-              <img
-                src={thumbnailUrl} 
+              <VideoThumbnail
+                url={video.video}
                 alt={`${video.name}'s testimonial thumbnail`}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                loading="lazy"
+                fallbackImage={thumbnailUrl}
               />
               {/* Overlay gradient for better text readability */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 z-10"></div>
             </div>
           ) : (
             <>
-              <img
-                src={thumbnailUrl} 
+              <VideoThumbnail
+                url={video.video}
                 alt={`${video.name}'s testimonial thumbnail`}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                loading="lazy"
+                fallbackImage={thumbnailUrl}
               />
               {/* Overlay gradient for better text readability */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 z-10"></div>
@@ -389,46 +391,14 @@ const VideoTestimonials = () => {
         )}
       </div>
 
-      {/* Video Dialog - Styled to match MediaShoutouts */}
-      <Dialog open={isVideoDialogOpen} onOpenChange={(open) => !open && closeVideoDialog()}>
-        <DialogContent className="max-w-5xl p-0 bg-black border-0 rounded-xl overflow-hidden">
-          <DialogTitle className="sr-only">Video Testimonial</DialogTitle>
-          {selectedVideo && selectedTestimonial && (
-            <div 
-              className={selectedTestimonial.type === 'portrait-video' 
-                ? "aspect-[9/16] max-w-md mx-auto" 
-                : "aspect-video w-full"}
-              data-video-type={selectedTestimonial.type} 
-              style={{
-                // Set container size based on video type
-                // Portrait videos get height constraint but auto width
-                // Landscape videos get full width and auto height
-                ...(selectedTestimonial.type === 'portrait-video' 
-                  ? {height: '75vh', maxWidth: '45vh'} // 9:16 aspect ratio for portrait
-                  : {width: '100%', maxHeight: '75vh'}) // 16:9 aspect ratio for landscape
-              }}>
-              <iframe
-                src={selectedVideo}
-                title="Video testimonial"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full"
-              ></iframe>
-              {/* Close button */}
-              <button
-                onClick={closeVideoDialog}
-                className="absolute top-4 right-4 bg-black/30 hover:bg-black/50 backdrop-blur-sm text-white rounded-full p-2 transition-all duration-300"
-                aria-label="Close video"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-              </button>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      {/* Video Modal */}
+      <VideoModal
+        isOpen={isVideoDialogOpen}
+        onClose={closeVideoDialog}
+        videoUrl={selectedVideo || ''}
+        title={selectedTestimonial?.name || 'Video Testimonial'}
+        description={selectedTestimonial?.description}
+      />
     </section>
   );
 };

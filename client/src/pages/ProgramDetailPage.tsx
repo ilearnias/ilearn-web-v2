@@ -48,6 +48,8 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Program, Testimonial } from '@/lib/constants';
 import { useState, useRef, useEffect } from 'react';
+import VideoThumbnail from '@/components/common/VideoThumbnail';
+import VideoModal from '@/components/common/VideoModal';
 
 // Mock data for programs and testimonials
 const MockPrograms: Program[] = [
@@ -1345,22 +1347,22 @@ const ProgramDetailPage = () => {
                                 className="w-full h-full relative overflow-hidden flex justify-center items-center bg-black"
                                 style={{ aspectRatio: '9/16' }}  /* YouTube Shorts aspect ratio */
                               >
-                                <img
-                                  src={thumbnailUrl} 
+                                <VideoThumbnail
+                                  url={testimonial.video}
                                   alt={`${testimonial.name}'s testimonial thumbnail`}
                                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                  loading="lazy"
+                                  fallbackImage={thumbnailUrl}
                                 />
                                 {/* Overlay gradient for better text readability */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 z-10"></div>
                               </div>
                             ) : (
                               <>
-                                <img
-                                  src={thumbnailUrl} 
+                                <VideoThumbnail
+                                  url={testimonial.video}
                                   alt={`${testimonial.name}'s testimonial thumbnail`}
                                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                  loading="lazy"
+                                  fallbackImage={thumbnailUrl}
                                 />
                                 {/* Overlay gradient for better text readability */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 z-10"></div>
@@ -1497,36 +1499,14 @@ const ProgramDetailPage = () => {
         </section>
       </PageTransition>
 
-      {/* Video Dialog - Dynamically adapts to video type */}
-      <Dialog open={!!selectedVideo} onOpenChange={(open) => !open && closeVideoDialog()}>
-        <DialogContent 
-          className={`p-0 bg-black border-0 rounded-xl overflow-hidden ${selectedVideoType === 'portrait' ? 'max-w-md' : 'max-w-5xl'}`}
-        >
-          <DialogTitle className="sr-only">Video Testimonial</DialogTitle>
-          {selectedVideo && (
-            <div className={selectedVideoType === 'portrait' ? 'aspect-[9/16] w-full' : 'aspect-video w-full'}>
-              <iframe 
-                src={selectedVideo}
-                title="Video testimonial"
-                className="w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-              {/* Close button */}
-              <button
-                onClick={closeVideoDialog}
-                className="absolute top-4 right-4 bg-black/30 hover:bg-black/50 backdrop-blur-sm text-white rounded-full w-10 h-10 flex items-center justify-center transition-all duration-300"
-                aria-label="Close video"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-              </button>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      {/* Video Modal */}
+      <VideoModal
+        isOpen={!!selectedVideo}
+        onClose={closeVideoDialog}
+        videoUrl={selectedVideo || ''}
+        title="Video Testimonial"
+        description="Student testimonial video"
+      />
     </>
   );
 };
