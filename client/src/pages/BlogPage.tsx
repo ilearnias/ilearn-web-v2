@@ -132,23 +132,23 @@ export default function BlogPage() {
               ) : (
                 <ul className="space-y-2">
                   <li>
-                    <button
-                      onClick={() => setSelectedCategoryId(null)}
-                      className={`block w-full text-left p-2 rounded-md hover:bg-primary-blue/10 select-none transition-colors ${selectedCategoryId === null ? 'bg-primary-blue/10 text-primary-blue font-medium' : 'text-gray-700'}`}
-                    >
-                      All Posts
-                    </button>
-                  </li>
-                  {categories.filter(cat => cat.isActive).map((category) => (
-                    <li key={category.id}>
-                      <button
-                        onClick={() => setSelectedCategoryId(category.id)}
-                        className={`block w-full text-left p-2 rounded-md hover:bg-primary-blue/10 select-none transition-colors ${selectedCategoryId === category.id ? 'bg-primary-blue/10 text-primary-blue font-medium' : 'text-gray-700'}`}
-                      >
-                        {category.title}
-                      </button>
-                    </li>
-                  ))}
+                                         <button
+                       onClick={() => setSelectedCategoryId(null)}
+                       className={`block w-full text-left p-2 rounded-md select-none transition-colors ${selectedCategoryId === null ? 'bg-primary-blue text-white font-medium hover:bg-primary-blue/90' : 'text-gray-700 hover:text-primary-blue hover:bg-primary-blue/10'}`}
+                     >
+                       All Posts
+                     </button>
+                   </li>
+                   {categories.filter(cat => cat.isActive).map((category) => (
+                     <li key={category.id}>
+                       <button
+                         onClick={() => setSelectedCategoryId(category.id)}
+                         className={`block w-full text-left p-2 rounded-md select-none transition-colors ${selectedCategoryId === category.id ? 'bg-primary-blue text-white font-medium hover:bg-primary-blue/90' : 'text-gray-700 hover:text-primary-blue hover:bg-primary-blue/10'}`}
+                       >
+                         {category.title}
+                       </button>
+                     </li>
+                   ))}
                 </ul>
               )}
 
@@ -168,10 +168,14 @@ export default function BlogPage() {
                       onClick={() => setSelectedTag(tagName)}
                       className="inline-flex"
                     >
-                      <Badge
-                        variant={selectedTag === tagName ? "default" : "outline"}
-                        className="cursor-pointer hover:bg-primary-blue hover:text-white "
-                      >
+                                             <Badge
+                         variant={selectedTag === tagName ? "default" : "outline"}
+                         className={`cursor-pointer transition-colors ${
+                           selectedTag === tagName 
+                             ? "bg-primary-blue text-white border-primary-blue hover:bg-primary-blue/90" 
+                             : "hover:bg-primary-blue hover:text-white border-gray-300"
+                         }`}
+                       >
                         {tagName}
                       </Badge>
                     </button>
