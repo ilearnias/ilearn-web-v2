@@ -9,7 +9,7 @@ const Footer = () => {
           <div>
             <div className="flex flex-col items-start mb-3">
               <div className="bg-transparent mb-2 flex items-center">
-                <img src="/src/assets/uploaded/long-logo-white.png" alt="iLearn IAS Logo" className="h-16" />
+                <img src="/src/assets/uploaded/long-logo-white.png" alt="iLearn IAS Logo" className="h-12" />
               </div>
               <div className="text-lg font-bold">{COMPANY.name}</div>
             </div>

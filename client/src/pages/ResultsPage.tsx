@@ -261,7 +261,7 @@ const CarouselMediaItem = ({ item, onOpen }: CarouselMediaItemProps) => {
 
 const ResultsPage = () => {
   // States for new results page design
-  const [activeTab, setActiveTab] = useState<string>("2025");
+  const [activeTab, setActiveTab] = useState<string>("");
   const [viewMode, setViewMode] = useState<"carousel" | "gallery">("carousel");
   const [currentItem, setCurrentItem] = useState<any | null>(null);
   const [isFullScreenView, setIsFullScreenView] = useState<boolean>(false);
@@ -271,11 +271,6 @@ const ResultsPage = () => {
 
   // Touch reference for swipe detection
   const touchStartXRef = useRef<number | null>(null);
-
-  // Set default year to 2025 when component mounts
-  useEffect(() => {
-    setActiveTab("2025");
-  }, []);
 
 
   // Modal state
@@ -328,8 +323,15 @@ const ResultsPage = () => {
     },
   });
 
-  // Use years from mediaData (RESULT API) for yearTabs
+  // Use years from mediaData (RESULT API) for yearTabs - sorted with latest first
   const yearTabs = Object.keys(mediaData).sort((a, b) => parseInt(b) - parseInt(a));
+  
+  // Set default active tab to the latest year when yearTabs are available
+  useEffect(() => {
+    if (yearTabs.length > 0 && !activeTab) {
+      setActiveTab(yearTabs[0]); // yearTabs[0] is the latest year due to sorting
+    }
+  }, [yearTabs, activeTab]);
 
   // For the summary table, still use resultsData as before
   let yearEntries: [string, any][] = [];
@@ -419,32 +421,100 @@ const ResultsPage = () => {
       </Helmet>
 
       <PageTransition>
-        {/* New Results Hero Section */}
-        <section className="py-10 bg-light-grey">
+        {/* Top Achievers Section - Moved to Top */}
+        <section className="py-16 bg-gradient-to-br from-primary-blue/5 to-primary-red/5">
           <div className="container mx-auto px-4">
-            <h1 className="text-3xl md:text-4xl font-bold text-primary-blue text-center mb-4">Our Results</h1>
-
-            {/* "The Most Genuine Results in Kerala" highlighted title */}
-            <div className="text-center mb-8">
-              <div className="inline-block bg-primary-blue text-white px-4 py-2 rounded-full text-lg md:text-xl font-bold shadow-md">
+            <div className="text-center mb-12">
+              <h1 className="text-3xl md:text-4xl font-bold text-primary-blue mb-4">Our Results</h1>
+              <div className="inline-block bg-primary-blue text-white px-6 py-3 rounded-full text-xl md:text-2xl font-bold shadow-lg mb-8">
                 The Most Genuine Results in Kerala
               </div>
             </div>
 
+            {/* Top Achievers Gallery */}
+            <div id="toppers-section" className="mb-16">
+              <h2 className="text-2xl md:text-3xl font-bold mb-8 text-primary-blue flex items-center justify-center">
+                <svg className="w-6 h-6 mr-3 text-primary-red" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                  <path d="M19 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                  <path d="M5 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                  <path d="M19 9a7 7 0 0 0-14 0" />
+                  <path d="M19 15a7 7 0 0 1-14 0" />
+                </svg>
+                Our Top Achievers
+              </h2>
+
+                             <div className="relative">
+                 <div className="overflow-x-auto hide-scrollbar pb-6">
+                   <div className="flex gap-4 px-1">
+                     {toppersLoading ? (
+                       <div className="text-center w-full py-8 text-gray-500">Loading toppers...</div>
+                     ) : toppersData && toppersData.length > 0 ? (
+                       toppersData.map((topper: Topper) => (
+                         <div
+                           key={topper.id}
+                           className="flex-shrink-0 w-[200px] md:w-[220px] cursor-pointer transform transition-all duration-300 hover:translate-y-[-8px]"
+                           onClick={() => handleTopperClick(topper)}
+                         >
+                           <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow h-full flex flex-col">
+                             <div className="relative flex-shrink-0">
+                               <div className="overflow-hidden">
+                                 <img
+                                   src={topper.image}
+                                   alt={topper.name}
+                                   className="w-full h-[200px] md:h-[220px] object-cover object-center"
+                                 />
+                               </div>
+                             </div>
+
+                             <div className="p-4 flex-1 flex flex-col justify-between">
+                               <div className="mb-2">
+                                 <p className="font-semibold text-gray-800 text-lg leading-tight line-clamp-2 min-h-[3rem]">{topper.name}</p>
+                               </div>
+                               <div className="flex items-center justify-between mt-auto">
+                                 <span className="flex items-center gap-0.5 bg-primary-red/10 text-primary-red rounded-full px-2 py-0.5 text-xs font-semibold shadow-sm">
+                                   <span className="opacity-85 tracking-wide">AIR</span>
+                                   <span className="font-bold">{topper.details}</span>
+                                 </span>
+                                 <span className="text-primary-blue text-xs font-medium">{topper.description}</span>
+                               </div>
+                             </div>
+                           </div>
+                         </div>
+                       ))
+                     ) : (
+                       <div className="text-center w-full py-8 text-gray-500">No toppers found.</div>
+                     )}
+                   </div>
+                 </div>
+
+                {/* Gradient fade indicators for scrolling */}
+                <div className="absolute top-0 left-0 bottom-0 w-12 bg-gradient-to-r from-light-grey to-transparent pointer-events-none"></div>
+                <div className="absolute top-0 right-0 bottom-0 w-12 bg-gradient-to-l from-light-grey to-transparent pointer-events-none"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Media Results Section */}
+        <section className="py-10 bg-light-grey">
+          <div className="container mx-auto px-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-primary-blue text-center mb-8">Media Coverage & Events</h2>
+
             {/* Year Tab Selector */}
             <div className="mb-8">
               {yearTabs.length > 0 ? (
-                <Tabs defaultValue={yearTabs[0]} className="w-full max-w-3xl mx-auto" value={activeTab || yearTabs[0]} onValueChange={handleTabChange}>
-                  <TabsList className={`grid grid-cols-${yearTabs.length} bg-white`}>
-                    {yearTabs.map(year => (
-                      <TabsTrigger
-                        key={year}
-                        value={year}
-                        className="text-sm"
-                      >
-                        {year}
-                      </TabsTrigger>
-                    ))}
+                                 <Tabs defaultValue={yearTabs[0]} className="w-full max-w-3xl mx-auto" value={activeTab} onValueChange={handleTabChange}>
+                   <TabsList className={`grid grid-cols-${yearTabs.length} bg-transparent border-none shadow-none`}>
+                                         {yearTabs.map(year => (
+                       <TabsTrigger
+                         key={year}
+                         value={year}
+                         className="text-sm bg-transparent text-primary-blue data-[state=active]:bg-transparent data-[state=active]:text-primary-blue hover:text-primary-blue/80"
+                       >
+                         {year}
+                       </TabsTrigger>
+                     ))}
                   </TabsList>
 
                   {yearTabs.map(year => (
@@ -596,83 +666,6 @@ const ResultsPage = () => {
 
               <div className="mt-4 p-4 bg-blue-50 rounded-lg text-sm text-gray-600 italic">
                 Consistently high Prelims-cum-Mains and classroom results—especially from first-attempt candidates—show our academic excellence.
-              </div>
-            </div>
-
-            {/* Toppers Gallery - Material Design 3 Style */}
-            <div id="toppers-section" className="mb-12">
-              <h2 className="text-xl font-semibold mb-6 text-primary-blue flex items-center">
-                <svg className="w-5 h-5 mr-2 text-primary-red" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                  <path d="M19 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                  <path d="M5 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                  <path d="M19 9a7 7 0 0 0-14 0" />
-                  <path d="M19 15a7 7 0 0 1-14 0" />
-                </svg>
-                Our Top Achievers
-              </h2>
-
-              <div className="relative">
-                <div className="overflow-x-auto hide-scrollbar pb-6">
-                  <div className="flex gap-4 px-1">
-                    {toppersLoading ? (
-                      <div className="text-center w-full py-8 text-gray-500">Loading toppers...</div>
-                    ) : toppersData && toppersData.length > 0 ? (
-                      toppersData.map((topper: Topper) => (
-                        <div
-                          key={topper.id}
-                          className="flex-shrink-0 w-[180px] cursor-pointer transform transition-all duration-300 hover:translate-y-[-8px]"
-                          onClick={() => handleTopperClick(topper)}
-                        >
-                          <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                            <div className="relative">
-                              <div className="overflow-hidden">
-                                <img
-                                  src={topper.image}
-                                  alt={topper.name}
-                                  className="w-full h-[180px] object-cover object-center"
-                                />
-                              </div>
-                            </div>
-
-                            <div className="p-4">
-                              <div className="mb-2">
-                                <p className="font-semibold text-gray-800 text-lg leading-tight line-clamp-2">{topper.name}</p>
-                              </div>
-                              <div className="flex items-center justify-between">
-                                <span className="flex items-center gap-0.5 bg-primary-red/10 text-primary-red rounded-full px-2 py-0.5 text-xs font-semibold shadow-sm">
-                                  <span className="opacity-85 tracking-wide">AIR</span>
-                                  <span className="font-bold">{topper.details}</span>
-                                </span>
-                                <span className="text-primary-blue text-xs font-medium">{topper.description}</span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="text-center w-full py-8 text-gray-500">No toppers found.</div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Gradient fade indicators for scrolling */}
-                <div className="absolute top-0 left-0 bottom-0 w-12 bg-gradient-to-r from-light-grey to-transparent pointer-events-none"></div>
-                <div className="absolute top-0 right-0 bottom-0 w-12 bg-gradient-to-l from-light-grey to-transparent pointer-events-none"></div>
-              </div>
-
-              <div className="text-center mt-4 mb-1">
-                <button
-                  onClick={() => {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="inline-flex items-center gap-1.5 bg-primary-blue/10 hover:bg-primary-blue/20 text-primary-blue px-4 py-2 rounded-full transition-all duration-200 text-sm font-medium shadow-sm"
-                >
-                  <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                  </svg>
-                  Back to top
-                </button>
               </div>
             </div>
 
