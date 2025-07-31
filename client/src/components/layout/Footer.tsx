@@ -1,5 +1,6 @@
 import { Link } from 'wouter';
 import { COMPANY, NAV_LINKS } from '@/lib/constants';
+import logoImage from '@/assets/uploaded/long-logo-white.png';
 
 const Footer = () => {
   return (
@@ -9,7 +10,7 @@ const Footer = () => {
           <div>
             <div className="flex flex-col items-start mb-3">
               <div className="bg-transparent mb-2 flex items-center">
-                <img src="/src/assets/uploaded/long-logo-white.png" alt="iLearn IAS Logo" className="h-12" />
+                <img src={logoImage} alt="iLearn IAS Logo" className="h-12" />
               </div>
               <div className="text-lg font-bold">{COMPANY.name}</div>
             </div>
@@ -99,76 +100,65 @@ const Footer = () => {
               </li>
               <li>
                 <Link 
-                  href="/programs/current-affairs" 
+                  href="/programs/current-affairs-news-analysis" 
                   className="opacity-80 hover:opacity-100 hover:text-white transition-colors block"
                 >
                   Current Affairs & News Analysis <span className="text-white font-medium">(CANA)</span>
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/programs/restart-program" 
-                  className="opacity-80 hover:opacity-100 hover:text-white transition-colors block"
-                >
-                  Restart Program
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/programs/geography-optional" 
-                  className="opacity-80 hover:opacity-100 hover:text-white transition-colors block"
-                >
-                  Geography Optional
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/programs/political-science-ir-optional" 
-                  className="opacity-80 hover:opacity-100 hover:text-white transition-colors block"
-                >
-                  Political Science & IR Optional
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/programs/sociology-optional" 
-                  className="opacity-80 hover:opacity-100 hover:text-white transition-colors block"
-                >
-                  Sociology Optional
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/programs/malayalam-optional" 
-                  className="opacity-80 hover:opacity-100 hover:text-white transition-colors block"
-                >
-                  Malayalam Optional
                 </Link>
               </li>
             </ul>
           </div>
           
           <div>
-            <div className="text-lg font-bold mb-3">Contact Us</div>
-            <address className="not-italic text-sm">
-              <p className="flex items-start mb-1.5">
-                <i className="ri-map-pin-line mr-1.5 mt-0.5"></i>
+            <div className="text-lg font-bold mb-3">Contact Info</div>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-start gap-2">
+                <i className="ri-map-pin-line text-primary-red mt-0.5"></i>
                 <span className="opacity-80">{COMPANY.address}</span>
-              </p>
-              <p className="flex items-center mb-1.5">
-                <i className="ri-phone-line mr-1.5"></i>
-                <span className="opacity-80">{COMPANY.phone}</span>
-              </p>
-              <p className="flex items-center mb-1.5">
-                <i className="ri-mail-line mr-1.5"></i>
-                <span className="opacity-80">{COMPANY.email}</span>
-              </p>
-            </address>
+              </div>
+              <div className="flex items-center gap-2">
+                <i className="ri-phone-line text-primary-red"></i>
+                <a 
+                  href={`tel:${COMPANY.phone}`} 
+                  className="opacity-80 hover:opacity-100 transition-colors"
+                >
+                  {COMPANY.phone}
+                </a>
+              </div>
+              <div className="flex items-center gap-2">
+                <i className="ri-mail-line text-primary-red"></i>
+                <a 
+                  href={`mailto:${COMPANY.email}`} 
+                  className="opacity-80 hover:opacity-100 transition-colors"
+                >
+                  {COMPANY.email}
+                </a>
+              </div>
+              <div className="flex items-center gap-2">
+                <i className="ri-time-line text-primary-red"></i>
+                <span className="opacity-80">{COMPANY.hours}</span>
+              </div>
+            </div>
           </div>
         </div>
         
-        <div className="border-t border-white border-opacity-20 mt-6 pt-4 text-center">
-          <p className="opacity-70 text-xs">&copy; {new Date().getFullYear()} iLearn IAS Academy. All rights reserved.</p>
+        <div className="border-t border-white/20 mt-8 pt-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-sm opacity-80">
+              © {new Date().getFullYear()} {COMPANY.name}. All rights reserved.
+            </div>
+            <div className="flex items-center gap-6 text-sm">
+              <Link href="/privacy" className="opacity-80 hover:opacity-100 transition-colors">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="opacity-80 hover:opacity-100 transition-colors">
+                Terms of Service
+              </Link>
+              <Link href="/sitemap" className="opacity-80 hover:opacity-100 transition-colors">
+                Sitemap
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
