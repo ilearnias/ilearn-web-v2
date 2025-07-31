@@ -32,11 +32,6 @@ function getYouTubeEmbedUrl(url: string): string {
 }
 
 const MilestoneTimeline = () => {
-
-
-
-  
-
   const { data, isLoading } = useQuery({
     queryKey: [QUERY_KEY?.JOURNEY],
     queryFn: async () => {
@@ -45,13 +40,12 @@ const MilestoneTimeline = () => {
     },
   });
 
-
   // State for active milestone
   const [activeMilestoneId, setActiveMilestoneId] = useState<number | null>(null);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
 
-  // Transform API data to Milestone[]
+  // Transform API data to Milestone[] and sort by latest first (newest to oldest)
   const milestones: Milestone[] = (data || []).map((item: any) => ({
     id: item.id,
     year: item.year,
@@ -62,13 +56,15 @@ const MilestoneTimeline = () => {
     createdAt: new Date(item.createdAt),
     isImage: item.isImage,
     media: item.media,
-  }));
-
-  // Remove static milestones array
-  // const milestones: Milestone[] = [ ... ];
+  })).sort((a: Milestone, b: Milestone) => {
+    // Sort by year first (descending), then by creation date (descending)
+    const yearComparison = parseInt(b.year) - parseInt(a.year);
+    if (yearComparison !== 0) return yearComparison;
+    return b.createdAt.getTime() - a.createdAt.getTime();
+  });
 
   const milestonesLoading = false;
-  const defaultMilestone = milestones.find(m => m.isDefault) || milestones[milestones.length - 1];
+  const defaultMilestone = milestones.find(m => m.isDefault) || milestones[0]; // Use first (latest) instead of last
   const milestoneImages: MilestoneImage[] = [];
   const imagesLoading = false;
 
@@ -78,7 +74,7 @@ const MilestoneTimeline = () => {
       setActiveMilestoneId(defaultMilestone.id);
       console.log("Setting default milestone ID:", defaultMilestone.id);
     } else if (milestones.length > 0 && !activeMilestoneId) {
-      // If no default milestone, use the first one
+      // If no default milestone, use the first one (which will be latest based on sort order)
       setActiveMilestoneId(milestones[0].id);
       console.log("Setting first milestone ID:", milestones[0].id);
     }
