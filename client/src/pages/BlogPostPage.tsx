@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useParams, useLocation } from "wouter";
 import { ArrowRight, Bookmark, ChevronRight, Calendar, User, Tag, Share, Facebook, Twitter, Linkedin, Clock, ChevronLeft } from "lucide-react";
 import { format } from "date-fns";
+import { useState } from "react";
 
 // UI Components
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ import type { BlogPost, BlogCategory } from "@shared/schema";
 
 // Markdown renderer for rich content 
 import ReactMarkdown from 'react-markdown';
+import { renderXMLContent, hasRichContent } from '@/utils/xml-parser';
 
 // Utility function to format date
 const formatDate = (dateString: string | Date | null) => {
@@ -202,91 +204,104 @@ export default function BlogPostPage() {
                   )}
                   
                   <div className="p-6 md:p-8">
-                    {/* Post Header */}
-                    <header className="mb-8">
-                      {/* Categories */}
-                      {post?.categoryIds && categories && (
-                        <div className="flex flex-wrap gap-2 mb-4">
-                          {getCategoryNames(post.categoryIds).map((name, index) => (
-                            <Badge key={index} variant="secondary">
-                              {name}
-                            </Badge>
-                          ))}
-                        </div>
-                      )}
-                      
-                      {/* Post Meta */}
-                      <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
-                        {post?.publishedAt && (
-                          <div className="flex items-center">
-                            <Calendar className="mr-1 h-4 w-4" />
-                            <span>{formatDate(post.publishedAt)}</span>
-                          </div>
-                        )}
-                        
-                        {readingTime > 0 && (
-                          <div className="flex items-center">
-                            <Clock className="mr-1 h-4 w-4" />
-                            <span>{readingTime} min read</span>
-                          </div>
-                        )}
-                      </div>
-                    </header>
+                                         {/* Post Header - Always show full header */}
+                     <header className="mb-8">
+                       {/* Post Title - Always Visible */}
+                       <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                         {post?.title}
+                       </h1>
+                       
+                       {/* Categories and Meta - Always visible */}
+                       <>
+                         {/* Categories */}
+                         {post?.categoryIds && categories && (
+                           <div className="flex flex-wrap gap-2 mb-4">
+                             {getCategoryNames(post.categoryIds).map((name, index) => (
+                               <Badge key={index} variant="secondary">
+                                 {name}
+                               </Badge>
+                             ))}
+                           </div>
+                         )}
+                         
+                         {/* Post Meta */}
+                         <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                           {post?.publishedAt && (
+                             <div className="flex items-center">
+                               <Calendar className="mr-1 h-4 w-4" />
+                               <span>{formatDate(post.publishedAt)}</span>
+                             </div>
+                           )}
+                           
+                           {readingTime > 0 && (
+                             <div className="flex items-center">
+                               <Clock className="mr-1 h-4 w-4" />
+                               <span>{readingTime} min read</span>
+                             </div>
+                           )}
+                         </div>
+                       </>
+                     </header>
                     
-                    {/* Post Content */}
-                    <div className="prose prose-slate max-w-none prose-headings:text-primary-blue prose-a:text-primary-blue hover:prose-a:text-primary-red">
-                      <ReactMarkdown>{post?.content || ""}</ReactMarkdown>
-                    </div>
+                                         {/* Post Content - Always show full content */}
+                     <div className="prose prose-slate max-w-none prose-headings:text-primary-blue prose-a:text-primary-blue hover:prose-a:text-primary-red">
+                       {post?.content && hasRichContent(post.content) ? (
+                         // Render XML/HTML content
+                         renderXMLContent(post.content, 'prose prose-slate max-w-none prose-headings:text-primary-blue prose-a:text-primary-blue hover:prose-a:text-primary-red')
+                       ) : (
+                         <ReactMarkdown>{post?.content || ""}</ReactMarkdown>
+                       )}
+                     </div>
                     
-                    {/* Tags */}
-                    {post?.tags && post.tags.length > 0 && (
-                      <div className="mt-8">
-                        <h2 className="text-lg font-semibold mb-4">Tags</h2>
-                        <div className="flex flex-wrap gap-2">
-                          {post.tags.map(tag => (
-                            <Link key={tag} href={`/blog/tag/${tag}`}>
-                              <Badge variant="outline" className="hover:bg-primary-blue hover:text-white transition-colors">
-                                {tag}
-                              </Badge>
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* Share Buttons */}
-                    <div className="mt-8 pt-8 border-t">
-                      <h2 className="text-lg font-semibold mb-4 flex items-center">
-                        <Share className="mr-2 h-5 w-5" />
-                        Share this article
-                      </h2>
-                      <div className="flex gap-3">
-                        <Button 
-                          variant="outline" 
-                          size="icon" 
-                          onClick={() => handleShare("facebook")}
-                          aria-label="Share on Facebook"
-                        >
-                          <Facebook className="h-5 w-5" />
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="icon" 
-                          onClick={() => handleShare("twitter")}
-                          aria-label="Share on Twitter"
-                        >
-                          <Twitter className="h-5 w-5" />
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="icon" 
-                          onClick={() => handleShare("linkedin")}
-                          aria-label="Share on LinkedIn"
-                        >
-                          <Linkedin className="h-5 w-5" />
-                        </Button>
-                      </div>
-                    </div>
+                                         {/* Tags - Always visible */}
+                     {post?.tags && post.tags.length > 0 && (
+                       <div className="mt-8">
+                         <h2 className="text-lg font-semibold mb-4">Tags</h2>
+                         <div className="flex flex-wrap gap-2">
+                           {post.tags.map(tag => (
+                             <Link key={tag} href={`/blog/tag/${tag}`}>
+                               <Badge variant="outline" className="hover:bg-primary-blue hover:text-white transition-colors">
+                                 {tag}
+                               </Badge>
+                             </Link>
+                           ))}
+                         </div>
+                       </div>
+                     )}
+                     
+                     {/* Share Buttons - Always visible */}
+                     <div className="mt-8 pt-8 border-t">
+                       <h2 className="text-lg font-semibold mb-4 flex items-center">
+                         <Share className="mr-2 h-5 w-5" />
+                         Share this article
+                       </h2>
+                       <div className="flex gap-3">
+                         <Button 
+                           variant="outline" 
+                           size="icon" 
+                           onClick={() => handleShare("facebook")}
+                           aria-label="Share on Facebook"
+                         >
+                           <Facebook className="h-5 w-5" />
+                         </Button>
+                         <Button 
+                           variant="outline" 
+                           size="icon" 
+                           onClick={() => handleShare("twitter")}
+                           aria-label="Share on Twitter"
+                         >
+                           <Twitter className="h-5 w-5" />
+                         </Button>
+                         <Button 
+                           variant="outline" 
+                           size="icon" 
+                           onClick={() => handleShare("linkedin")}
+                           aria-label="Share on LinkedIn"
+                         >
+                           <Linkedin className="h-5 w-5" />
+                         </Button>
+                       </div>
+                     </div>
                   </div>
                 </article>
                 
@@ -314,22 +329,24 @@ export default function BlogPostPage() {
                                 />
                               </div>
                             )}
-                            <CardContent className="p-5">
-                              <h3 className="font-semibold text-lg mb-2 line-clamp-2">
+                                                        <CardContent className="p-4 flex flex-col h-full">
+                              <h3 className="font-semibold text-lg mb-2 line-clamp-3">
                                 <Link href={`/blog/${related.slug}`} className="hover:text-primary-blue transition-colors">
                                   {related.title}
                                 </Link>
                               </h3>
-                              <p className="text-gray-600 text-sm line-clamp-3 mb-3">
+                              <p className="text-gray-600 text-sm line-clamp-3 mb-2">
                                 {related.excerpt}
                               </p>
-                              <Link 
-                                href={`/blog/${related.slug}`} 
-                                className="text-primary-blue hover:underline text-sm font-medium inline-flex items-center group"
-                              >
-                                Read more
-                                <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
-                              </Link>
+                                                             <div className="mt-auto mb-1">
+                                 <Link 
+                                   href={`/blog/${related.slug}`} 
+                                   className="text-primary-blue hover:underline text-sm font-medium inline-flex items-center group"
+                                 >
+                                   Read more
+                                   <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
+                                 </Link>
+                               </div>
                             </CardContent>
                           </Card>
                         ))}

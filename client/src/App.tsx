@@ -20,6 +20,7 @@ import GalleryPage from "@/pages/GalleryPage";
 import ContactPage from "@/pages/ContactPage";
 import BlogPage from "@/pages/BlogPage";
 import BlogPostPage from "@/pages/BlogPostPage";
+import BlogPostDetailPage from "@/pages/BlogPostDetailPage";
 import AdminPage from "@/pages/AdminPage";
 import PcmProgramPage from "@/pages/PcmProgramPage";
 import CanaProgramPage from "@/pages/CanaProgramPage";
@@ -139,6 +140,7 @@ function Router() {
       <Route path="foundation/ignite" component={IgnitePage} />
       <Route path="/blog/category/:categorySlug" component={BlogPage} />
       <Route path="/blog/tag/:tag" component={BlogPage} />
+      <Route path="/blog/post/:slug" component={BlogPostDetailPage} />
       <Route path="/blog/:slug" component={BlogPostPage} />
       <Route path="/admin" component={AdminPage} />
       <Route path="foundation/junior" component={JuniorPage} />

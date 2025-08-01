@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
+import { Link } from "wouter";
 import apiClient from "@/config/apiClient";
 import { API } from "@/config/api";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -7,10 +8,14 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import { extractTextFromXML } from "@/utils/xml-parser";
 
 interface BlogPost {
   id: string;
   title: string;
+  subTitle: string;
   description: string;
   image: string;
   tags: string;
@@ -92,6 +97,8 @@ export default function BlogPage() {
   const selectedCategory = selectedCategoryId
     ? categories.find(cat => cat.id === selectedCategoryId)
     : null;
+
+
 
   return (
     <main className="min-h-screen py-12 bg-gray-50">
@@ -188,21 +195,16 @@ export default function BlogPage() {
           {/* Blog Posts */}
           <div className="lg:col-span-3">
             {blogsLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {Array(6).fill(0).map((_, i) => (
-                  <Card key={i} className="overflow-hidden h-96">
-                    <CardHeader className="p-0">
-                      <Skeleton className="h-48 w-full rounded-t-lg" />
-                    </CardHeader>
-                    <CardContent className="p-6">
-                      <Skeleton className="h-6 w-3/4 mb-3" />
-                      <Skeleton className="h-4 w-1/2 mb-6" />
-                      <div className="space-y-2">
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-2/3" />
-                      </div>
-                    </CardContent>
+                                     <Card key={i} className="overflow-hidden h-80">
+                                         <CardHeader className="p-0">
+                       <Skeleton className="h-48 w-full rounded-t-lg" />
+                     </CardHeader>
+                     <CardContent className="p-6 flex-grow flex flex-col">
+                       <Skeleton className="h-6 w-3/4 mb-4" />
+                       <Skeleton className="h-4 w-24 mt-auto" />
+                     </CardContent>
                   </Card>
                 ))}
               </div>
@@ -215,7 +217,7 @@ export default function BlogPage() {
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredBlogs.map((post) => (
-                    <Card key={post.id} className="overflow-hidden flex flex-col h-full hover:shadow-md transition-shadow">
+                                         <Card key={post.id} className="overflow-hidden flex flex-col h-80 hover:shadow-md transition-shadow">
                       <CardHeader className="p-0">
                         {post.image && (
                           <div className="relative h-48 overflow-hidden">
@@ -227,12 +229,22 @@ export default function BlogPage() {
                           </div>
                         )}
                       </CardHeader>
-                      <CardContent className="p-6 flex-grow">
-                        <CardTitle className="mb-2 text-xl">{post.title}</CardTitle>
-                        <CardDescription className="text-gray-600 mb-4">
-                          {post.description}
-                        </CardDescription>
-                      </CardContent>
+                                                                  <CardContent className="p-4 flex-grow flex flex-col">
+                        <CardTitle className="mb-2 text-lg font-semibold line-clamp-3 leading-tight">
+                          {post.title}
+                        </CardTitle>
+                        
+                                                 {/* Click More Button */}
+                         <div className="mt-auto mb-1">
+                            <Link 
+                              href={`/blog/post/${post.id}`} 
+                              className="text-primary-blue hover:underline text-sm font-medium inline-flex items-center group"
+                            >
+                              Read More
+                              <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
+                            </Link>
+                          </div>
+                       </CardContent>
                     </Card>
                   ))}
                 </div>
