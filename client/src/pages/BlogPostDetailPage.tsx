@@ -288,7 +288,8 @@ export default function BlogPostDetailPage() {
                 </article>
                 
                 {/* Related Posts */}
-                {relatedPosts.data && relatedPosts.data.length > 0 && (
+                {relatedPosts.data && relatedPosts.data.filter((related: BlogPost) => related.id !== post?.id).length > 0 && (
+
                   <div className="mt-12">
                     <h2 className="text-2xl font-bold mb-6 text-primary-blue flex items-center">
                       <Bookmark className="mr-2 h-5 w-5" /> 
