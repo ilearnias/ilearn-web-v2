@@ -229,7 +229,7 @@ export default function BlogPage() {
                         )}
                       </CardHeader>
                       <CardContent className="p-4 flex-grow flex flex-col">
-                        <CardTitle className="mb-2 text-lg font-semibold line-clamp-3 leading-tight text-blue-800">
+                        <CardTitle className="mb-2 text-lg font-semibold line-clamp-3 leading-tight" style={{ color: 'rgb(32, 70, 141)' }}>
                           {post.title}
                         </CardTitle>
 
