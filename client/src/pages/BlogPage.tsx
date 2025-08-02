@@ -139,23 +139,23 @@ export default function BlogPage() {
               ) : (
                 <ul className="space-y-2">
                   <li>
-                                         <button
-                       onClick={() => setSelectedCategoryId(null)}
-                       className={`block w-full text-left p-2 rounded-md select-none transition-colors ${selectedCategoryId === null ? 'bg-primary-blue text-white font-medium hover:bg-primary-blue/90' : 'text-gray-700 hover:text-primary-blue hover:bg-primary-blue/10'}`}
-                     >
-                       All Posts
-                     </button>
-                   </li>
-                   {categories.filter(cat => cat.isActive).map((category) => (
-                     <li key={category.id}>
-                       <button
-                         onClick={() => setSelectedCategoryId(category.id)}
-                         className={`block w-full text-left p-2 rounded-md select-none transition-colors ${selectedCategoryId === category.id ? 'bg-primary-blue text-white font-medium hover:bg-primary-blue/90' : 'text-gray-700 hover:text-primary-blue hover:bg-primary-blue/10'}`}
-                       >
-                         {category.title}
-                       </button>
-                     </li>
-                   ))}
+                    <button
+                      onClick={() => setSelectedCategoryId(null)}
+                      className={`block w-full text-left p-2 rounded-md select-none transition-colors ${selectedCategoryId === null ? 'bg-primary-blue text-white font-medium hover:bg-primary-blue/90' : 'text-gray-700 hover:text-primary-blue hover:bg-primary-blue/10'}`}
+                    >
+                      All Posts
+                    </button>
+                  </li>
+                  {categories.filter(cat => cat.isActive).map((category) => (
+                    <li key={category.id}>
+                      <button
+                        onClick={() => setSelectedCategoryId(category.id)}
+                        className={`block w-full text-left p-2 rounded-md select-none transition-colors ${selectedCategoryId === category.id ? 'bg-primary-blue text-white font-medium hover:bg-primary-blue/90' : 'text-gray-700 hover:text-primary-blue hover:bg-primary-blue/10'}`}
+                      >
+                        {category.title}
+                      </button>
+                    </li>
+                  ))}
                 </ul>
               )}
 
@@ -175,14 +175,13 @@ export default function BlogPage() {
                       onClick={() => setSelectedTag(tagName)}
                       className="inline-flex"
                     >
-                                             <Badge
-                         variant={selectedTag === tagName ? "default" : "outline"}
-                         className={`cursor-pointer transition-colors ${
-                           selectedTag === tagName 
-                             ? "bg-primary-blue text-white border-primary-blue hover:bg-primary-blue/90" 
-                             : "hover:bg-primary-blue hover:text-white border-gray-300"
-                         }`}
-                       >
+                      <Badge
+                        variant={selectedTag === tagName ? "default" : "outline"}
+                        className={`cursor-pointer transition-colors ${selectedTag === tagName
+                            ? "bg-primary-blue text-white border-primary-blue hover:bg-primary-blue/90"
+                            : "hover:bg-primary-blue hover:text-white border-gray-300"
+                          }`}
+                      >
                         {tagName}
                       </Badge>
                     </button>
@@ -197,27 +196,27 @@ export default function BlogPage() {
             {blogsLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {Array(6).fill(0).map((_, i) => (
-                                     <Card key={i} className="overflow-hidden h-80">
-                                         <CardHeader className="p-0">
-                       <Skeleton className="h-48 w-full rounded-t-lg" />
-                     </CardHeader>
-                     <CardContent className="p-6 flex-grow flex flex-col">
-                       <Skeleton className="h-6 w-3/4 mb-4" />
-                       <Skeleton className="h-4 w-24 mt-auto" />
-                     </CardContent>
+                  <Card key={i} className="overflow-hidden h-80">
+                    <CardHeader className="p-0">
+                      <Skeleton className="h-48 w-full rounded-t-lg" />
+                    </CardHeader>
+                    <CardContent className="p-6 flex-grow flex flex-col">
+                      <Skeleton className="h-6 w-3/4 mb-4" />
+                      <Skeleton className="h-4 w-24 mt-auto" />
+                    </CardContent>
                   </Card>
                 ))}
               </div>
             ) : filteredBlogs.length === 0 ? (
               <div className="text-center py-16">
-                <h3 className="text-2xl font-semibold text-gray-800 mb-4">No posts found</h3>
+                <h3 className="text-2xl font-semibold text-primary-blue mb-4">No posts found</h3>
                 <p className="text-gray-600 mb-8">There are no blog posts available for this category.</p>
               </div>
             ) : (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredBlogs.map((post) => (
-                                         <Card key={post.id} className="overflow-hidden flex flex-col h-80 hover:shadow-md transition-shadow">
+                    <Card key={post.id} className="overflow-hidden flex flex-col h-80 hover:shadow-md transition-shadow">
                       <CardHeader className="p-0">
                         {post.image && (
                           <div className="relative h-48 overflow-hidden">
@@ -229,22 +228,22 @@ export default function BlogPage() {
                           </div>
                         )}
                       </CardHeader>
-                                                                  <CardContent className="p-4 flex-grow flex flex-col">
-                        <CardTitle className="mb-2 text-lg font-semibold line-clamp-3 leading-tight">
+                      <CardContent className="p-4 flex-grow flex flex-col">
+                        <CardTitle className="mb-2 text-lg font-semibold line-clamp-3 leading-tight text-blue-800">
                           {post.title}
                         </CardTitle>
-                        
-                                                 {/* Click More Button */}
-                         <div className="mt-auto mb-1">
-                            <Link 
-                              href={`/blog/post/${post.id}`} 
-                              className="text-primary-blue hover:underline text-sm font-medium inline-flex items-center group"
-                            >
-                              Read More
-                              <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
-                            </Link>
-                          </div>
-                       </CardContent>
+
+                        {/* Click More Button */}
+                        <div className="mt-auto mb-1">
+                          <Link
+                            href={`/blog/post/${post.id}`}
+                            className="text-blue-600 hover:text-blue-700 hover:underline text-sm font-medium inline-flex items-center group"
+                          >
+                            Read More
+                            <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
+                          </Link>
+                        </div>
+                      </CardContent>
                     </Card>
                   ))}
                 </div>
