@@ -140,7 +140,7 @@ const Navbar = () => {
           className="relative z-10"
         >
           <ScrollLink href="/" className="flex items-center gap-2">
-            <img src={logoImage} alt="iLearn IAS Logo" className="h-12 md:h-14" />
+            <img src={logoImage} alt="iLearn IAS Logo" className="h-8 md:h-10" />
           </ScrollLink>
           
           {/* Logo highlight effect */}
