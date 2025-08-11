@@ -1,11 +1,11 @@
-import React, { useState, useRef } from 'react';
-import { Play } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
-import apiClient from '@/config/apiClient';
-import { API } from '@/config/api';
-import QUERY_KEY from '@/config/queryKeys';
-import VideoModal from '@/components/common/VideoModal';
-import VideoThumbnail from '@/components/common/VideoThumbnail';
+import React, { useState, useRef } from "react";
+import { Play } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import apiClient from "@/config/apiClient";
+import { API } from "@/config/api";
+import QUERY_KEY from "@/config/queryKeys";
+import VideoModal from "@/components/common/VideoModal";
+import VideoThumbnail from "@/components/common/VideoThumbnail";
 
 // API response types
 interface MediaVideo {
@@ -35,8 +35,6 @@ interface MediaApiResponse {
   };
 }
 
-
-
 const MediaShoutouts = () => {
   const [isVideoDialogOpen, setIsVideoDialogOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<MediaVideo | null>(null);
@@ -51,20 +49,23 @@ const MediaShoutouts = () => {
     if (scrollRef.current) {
       const child = scrollRef.current.children[idx] as HTMLElement;
       if (child) {
-        child.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        child.scrollIntoView({
+          behavior: "smooth",
+          inline: "center",
+          block: "nearest",
+        });
       }
     }
   };
 
   // Fetch paginated media videos from API
 
-
-
-
   const { data: apiData, isLoading } = useQuery<MediaApiResponse>({
     queryKey: [QUERY_KEY.MEDIA, page, limit],
     queryFn: async () => {
-      const response = await apiClient.get(`${API.MEDIA}?isTestimonial=false&isActive=true&page=${page}&limit=${limit}`);
+      const response = await apiClient.get(
+        `${API.MEDIA}?isTestimonial=false&isActive=true&page=${page}&limit=${limit}`
+      );
       return response.data;
     },
     // keepPreviousData removed due to linter error
@@ -77,14 +78,14 @@ const MediaShoutouts = () => {
   const openVideoDialog = (video: MediaVideo) => {
     setSelectedVideo(video);
     setIsVideoDialogOpen(true);
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
   };
 
   // Close video dialog
   const closeVideoDialog = () => {
     setIsVideoDialogOpen(false);
     setSelectedVideo(null);
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = "auto";
   };
 
   return (
@@ -93,17 +94,25 @@ const MediaShoutouts = () => {
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-10">
             <h2 className="text-2xl md:text-3xl font-bold mb-2 relative inline-block">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-blue via-primary-blue to-primary-red">iLearn in Media</span>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-blue via-primary-blue to-primary-red">
+                iLearn in Media
+              </span>
               <span className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-primary-blue to-primary-red rounded-full transform origin-left"></span>
             </h2>
-            <p className="text-neutral-600 mt-3">Watch our featured videos and success stories</p>
+            <p className="text-neutral-600 mt-3">
+              Watch our featured videos and success stories
+            </p>
           </div>
           {/* Horizontally Scrollable Video Row */}
           <div className="relative">
             <div
               className="flex overflow-x-auto pb-4 gap-6 hide-scrollbar"
               ref={scrollRef}
-              style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              style={{
+                scrollSnapType: "x mandatory",
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+              }}
             >
               {isLoading ? (
                 <div className="w-full flex justify-center items-center h-48">
@@ -114,7 +123,7 @@ const MediaShoutouts = () => {
                   <div
                     key={video.id}
                     className="flex-shrink-0 w-80 bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group cursor-pointer"
-                    style={{ scrollSnapAlign: 'center' }}
+                    style={{ scrollSnapAlign: "center" }}
                     onClick={() => openVideoDialog(video)}
                   >
                     {/* Video Thumbnail */}
@@ -147,7 +156,9 @@ const MediaShoutouts = () => {
               {videos.map((_, idx) => (
                 <button
                   key={idx}
-                  className={`w-3 h-3 rounded-full transition-all duration-200 ${currentIndex === idx ? 'bg-primary-blue' : 'bg-neutral-300'}`}
+                  className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                    currentIndex === idx ? "bg-primary-blue" : "bg-neutral-300"
+                  }`}
                   onClick={() => scrollToIndex(idx)}
                   aria-label={`Go to video ${idx + 1}`}
                 />
@@ -160,7 +171,7 @@ const MediaShoutouts = () => {
       <VideoModal
         isOpen={isVideoDialogOpen}
         onClose={closeVideoDialog}
-        videoUrl={selectedVideo?.video || ''}
+        videoUrl={selectedVideo?.video || ""}
         title={selectedVideo?.description}
         description={selectedVideo?.description}
       />
