@@ -129,7 +129,7 @@ const MediaShoutouts = () => {
                     {/* Video Thumbnail */}
                     <div className="relative overflow-hidden">
                       <VideoThumbnail
-                        url={video.video}
+                        url={video.thumbnail}
                         alt={video.description}
                         className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
                         fallbackImage={video.thumbnail}
