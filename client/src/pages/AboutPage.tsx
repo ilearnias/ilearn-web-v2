@@ -42,10 +42,11 @@ import QUERY_KEY from '@/config/queryKeys';
 const AboutPage = () => {
   // Fetch images for different sections of the About page
   const { data: introImages = [], isLoading: isLoadingIntroImages } = useQuery({
-    queryKey: ['/api/about-page-images', 'intro'],
-    queryFn: () => apiRequest<AboutPageImage[]>({ 
-      url: '/api/about-page-images?section=intro'
-    }),
+    queryKey: [QUERY_KEY.ABOUT_PAGE_IMAGES || 'about-page-images', 'intro'],
+    queryFn: async () => {
+      const response = await apiClient.get(API.ABOUT_PAGE_IMAGES + '?section=intro');
+      return response.data?.data || response.data || [];
+    },
   });
   
   const [introImageIndex, setIntroImageIndex] = useState(0);

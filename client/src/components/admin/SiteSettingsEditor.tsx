@@ -21,8 +21,8 @@ export default function SiteSettingsEditor() {
 
   // Fetch all settings
   const { data: settings, isLoading } = useQuery({
-    queryKey: ["/api/settings"],
-    queryFn: () => apiRequest<SiteSetting[]>({ url: "/api/settings" }),
+    queryKey: ["site-settings"],
+    queryFn: () => apiRequest<SiteSetting[]>({ url: "site-settings" }),
   });
 
   // Update settings when data is loaded
@@ -40,14 +40,14 @@ export default function SiteSettingsEditor() {
   const updateSettingMutation = useMutation({
     mutationFn: ({ key, value }: { key: string; value: string }) => {
       return apiRequest({
-        url: `/api/settings/${key}`,
-        method: "PUT",
+        url: `site-settings/${key}`,
+        method: "PATCH",
         data: { value },
       });
     },
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/settings"] });
-      queryClient.invalidateQueries({ queryKey: [`/api/settings/${variables.key}`] });
+      queryClient.invalidateQueries({ queryKey: ["site-settings"] });
+      queryClient.invalidateQueries({ queryKey: [`site-settings/${variables.key}`] });
       toast({
         title: "Setting updated",
         description: `${variables.key} has been updated successfully.`,

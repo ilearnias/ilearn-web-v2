@@ -1,4 +1,5 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
+import { API } from "@/config/api";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -7,12 +8,25 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
+function getAuthHeaders(): HeadersInit {
+  const token = localStorage.getItem("adminToken");
+  const headers: HeadersInit = {};
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  return headers;
+}
+
+/**
+ * Makes an API request. If the URL starts with http, it's used as-is.
+ * Otherwise, it's appended to the ilearn-server base URL.
+ */
 export async function apiRequest<T = any>(
   options: string | { url: string; method?: string; data?: any }
 ): Promise<T> {
   let url: string;
-  let requestOptions: RequestInit = { credentials: "include" };
-  
+  let requestOptions: RequestInit = {};
+
   if (typeof options === 'string') {
     url = options;
   } else {
@@ -28,18 +42,36 @@ export async function apiRequest<T = any>(
       requestOptions.body = JSON.stringify(options.data);
     }
   }
-  
+
+  // Prepend base URL if URL is relative (not starting with http)
+  if (!url.startsWith('http')) {
+    // Strip leading slash if present
+    const cleanUrl = url.startsWith('/') ? url.slice(1) : url;
+    url = API.BASEURL + cleanUrl;
+  }
+
+  // Add auth headers
+  requestOptions.headers = {
+    ...requestOptions.headers,
+    ...getAuthHeaders(),
+  };
+
   const res = await fetch(url, requestOptions);
 
   await throwIfResNotOk(res);
-  
+
   // For DELETE requests or empty responses, return an empty object
   if (requestOptions.method === 'DELETE' || res.headers.get('content-length') === '0') {
     return {} as T;
   }
-  
+
   try {
-    return await res.json();
+    const json = await res.json();
+    // Unwrap ilearn-server response format
+    if (json && json.data !== undefined && json.status !== undefined) {
+      return json.data as T;
+    }
+    return json as T;
   } catch (error) {
     console.warn('Response was not JSON:', error);
     return {} as T;
@@ -52,8 +84,16 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey[0] as string, {
-      credentials: "include",
+    let url = queryKey[0] as string;
+
+    // Prepend base URL if URL is relative
+    if (!url.startsWith('http')) {
+      const cleanUrl = url.startsWith('/') ? url.slice(1) : url;
+      url = API.BASEURL + cleanUrl;
+    }
+
+    const res = await fetch(url, {
+      headers: getAuthHeaders(),
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
@@ -61,7 +101,12 @@ export const getQueryFn: <T>(options: {
     }
 
     await throwIfResNotOk(res);
-    return await res.json();
+    const json = await res.json();
+    // Unwrap ilearn-server response format
+    if (json && json.data !== undefined && json.status !== undefined) {
+      return json.data;
+    }
+    return json;
   };
 
 export const queryClient = new QueryClient({
@@ -70,7 +115,7 @@ export const queryClient = new QueryClient({
       queryFn: getQueryFn({ on401: "throw" }),
       refetchInterval: false,
       refetchOnWindowFocus: false,
-      staleTime: 10 * 60 * 1000, // 10 minutes instead of Infinity
+      staleTime: 10 * 60 * 1000,
       retry: false,
     },
     mutations: {

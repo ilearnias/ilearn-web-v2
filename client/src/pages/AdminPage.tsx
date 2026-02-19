@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { toast } from "@/hooks/use-toast";
+import { API } from "@/config/api";
 import SiteSettingsEditor from "@/components/admin/SiteSettingsEditor";
 import MediaLibrary from "@/components/admin/MediaLibrary";
 import HeroSectionEditor from "@/components/admin/HeroSectionEditor";
@@ -31,19 +32,23 @@ export default function AdminPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError("");
-    
+
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch(API.BASEURL + API.AUTH_LOGIN, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email: username, password }),
       });
-      
+
       const data = await response.json();
-      
-      if (response.ok) {
+
+      if (response.ok && data.token) {
+        localStorage.setItem("adminToken", data.token);
+        if (data.refreshToken) {
+          localStorage.setItem("refreshToken", data.refreshToken);
+        }
         setIsAuthenticated(true);
         toast({
           title: "Success",
@@ -70,16 +75,26 @@ export default function AdminPage() {
   // Check if already authenticated
   useEffect(() => {
     const checkAuth = async () => {
+      const token = localStorage.getItem("adminToken");
+      if (!token) return;
+
       try {
-        const response = await fetch("/api/auth/check");
+        const response = await fetch(API.BASEURL + API.AUTH_VALIDATE, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (response.ok) {
           setIsAuthenticated(true);
+        } else {
+          localStorage.removeItem("adminToken");
+          localStorage.removeItem("refreshToken");
         }
       } catch (error) {
         console.error("Auth check error:", error);
       }
     };
-    
+
     checkAuth();
   }, []);
 
@@ -99,17 +114,17 @@ export default function AdminPage() {
                 </div>
               )}
               <div className="space-y-2">
-                <label className="text-sm font-medium" htmlFor="username">
-                  Username
+                <label className="text-sm font-medium" htmlFor="email">
+                  Email
                 </label>
                 <input
-                  id="username"
-                  type="text"
+                  id="email"
+                  type="email"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="w-full p-2 sm:p-3 border border-gray-300 rounded-md text-base"
                   required
-                  autoComplete="username"
+                  autoComplete="email"
                 />
               </div>
               <div className="space-y-2">

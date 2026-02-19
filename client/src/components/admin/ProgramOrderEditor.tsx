@@ -14,8 +14,8 @@ export default function ProgramOrderEditor() {
 
   // Fetch programs
   const { data: programs = [], isLoading } = useQuery({
-    queryKey: ["/api/programs"],
-    queryFn: () => apiRequest<Program[]>({ url: "/api/programs" }),
+    queryKey: ["admin/programs"],
+    queryFn: () => apiRequest<Program[]>({ url: "admin/programs" }),
   });
   
   // Update items when programs data changes
@@ -61,13 +61,13 @@ export default function ProgramOrderEditor() {
 
       // Send the update request
       await apiRequest({
-        url: "/api/programs/order",
+        url: "admin/programs/order",
         method: "PATCH",
         data: { programs: updatedPrograms },
       });
 
       // Invalidate queries to refresh data
-      queryClient.invalidateQueries({ queryKey: ["/api/programs"] });
+      queryClient.invalidateQueries({ queryKey: ["admin/programs"] });
 
       toast({
         title: "Order updated",

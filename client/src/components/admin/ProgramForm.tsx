@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Program, InsertProgram, ResultYear } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { toast } from "@/hooks/use-toast";
+import { API } from "@/config/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { X, Plus, Save, Loader2, ArrowUp, ArrowDown, Upload, Image as ImageIcon } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -232,8 +233,12 @@ export default function ProgramForm({ program, onSuccess }: ProgramFormProps) {
           
           try {
             // Upload the image
-            const uploadResponse = await fetch('/api/upload/image', {
+            const token = localStorage.getItem('adminToken');
+            const uploadResponse = await fetch(API.BASEURL + 'upload/image', {
               method: 'POST',
+              headers: {
+                ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+              },
               body: formData,
             });
             
@@ -270,26 +275,26 @@ export default function ProgramForm({ program, onSuccess }: ProgramFormProps) {
       if (program) {
         // Update existing program
         await apiRequest({
-          url: `/api/programs/${program.id}`,
-          method: "PUT",
+          url: `admin/programs/${program.id}`,
+          method: "PATCH",
           data: programData,
         });
       } else {
         // Create new program
         await apiRequest({
-          url: "/api/programs",
+          url: "admin/programs",
           method: "POST",
           data: programData,
         });
       }
 
       // Invalidate all relevant queries
-      queryClient.invalidateQueries({ queryKey: ["/api/programs"] });
-      
+      queryClient.invalidateQueries({ queryKey: ["admin/programs"] });
+
       // If updating an existing program
       if (program?.id) {
-        queryClient.invalidateQueries({ queryKey: [`/api/programs/${program.id}`] });
-        queryClient.invalidateQueries({ queryKey: [`/api/programs/${program.slug}`] });
+        queryClient.invalidateQueries({ queryKey: [`admin/programs/${program.id}`] });
+        queryClient.invalidateQueries({ queryKey: [`admin/programs/${program.slug}`] });
       }
       
       // Force a navigation to the programs list to refresh the view
@@ -708,13 +713,13 @@ export default function ProgramForm({ program, onSuccess }: ProgramFormProps) {
                 <VideoTestimonialForm 
                   onSuccess={() => {
                     // Refresh testimonials data
-                    queryClient.invalidateQueries({ queryKey: ["/api/testimonials", "video"] });
+                    queryClient.invalidateQueries({ queryKey: ["testimonials", "video"] });
                     // Also refresh program-specific testimonials
                     if (program?.id) {
-                      queryClient.invalidateQueries({ queryKey: [`/api/programs/${program.id}/testimonials`] });
-                      queryClient.invalidateQueries({ queryKey: [`/api/programs/${program.id}/testimonials`, 'video'] });
-                      queryClient.invalidateQueries({ queryKey: [`/api/programs/${program.slug}/testimonials`] });
-                      queryClient.invalidateQueries({ queryKey: [`/api/programs/${program.slug}/testimonials`, 'video'] });
+                      queryClient.invalidateQueries({ queryKey: [`admin/programs/${program.id}/testimonials`] });
+                      queryClient.invalidateQueries({ queryKey: [`admin/programs/${program.id}/testimonials`, 'video'] });
+                      queryClient.invalidateQueries({ queryKey: [`admin/programs/${program.slug}/testimonials`] });
+                      queryClient.invalidateQueries({ queryKey: [`admin/programs/${program.slug}/testimonials`, 'video'] });
                     }
                   }} 
                   programName={form.getValues("title")}
@@ -742,13 +747,13 @@ export default function ProgramForm({ program, onSuccess }: ProgramFormProps) {
                 <ImageTestimonialForm 
                   onSuccess={() => {
                     // Refresh testimonials data
-                    queryClient.invalidateQueries({ queryKey: ["/api/testimonials", "image"] });
+                    queryClient.invalidateQueries({ queryKey: ["testimonials", "image"] });
                     // Also refresh program-specific testimonials
                     if (program?.id) {
-                      queryClient.invalidateQueries({ queryKey: [`/api/programs/${program.id}/testimonials`] });
-                      queryClient.invalidateQueries({ queryKey: [`/api/programs/${program.id}/testimonials`, 'student'] });
-                      queryClient.invalidateQueries({ queryKey: [`/api/programs/${program.slug}/testimonials`] });
-                      queryClient.invalidateQueries({ queryKey: [`/api/programs/${program.slug}/testimonials`, 'student'] });
+                      queryClient.invalidateQueries({ queryKey: [`admin/programs/${program.id}/testimonials`] });
+                      queryClient.invalidateQueries({ queryKey: [`admin/programs/${program.id}/testimonials`, 'student'] });
+                      queryClient.invalidateQueries({ queryKey: [`admin/programs/${program.slug}/testimonials`] });
+                      queryClient.invalidateQueries({ queryKey: [`admin/programs/${program.slug}/testimonials`, 'student'] });
                     }
                   }} 
                   programName={form.getValues("title")}

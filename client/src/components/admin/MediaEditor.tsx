@@ -120,8 +120,8 @@ export default function MediaEditor() {
   const [mediaFilter, setMediaFilter] = useState<string>("all");
   
   const { data: mediaItems, isLoading } = useQuery({
-    queryKey: ["/api/media"],
-    queryFn: () => apiRequest<Media[]>({ url: "/api/media" }),
+    queryKey: ["media"],
+    queryFn: () => apiRequest<Media[]>({ url: "media" }),
     refetchInterval: 2000, // More frequent refetching to quickly reflect changes
     staleTime: 0, // Consider data stale immediately
     refetchOnMount: 'always', // Always refetch when component mounts
@@ -157,13 +157,13 @@ export default function MediaEditor() {
   const createMediaMutation = useMutation({
     mutationFn: (data: MediaFormValues) => {
       return apiRequest({
-        url: "/api/media",
+        url: "media",
         method: "POST",
         data,
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/media"] });
+      queryClient.invalidateQueries({ queryKey: ["media"] });
       toast({
         title: "Media created",
         description: "Media item has been created successfully.",
@@ -184,14 +184,14 @@ export default function MediaEditor() {
   const updateMediaMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<MediaFormValues> }) => {
       return apiRequest({
-        url: `/api/media/${id}`,
-        method: "PUT",
+        url: `media/${id}`,
+        method: "PATCH",
         data,
       });
     },
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/media"] });
-      queryClient.invalidateQueries({ queryKey: [`/api/media/${variables.id}`] });
+      queryClient.invalidateQueries({ queryKey: ["media"] });
+      queryClient.invalidateQueries({ queryKey: [`media/${variables.id}`] });
       toast({
         title: "Media updated",
         description: "Media item has been updated successfully.",
@@ -213,12 +213,12 @@ export default function MediaEditor() {
   const deleteMediaMutation = useMutation({
     mutationFn: (id: number) => {
       return apiRequest({
-        url: `/api/media/${id}`,
+        url: `media/${id}`,
         method: "DELETE",
       });
     },
     onSuccess: (_data, id) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/media"] });
+      queryClient.invalidateQueries({ queryKey: ["media"] });
       toast({
         title: "Media deleted",
         description: "Media item has been deleted successfully.",
@@ -312,15 +312,15 @@ export default function MediaEditor() {
     Promise.all(
       updatedItems.map((item, index) => 
         apiRequest({
-          url: `/api/media/${item.id}`,
-          method: "PUT",
+          url: `media/${item.id}`,
+          method: "PATCH",
           data: { displayOrder: index },
         })
       )
     ).then(() => {
       // Force an immediate refetch of media data
-      queryClient.invalidateQueries({ queryKey: ["/api/media"] });
-      queryClient.refetchQueries({ queryKey: ["/api/media"] });
+      queryClient.invalidateQueries({ queryKey: ["media"] });
+      queryClient.refetchQueries({ queryKey: ["media"] });
       toast({
         title: "Order updated",
         description: "All media items have been reordered. This will be reflected in the carousel display.",

@@ -35,8 +35,8 @@ export default function MediaSelector({ onSelect, initialSelected = [] }: MediaS
 
   // Query to fetch all media items
   const { data: mediaItems = [], isLoading } = useQuery({
-    queryKey: ['/api/media'],
-    queryFn: () => apiRequest<Media[]>('/api/media'),
+    queryKey: ['media'],
+    queryFn: () => apiRequest<Media[]>('media'),
   });
 
   // Filter media items based on search, type, and aspect ratio

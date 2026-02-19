@@ -2,6 +2,8 @@ import { useParams, Link } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import PageTransition from '@/components/layout/PageTransition';
 import { Helmet } from 'react-helmet';
+import apiClient from '@/config/apiClient';
+import { API } from '@/config/api';
 // YouTube embed helper function
 function getYoutubeEmbedUrl(url: string): string | null {
   if (!url) return null;
@@ -678,45 +680,34 @@ const ProgramDetailPage = () => {
     return resultYear && resultYear.imageUrl ? resultYear.imageUrl : 'https://placehold.co/800x350/20468D/white?text=Results+for+' + year;
   };
 
-  // Fetch program details
+  // Fetch program details by slug from ilearn-server
   const { data: program, isLoading: programLoading } = useQuery({
-    queryKey: [`/api/programs/${slug}`],
+    queryKey: ['program', slug],
     queryFn: async () => {
-      // Fetch real data from the API
-      const response = await fetch(`/api/programs/${slug}`);
-      if (!response.ok) {
-        throw new Error('Program not found');
-      }
-      return response.json();
+      const response = await apiClient.get(API.PROGRAMS + '/slug/' + slug);
+      return response.data?.data || response.data;
     },
-    enabled: !!slug, // Only run query if slug is available
+    enabled: !!slug,
   });
 
   // Fetch testimonials for this program
   const { data: testimonials = [], isLoading: testimonialsLoading } = useQuery({
-    queryKey: [`/api/programs/${slug}/testimonials`],
-    enabled: !!program && !!slug,
+    queryKey: ['testimonials', program?.id],
+    enabled: !!program?.id,
     queryFn: async () => {
-      // Fetch real data from the API
-      const response = await fetch(`/api/programs/${slug}/testimonials`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch testimonials');
-      }
-      return response.json();
+      const response = await apiClient.get(API.TESTIMONIALS + '?programId=' + program.id);
+      return response.data?.data || response.data || [];
     },
   });
-  
+
   // Fetch specifically video testimonials for this program
   const { data: videoTestimonials = [], isLoading: videoTestimonialsLoading } = useQuery({
-    queryKey: [`/api/programs/${slug}/testimonials`, 'video'],
-    enabled: !!program && !!slug,
+    queryKey: ['testimonials', program?.id, 'video'],
+    enabled: !!program?.id,
     queryFn: async () => {
-      // Fetch video testimonials
-      const response = await fetch(`/api/programs/${slug}/testimonials?type=video`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch video testimonials');
-      }
-      return response.json();
+      const response = await apiClient.get(API.TESTIMONIALS + '?programId=' + program.id + '&type=portrait-video&type=landscape-video');
+      const data = response.data?.data || response.data || [];
+      return Array.isArray(data) ? data.filter((t: any) => t.type === 'portrait-video' || t.type === 'landscape-video') : [];
     },
   });
   

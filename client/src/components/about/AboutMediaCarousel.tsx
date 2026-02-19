@@ -12,8 +12,8 @@ const AboutMediaCarousel = () => {
 
   // Fetch media data with optimized cache settings
   const { data: mediaItems = [], isLoading } = useQuery({
-    queryKey: ["/api/media"],
-    queryFn: () => apiRequest<MediaItem[]>("/api/media"),
+    queryKey: ["media"],
+    queryFn: () => apiRequest<MediaItem[]>("media"),
     refetchInterval: 2000,
     staleTime: 0,
     refetchOnMount: "always",

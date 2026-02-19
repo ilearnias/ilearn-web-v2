@@ -46,26 +46,26 @@ export default function BlogPostPage() {
     isLoading: postLoading,
     error: postError
   } = useQuery({
-    queryKey: [`/api/blog/posts/${slug}`],
+    queryKey: [`admin/blog/posts/${slug}`],
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
-  
+
   // Fetch blog categories to display category names
-  const { 
-    data: categories 
+  const {
+    data: categories
   } = useQuery({
-    queryKey: ['/api/blog/categories'],
+    queryKey: ['admin/blog/categories'],
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
-  
+
   // If the post has loaded, fetch related posts in the same categories
-  const { 
+  const {
     data: relatedPosts = { posts: [] },
   } = useQuery({
-    queryKey: ['/api/blog/posts', 
-      { 
-        category_id: post?.categoryIds?.[0], 
-        limit: 3 
+    queryKey: ['admin/blog/posts',
+      {
+        category_id: post?.categoryIds?.[0],
+        limit: 3
       }
     ],
     enabled: !!post?.categoryIds?.[0],

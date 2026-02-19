@@ -23,6 +23,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { API } from "@/config/api";
 // For debugging
 import { useEffect as useEffectDebug } from 'react';
 
@@ -85,8 +86,8 @@ export default function ToppersCarouselEditor() {
   
   // Query to fetch toppers
   const { data: toppers, isLoading } = useQuery({
-    queryKey: ["/api/toppers"],
-    queryFn: () => apiRequest<Topper[]>({ url: "/api/toppers" }),
+    queryKey: ["admin/achievers"],
+    queryFn: () => apiRequest<Topper[]>({ url: "admin/achievers" }),
   });
 
   // Update state when data is loaded
@@ -154,14 +155,14 @@ export default function ToppersCarouselEditor() {
     mutationFn: (data: TopperFormValues) => {
       console.log('Creating topper with data:', data);
       return apiRequest({
-        url: "/api/toppers",
+        url: "admin/achievers",
         method: "POST",
         data,
       });
     },
     onSuccess: (response) => {
       console.log('Topper created successfully:', response);
-      queryClient.invalidateQueries({ queryKey: ["/api/toppers"] });
+      queryClient.invalidateQueries({ queryKey: ["admin/achievers"] });
       toast({
         title: "Topper added",
         description: "The topper has been added successfully.",
@@ -182,13 +183,13 @@ export default function ToppersCarouselEditor() {
   const updateTopperMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<TopperFormValues> }) => {
       return apiRequest({
-        url: `/api/toppers/${id}`,
-        method: "PUT",
+        url: `admin/achievers/${id}`,
+        method: "PATCH",
         data,
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/toppers"] });
+      queryClient.invalidateQueries({ queryKey: ["admin/achievers"] });
       toast({
         title: "Topper updated",
         description: "The topper has been updated successfully.",
@@ -209,12 +210,12 @@ export default function ToppersCarouselEditor() {
   const deleteTopperMutation = useMutation({
     mutationFn: (id: number) => {
       return apiRequest({
-        url: `/api/toppers/${id}`,
+        url: `admin/achievers/${id}`,
         method: "DELETE",
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/toppers"] });
+      queryClient.invalidateQueries({ queryKey: ["admin/achievers"] });
       toast({
         title: "Topper deleted",
         description: "The topper has been deleted successfully.",
@@ -303,13 +304,13 @@ export default function ToppersCarouselEditor() {
     Promise.all(
       updatedItems.map((item, index) => 
         apiRequest({
-          url: `/api/toppers/${item.id}`,
-          method: "PUT",
+          url: `admin/achievers/${item.id}`,
+          method: "PATCH",
           data: { displayOrder: index },
         })
       )
     ).then(() => {
-      queryClient.invalidateQueries({ queryKey: ["/api/toppers"] });
+      queryClient.invalidateQueries({ queryKey: ["admin/achievers"] });
       toast({
         title: "Order updated",
         description: "The display order has been updated successfully.",
@@ -391,7 +392,9 @@ export default function ToppersCarouselEditor() {
           reject(new Error('Upload failed due to network error'));
         };
         
-        xhr.open('POST', '/api/upload/image', true);
+        xhr.open('POST', API.BASEURL + 'upload/image', true);
+        const token = localStorage.getItem('adminToken');
+        if (token) xhr.setRequestHeader('Authorization', `Bearer ${token}`);
         xhr.send(formData);
       });
       

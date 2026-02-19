@@ -4,6 +4,8 @@ import { Helmet } from 'react-helmet';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useQuery } from '@tanstack/react-query';
+import apiClient from '@/config/apiClient';
+import { API } from '@/config/api';
 
 interface AppFeature {
   id: number;
@@ -94,21 +96,31 @@ const MockAppRatings: AppRating[] = [
 ];
 
 const AppPage = () => {
-  // Fetch app features
+  // Fetch app features from ilearn-server, fall back to mock data
   const { data: appFeatures = MockAppFeatures, isLoading: featuresLoading } = useQuery({
-    queryKey: ['/api/app/features'],
+    queryKey: ['app-features'],
     queryFn: async () => {
-      // Return mock data for now
-      return Promise.resolve(MockAppFeatures);
+      try {
+        const response = await apiClient.get(API.APP_FEATURES);
+        const data = response.data?.data || response.data || [];
+        return Array.isArray(data) && data.length > 0 ? data : MockAppFeatures;
+      } catch {
+        return MockAppFeatures;
+      }
     },
   });
 
-  // Fetch app ratings
+  // Fetch app ratings from ilearn-server, fall back to mock data
   const { data: appRatings = MockAppRatings, isLoading: ratingsLoading } = useQuery({
-    queryKey: ['/api/app/ratings'],
+    queryKey: ['app-ratings'],
     queryFn: async () => {
-      // Return mock data for now
-      return Promise.resolve(MockAppRatings);
+      try {
+        const response = await apiClient.get(API.APP_RATINGS);
+        const data = response.data?.data || response.data || [];
+        return Array.isArray(data) && data.length > 0 ? data : MockAppRatings;
+      } catch {
+        return MockAppRatings;
+      }
     },
   });
 

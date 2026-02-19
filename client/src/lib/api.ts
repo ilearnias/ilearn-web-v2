@@ -1,14 +1,17 @@
 import type { SiteSetting } from '@shared/schema';
-import { apiRequest } from './queryClient';
+import apiClient from '@/config/apiClient';
+import { API } from '@/config/api';
 
 // Site Settings
 export async function getSiteSettings(): Promise<SiteSetting[]> {
-  return apiRequest<SiteSetting[]>('/api/settings');
+  const response = await apiClient.get(API.SITE_SETTINGS);
+  return response.data?.data || response.data || [];
 }
 
 export async function getSiteSetting(key: string): Promise<SiteSetting | null> {
   try {
-    return await apiRequest<SiteSetting>(`/api/settings/${key}`);
+    const response = await apiClient.get(API.SITE_SETTINGS + '/' + key);
+    return response.data?.data || response.data || null;
   } catch (error) {
     // Return null if setting not found or other error occurs
     console.log(`Error fetching setting ${key}:`, error);
@@ -17,23 +20,13 @@ export async function getSiteSetting(key: string): Promise<SiteSetting | null> {
 }
 
 export async function updateSiteSetting(key: string, value: string): Promise<SiteSetting> {
-  return apiRequest<SiteSetting>(`/api/settings/${key}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ value }),
-  });
+  const response = await apiClient.put(API.SITE_SETTINGS + '/' + key, { value });
+  return response.data?.data || response.data;
 }
 
 export async function createSiteSetting(key: string, value: string): Promise<SiteSetting> {
-  return apiRequest<SiteSetting>('/api/settings', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ key, value }),
-  });
+  const response = await apiClient.put(API.SITE_SETTINGS + '/' + key, { value });
+  return response.data?.data || response.data;
 }
 
 // Constants for site settings keys

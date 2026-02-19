@@ -20,14 +20,14 @@ export default function HomeProgramTeaserEditor() {
 
   // Fetch all programs
   const { data: allPrograms = [], isLoading: programsLoading } = useQuery({
-    queryKey: ["/api/programs"],
-    queryFn: () => apiRequest<Program[]>({ url: "/api/programs" }),
+    queryKey: ["admin/programs"],
+    queryFn: () => apiRequest<Program[]>({ url: "admin/programs" }),
   });
 
   // Fetch featured home programs setting
   const { data: featuredSetting, isLoading: settingsLoading } = useQuery({
-    queryKey: ["/api/settings/featured_home_programs"],
-    queryFn: () => apiRequest({ url: "/api/settings/featured_home_programs" }),
+    queryKey: ["site-settings/featured_home_programs"],
+    queryFn: () => apiRequest({ url: "site-settings/featured_home_programs" }),
   });
 
   // Initialize selected programs when data is loaded
@@ -109,13 +109,13 @@ export default function HomeProgramTeaserEditor() {
 
       // Save to site settings
       await apiRequest({
-        url: "/api/settings/featured_home_programs",
-        method: "PUT",
+        url: "site-settings/featured_home_programs",
+        method: "PATCH",
         data: { value: JSON.stringify(featuredIds) },
       });
 
       // Invalidate queries to refresh data
-      queryClient.invalidateQueries({ queryKey: ["/api/settings/featured_home_programs"] });
+      queryClient.invalidateQueries({ queryKey: ["site-settings/featured_home_programs"] });
 
       toast({
         title: "Homepage features updated",

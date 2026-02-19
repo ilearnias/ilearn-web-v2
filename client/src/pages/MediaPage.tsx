@@ -165,12 +165,17 @@ const MediaPage = () => {
   const [currentItem, setCurrentItem] = useState<MediaItem | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Fetch media items
+  // Fetch media items from ilearn-server, fall back to mock data
   const { data: mediaItems = MockMediaItems, isLoading } = useQuery({
-    queryKey: ['/api/media'],
+    queryKey: ['media'],
     queryFn: async () => {
-      // Return mock data for now
-      return Promise.resolve(MockMediaItems);
+      try {
+        const { apiRequest } = await import('@/lib/queryClient');
+        const data = await apiRequest<MediaItem[]>('media');
+        return Array.isArray(data) && data.length > 0 ? data : MockMediaItems;
+      } catch {
+        return MockMediaItems;
+      }
     },
   });
 
