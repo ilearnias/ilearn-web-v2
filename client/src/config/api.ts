@@ -1,5 +1,5 @@
 export const API = {
-  BASEURL: import.meta.env.VITE_API_BASE_URL || "https://ilearn-server.bairuhatech.com/v1/",
+  BASEURL: import.meta.env.VITE_API_BASE_URL || "https://ilearn-server-production.up.railway.app/v1/",
 
   // Auth
   AUTH_LOGIN: "auth/login",
