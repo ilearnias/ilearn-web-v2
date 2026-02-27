@@ -91,14 +91,32 @@ export default function BlogPage() {
   return (
     <main className="min-h-screen py-12 bg-gray-50">
       <Helmet>
-        <title>{pageTitle} | iLearn IAS Academy</title>
-        <meta name="description" content="Read the latest articles, study notes, and current affairs analysis for UPSC Civil Services Examination." />
-        <meta property="og:title" content={`${pageTitle} | iLearn IAS Academy`} />
-        <meta property="og:description" content="Read the latest articles, study notes, and current affairs analysis for UPSC Civil Services Examination." />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${pageTitle} | iLearn IAS Academy`} />
-        <meta name="twitter:description" content="Read the latest articles, study notes, and current affairs analysis for UPSC Civil Services Examination." />
+        <title>UPSC Preparation Blog | Tips, Strategy &amp; Current Affairs | iLearn IAS</title>
+        <meta name="description" content="Free UPSC preparation guides, current affairs analysis, optional subject strategy and civil services tips from iLearn IAS Academy, Kerala's top coaching institute." />
+        <link rel="canonical" href="https://www.ilearnias.com/blog" />
+        <meta property="og:title" content="UPSC Preparation Blog | iLearn IAS Academy Kerala" />
+        <meta property="og:url" content="https://www.ilearnias.com/blog" />
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "Blog",
+            "name": "iLearn IAS Academy UPSC Preparation Blog",
+            "url": "https://www.ilearnias.com/blog",
+            "description": "Free UPSC preparation resources, current affairs analysis, and civil services strategy from Kerala's top coaching institute.",
+            "publisher": {
+              "@type": "EducationalOrganization",
+              "name": "iLearn IAS Academy",
+              "url": "https://www.ilearnias.com"
+            },
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.ilearnias.com/" },
+                { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.ilearnias.com/blog" }
+              ]
+            }
+          }
+        `}</script>
       </Helmet>
 
       <div className="container px-4 mx-auto">

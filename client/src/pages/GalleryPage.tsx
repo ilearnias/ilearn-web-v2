@@ -423,8 +423,26 @@ const GalleryPage = () => {
   return (
     <>
       <Helmet>
-        <title>Gallery | iLearn IAS Academy</title>
-        <meta name="description" content="Browse our gallery showcasing infrastructure, success stories, and student life at iLearn IAS Academy." />
+        <title>Gallery — Campus Life &amp; Events | iLearn IAS Academy Kerala</title>
+        <meta name="description" content="Explore iLearn IAS Academy's campus life, classroom sessions, events and celebrations. See why students from across Kerala choose Trivandrum's top UPSC coaching institute." />
+        <link rel="canonical" href="https://www.ilearnias.com/gallery" />
+        <meta property="og:title" content="Gallery — Campus Life &amp; Events | iLearn IAS Academy" />
+        <meta property="og:url" content="https://www.ilearnias.com/gallery" />
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "ImageGallery",
+            "name": "iLearn IAS Academy — Campus Life and Events Gallery",
+            "url": "https://www.ilearnias.com/gallery",
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.ilearnias.com/" },
+                { "@type": "ListItem", "position": 2, "name": "Gallery", "item": "https://www.ilearnias.com/gallery" }
+              ]
+            }
+          }
+        `}</script>
       </Helmet>
       
       <PageTransition>

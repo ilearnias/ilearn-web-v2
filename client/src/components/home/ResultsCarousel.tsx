@@ -148,7 +148,7 @@ const ResultsCarousel = () => {
                     <div className="relative overflow-hidden">
                       <img 
                         src={topper.image} 
-                        alt={`${topper.name} portrait`}
+                        alt={`${topper.name} — UPSC Topper, iLearn IAS Academy Kerala`}
                         className="w-full h-56 object-cover object-center transform transition-transform duration-300 group-hover:scale-[1.02]"
                         width="224"
                         height="224"

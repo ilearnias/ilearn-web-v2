@@ -171,7 +171,7 @@ const CarouselMediaItem = ({ item, onOpen }: CarouselMediaItemProps) => {
       <div className="w-full h-full relative">
         <img 
           src={item.thumbnailUrl} 
-          alt={item.title}
+          alt={`iLearn IAS Academy — ${item.title}`}
           className="w-full h-full object-cover object-center"
         />
         {isVideo && (
@@ -302,8 +302,60 @@ const ResultsPage = () => {
   return (
     <>
       <Helmet>
-        <title>Our Results | iLearn IAS Academy</title>
-        <meta name="description" content="Explore the success stories and achievements of iLearn IAS Academy students in UPSC, KAS, and other civil service examinations." />
+        <title>UPSC Results &amp; Selections | iLearn IAS Academy Kerala</title>
+        <meta name="description" content="iLearn IAS Academy results: AIR 12 (Midhun Premraj), AIR 21 (Dileep Kainikkara), AIR 57 (Alfred OV) and 200+ civil service selections from Kerala. See our toppers!" />
+        <link rel="canonical" href="https://www.ilearnias.com/results" />
+        <meta property="og:title" content="UPSC Results &amp; Selections | iLearn IAS Academy Kerala" />
+        <meta property="og:url" content="https://www.ilearnias.com/results" />
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": "UPSC Results and Success Stories — iLearn IAS Academy",
+            "url": "https://www.ilearnias.com/results",
+            "description": "200+ UPSC and KAS selections from iLearn IAS Academy including AIR 12, AIR 21, AIR 57 and more top rankers.",
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.ilearnias.com/" },
+                { "@type": "ListItem", "position": 2, "name": "Results", "item": "https://www.ilearnias.com/results" }
+              ]
+            },
+            "mainEntity": {
+              "@type": "ItemList",
+              "name": "Top UPSC Selections from iLearn IAS Academy",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "item": {
+                    "@type": "Person",
+                    "name": "Midhun Premraj IAS",
+                    "description": "UPSC CSE 2024 AIR 12, iLearn IAS Academy PCM Program alumnus"
+                  }
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "item": {
+                    "@type": "Person",
+                    "name": "Dileep Kainikkara IAS",
+                    "description": "UPSC CSE 2024 AIR 21, iLearn IAS Academy PCM Program alumnus"
+                  }
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "item": {
+                    "@type": "Person",
+                    "name": "Alfred OV IAS",
+                    "description": "UPSC CSE 2024 AIR 57, iLearn IAS Academy PCM Program alumnus"
+                  }
+                }
+              ]
+            }
+          }
+        `}</script>
       </Helmet>
       
       <PageTransition>
@@ -404,7 +456,7 @@ const ResultsPage = () => {
                             <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
                             <img 
                               src={item.thumbnailUrl} 
-                              alt={item.title}
+                              alt={`iLearn IAS Academy — ${item.title}`}
                               className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
                             />
                             {item.type === 'video' && (
@@ -508,7 +560,7 @@ const ResultsPage = () => {
                             <div className="overflow-hidden">
                               <img 
                                 src={topper.image} 
-                                alt={topper.name}
+                                alt={`${topper.name} - UPSC Rank ${topper.rank} (${topper.year}), iLearn IAS Academy Kerala`}
                                 className="w-full h-[180px] object-cover object-center"
                               />
                             </div>
@@ -620,7 +672,7 @@ const ResultsPage = () => {
                           <div className="flex items-center justify-center">
                             <img
                               src={currentItem.url}
-                              alt={currentItem.title}
+                              alt={`iLearn IAS Academy — ${currentItem.title}`}
                               className="max-h-[70vh] max-w-full rounded-md shadow-2xl object-contain"
                             />
                           </div>
@@ -702,7 +754,7 @@ const ResultsPage = () => {
                         <div className="overflow-hidden">
                           <img 
                             src={selectedTopper.image} 
-                            alt={`${selectedTopper.name} portrait`}
+                            alt={`${selectedTopper.name} - AIR ${selectedTopper.rank}, UPSC ${selectedTopper.year}, iLearn IAS Academy Kerala`}
                             className="w-full aspect-square object-cover transition-transform duration-500 hover:scale-105"
                           />
                         </div>

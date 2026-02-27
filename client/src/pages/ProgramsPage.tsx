@@ -277,8 +277,46 @@ const ProgramsPage = () => {
   return (
     <>
       <Helmet>
-        <title>Programs | iLearn IAS Academy</title>
-        <meta name="description" content="Explore our specialized coaching programs for UPSC, KAS, and other civil service examinations designed to help you achieve top results." />
+        <title>UPSC Coaching Programs in Kerala | iLearn IAS Academy</title>
+        <meta name="description" content="Explore iLearn IAS Academy's UPSC coaching programs in Trivandrum — PCM batch, Current Affairs (CANA), Geography, PSIR, Sociology optional subjects. Kerala's highest success rate." />
+        <link rel="canonical" href="https://www.ilearnias.com/programs" />
+        <meta property="og:title" content="UPSC Coaching Programs in Kerala | iLearn IAS Academy" />
+        <meta property="og:url" content="https://www.ilearnias.com/programs" />
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "name": "UPSC Coaching Programs at iLearn IAS Academy",
+            "url": "https://www.ilearnias.com/programs",
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.ilearnias.com/" },
+                { "@type": "ListItem", "position": 2, "name": "Programs", "item": "https://www.ilearnias.com/programs" }
+              ]
+            },
+            "itemListElement": [
+              {
+                "@type": "Course",
+                "position": 1,
+                "name": "Prelims Cum Mains (PCM) Program",
+                "url": "https://www.ilearnias.com/programs/prelims-cum-mains",
+                "description": "Comprehensive classroom program covering both preliminary and main examinations with Kerala's highest success rate.",
+                "provider": { "@type": "EducationalOrganization", "name": "iLearn IAS Academy", "url": "https://www.ilearnias.com" },
+                "hasCourseInstance": { "@type": "CourseInstance", "courseMode": "onsite", "inLanguage": "en" }
+              },
+              {
+                "@type": "Course",
+                "position": 2,
+                "name": "Current Affairs and News Analysis (CANA)",
+                "url": "https://www.ilearnias.com/programs/current-affairs-news-analysis",
+                "description": "Daily current affairs analysis and news coverage for UPSC aspirants.",
+                "provider": { "@type": "EducationalOrganization", "name": "iLearn IAS Academy", "url": "https://www.ilearnias.com" },
+                "hasCourseInstance": { "@type": "CourseInstance", "courseMode": "onsite", "inLanguage": "en" }
+              }
+            ]
+          }
+        `}</script>
       </Helmet>
       
       <PageTransition>

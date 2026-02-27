@@ -8,8 +8,45 @@ const PcmProgramPage = () => {
   return (
     <>
       <Helmet>
-        <title>Prelims Cum Mains (PCM) Program | iLearn IAS Academy</title>
-        <meta name="description" content="Join our comprehensive PCM program covering both preliminary and main examinations with Kerala's highest success rate." />
+        <title>UPSC Prelims Cum Mains (PCM) Coaching Kerala | iLearn IAS Academy</title>
+        <meta name="description" content="iLearn IAS Academy's PCM Program — Kerala's highest UPSC success rate. Comprehensive 12-month classroom coaching for both Prelims &amp; Mains. AIR 12, AIR 21, AIR 57 selections. Enquire now!" />
+        <link rel="canonical" href="https://www.ilearnias.com/programs/prelims-cum-mains" />
+        <meta property="og:title" content="UPSC Prelims Cum Mains (PCM) Coaching Kerala | iLearn IAS Academy" />
+        <meta property="og:url" content="https://www.ilearnias.com/programs/prelims-cum-mains" />
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "Course",
+            "name": "Prelims Cum Mains (PCM) Program",
+            "url": "https://www.ilearnias.com/programs/prelims-cum-mains",
+            "description": "Comprehensive 12-month classroom program covering both UPSC Prelims and Mains examinations. Kerala's highest success rate with alumni including AIR 12.",
+            "provider": {
+              "@type": "EducationalOrganization",
+              "name": "iLearn IAS Academy",
+              "url": "https://www.ilearnias.com",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Thiruvananthapuram",
+                "addressRegion": "Kerala",
+                "addressCountry": "IN"
+              }
+            },
+            "hasCourseInstance": {
+              "@type": "CourseInstance",
+              "courseMode": "onsite",
+              "inLanguage": "en",
+              "courseWorkload": "PT12M"
+            },
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.ilearnias.com/" },
+                { "@type": "ListItem", "position": 2, "name": "Programs", "item": "https://www.ilearnias.com/programs" },
+                { "@type": "ListItem", "position": 3, "name": "PCM Program", "item": "https://www.ilearnias.com/programs/prelims-cum-mains" }
+              ]
+            }
+          }
+        `}</script>
       </Helmet>
       
       <PageTransition>

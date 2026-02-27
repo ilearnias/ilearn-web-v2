@@ -384,8 +384,41 @@ const AboutPage = () => {
   return (
     <PageTransition>
       <Helmet>
-        <title>About Us - iLearn IAS Academy</title>
-        <meta name="description" content="Learn about iLearn IAS Academy, our mission, values, and history." />
+        <title>About iLearn IAS Academy | UPSC Coaching Trivandrum Since 2015</title>
+        <meta name="description" content="Learn about iLearn IAS Academy — Kerala's trusted UPSC coaching institute since 2015. Meet our expert faculty, explore our decade-long journey and 200+ top civil service selections." />
+        <link rel="canonical" href="https://www.ilearnias.com/about" />
+        <meta property="og:title" content="About iLearn IAS Academy | UPSC Coaching Trivandrum Since 2015" />
+        <meta property="og:description" content="Kerala's trusted UPSC coaching institute since 2015. Expert faculty, personalized mentoring, 200+ top selections." />
+        <meta property="og:url" content="https://www.ilearnias.com/about" />
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "AboutPage",
+            "url": "https://www.ilearnias.com/about",
+            "name": "About iLearn IAS Academy",
+            "description": "Kerala's trusted UPSC and KAS coaching institute since 2015, with 200+ top civil service selections.",
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.ilearnias.com/" },
+                { "@type": "ListItem", "position": 2, "name": "About Us", "item": "https://www.ilearnias.com/about" }
+              ]
+            },
+            "mainEntity": {
+              "@type": "EducationalOrganization",
+              "@id": "https://www.ilearnias.com/#organization",
+              "name": "iLearn IAS Academy",
+              "foundingDate": "2015",
+              "description": "Kerala's leading UPSC and KAS coaching institute in Thiruvananthapuram.",
+              "employee": [
+                { "@type": "Person", "name": "Nikhil Lohithakshan", "jobTitle": "Director" },
+                { "@type": "Person", "name": "Mohammed Shinas S", "jobTitle": "Director" },
+                { "@type": "Person", "name": "Dias Jose", "jobTitle": "Director" },
+                { "@type": "Person", "name": "Jishnu Krishna", "jobTitle": "Director" }
+              ]
+            }
+          }
+        `}</script>
       </Helmet>
       
       <div className="relative">
@@ -571,7 +604,7 @@ const AboutPage = () => {
                             <>
                               <img 
                                 src={faculty.image} 
-                                alt={faculty.name} 
+                                alt={`${faculty.name} — UPSC Faculty, iLearn IAS Academy Kerala`} 
                                 className="object-cover w-full h-full object-center transition-transform duration-500 hover:scale-110" 
                                 loading="lazy"
                                 onError={(e) => {

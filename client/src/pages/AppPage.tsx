@@ -128,8 +128,27 @@ const AppPage = () => {
   return (
     <>
       <Helmet>
-        <title>iLearn IAS App | Mobile Learning Platform</title>
-        <meta name="description" content="Download the iLearn IAS mobile app for UPSC and KAS preparation on the go. Access study materials, tests, and current affairs anywhere, anytime." />
+        <title>iLearn UPSC Preparation App | Study Anywhere | iLearn IAS Academy</title>
+        <meta name="description" content="Access iLearn IAS Academy's study materials, daily current affairs, answer writing practice and more on the iLearn App. Learn UPSC on the go from Kerala's top institute." />
+        <link rel="canonical" href="https://www.ilearnias.com/app" />
+        <meta property="og:title" content="iLearn UPSC Preparation App | iLearn IAS Academy Kerala" />
+        <meta property="og:url" content="https://www.ilearnias.com/app" />
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "iLearn IAS App",
+            "url": "https://www.ilearnias.com/app",
+            "applicationCategory": "EducationApplication",
+            "operatingSystem": "Android, iOS",
+            "description": "UPSC preparation app by iLearn IAS Academy with daily current affairs, study materials, and answer writing practice.",
+            "provider": {
+              "@type": "EducationalOrganization",
+              "name": "iLearn IAS Academy",
+              "url": "https://www.ilearnias.com"
+            }
+          }
+        `}</script>
       </Helmet>
       
       <PageTransition>

@@ -386,6 +386,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // PROGRAMS ROUTES
+  // SEO: Sitemap
+  app.get("/sitemap.xml", (_req, res) => {
+    const baseUrl = "https://www.ilearnias.com";
+    const today = new Date().toISOString().split("T")[0];
+    const staticRoutes = [
+      { url: "/", priority: "1.0", changefreq: "weekly" },
+      { url: "/about", priority: "0.8", changefreq: "monthly" },
+      { url: "/results", priority: "0.9", changefreq: "monthly" },
+      { url: "/programs", priority: "0.9", changefreq: "monthly" },
+      { url: "/programs/prelims-cum-mains", priority: "0.9", changefreq: "monthly" },
+      { url: "/programs/current-affairs-news-analysis", priority: "0.8", changefreq: "monthly" },
+      { url: "/blog", priority: "0.8", changefreq: "weekly" },
+      { url: "/gallery", priority: "0.6", changefreq: "monthly" },
+      { url: "/app", priority: "0.7", changefreq: "monthly" },
+      { url: "/contact", priority: "0.7", changefreq: "yearly" },
+    ];
+    const urlTags = staticRoutes
+      .map(
+        (r) => `  <url>
+    <loc>${baseUrl}${r.url}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${r.changefreq}</changefreq>
+    <priority>${r.priority}</priority>
+  </url>`
+      )
+      .join("\n");
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urlTags}
+</urlset>`;
+    res.setHeader("Content-Type", "application/xml");
+    res.send(xml);
+  });
+
+  // SEO: Robots.txt (also served via static file, this is a fallback)
+  app.get("/robots.txt", (_req, res) => {
+    res.setHeader("Content-Type", "text/plain");
+    res.send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api/\n\nSitemap: https://www.ilearnias.com/sitemap.xml`);
+  });
+
   app.get("/api/programs", async (_req, res) => {
     try {
       const programs = await storage.getPrograms();

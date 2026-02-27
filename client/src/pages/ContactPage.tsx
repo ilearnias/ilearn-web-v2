@@ -9,8 +9,50 @@ const ContactPage = () => {
   return (
     <>
       <Helmet>
-        <title>Contact Us | iLearn IAS Academy</title>
-        <meta name="description" content="Get in touch with iLearn IAS Academy for inquiries about our programs, admission process, or to schedule a counselling session." />
+        <title>Contact iLearn IAS Academy | UPSC Coaching Trivandrum Enquiry</title>
+        <meta name="description" content="Contact iLearn IAS Academy, Thiruvananthapuram. Enquire about UPSC &amp; KAS coaching programs, batch schedules, fees &amp; admissions. Visit us at Mullasery Towers, Vanross Junction." />
+        <link rel="canonical" href="https://www.ilearnias.com/contact" />
+        <meta property="og:title" content="Contact iLearn IAS Academy | UPSC Coaching Enquiry Trivandrum" />
+        <meta property="og:url" content="https://www.ilearnias.com/contact" />
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "ContactPage",
+            "name": "Contact iLearn IAS Academy",
+            "url": "https://www.ilearnias.com/contact",
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.ilearnias.com/" },
+                { "@type": "ListItem", "position": 2, "name": "Contact Us", "item": "https://www.ilearnias.com/contact" }
+              ]
+            },
+            "mainEntity": {
+              "@type": "EducationalOrganization",
+              "name": "iLearn IAS Academy",
+              "url": "https://www.ilearnias.com",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "1st Floor, Mullasery Towers, Vanross Junction, Punnen Rd",
+                "addressLocality": "Thiruvananthapuram",
+                "addressRegion": "Kerala",
+                "postalCode": "695001",
+                "addressCountry": "IN"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 8.5241,
+                "longitude": 76.9366
+              },
+              "openingHoursSpecification": {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+                "opens": "09:00",
+                "closes": "18:00"
+              }
+            }
+          }
+        `}</script>
       </Helmet>
       
       <PageTransition>

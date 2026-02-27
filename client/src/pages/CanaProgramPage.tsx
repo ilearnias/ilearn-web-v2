@@ -8,8 +8,43 @@ const CanaProgramPage = () => {
   return (
     <>
       <Helmet>
-        <title>Current Affairs and News Analysis (CANA) | iLearn IAS Academy</title>
-        <meta name="description" content="Stay updated with our specialized CANA program covering daily current affairs and news analysis for UPSC examinations." />
+        <title>UPSC Current Affairs Coaching Kerala (CANA) | iLearn IAS Academy</title>
+        <meta name="description" content="iLearn IAS Academy's CANA program — daily current affairs &amp; news analysis for UPSC aspirants in Kerala. Expert analysis, answer writing practice. Join now from Trivandrum." />
+        <link rel="canonical" href="https://www.ilearnias.com/programs/current-affairs-news-analysis" />
+        <meta property="og:title" content="UPSC Current Affairs Coaching Kerala (CANA) | iLearn IAS Academy" />
+        <meta property="og:url" content="https://www.ilearnias.com/programs/current-affairs-news-analysis" />
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "Course",
+            "name": "Current Affairs and News Analysis (CANA)",
+            "url": "https://www.ilearnias.com/programs/current-affairs-news-analysis",
+            "description": "Ongoing daily current affairs and news analysis program for UPSC aspirants. Covers editorial analysis, answer writing practice, and monthly compilations.",
+            "provider": {
+              "@type": "EducationalOrganization",
+              "name": "iLearn IAS Academy",
+              "url": "https://www.ilearnias.com"
+            },
+            "hasCourseInstance": {
+              "@type": "CourseInstance",
+              "courseMode": "onsite",
+              "inLanguage": "en"
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": "25000",
+              "priceCurrency": "INR"
+            },
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.ilearnias.com/" },
+                { "@type": "ListItem", "position": 2, "name": "Programs", "item": "https://www.ilearnias.com/programs" },
+                { "@type": "ListItem", "position": 3, "name": "CANA Program", "item": "https://www.ilearnias.com/programs/current-affairs-news-analysis" }
+              ]
+            }
+          }
+        `}</script>
       </Helmet>
       
       <PageTransition>
