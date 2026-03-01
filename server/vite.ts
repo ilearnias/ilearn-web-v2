@@ -22,6 +22,21 @@ export function log(message: string, source = "express") {
   console.log(`${formattedTime} [${source}] ${message}`);
 }
 
+/**
+ * Inject SSR-rendered HTML and Helmet head tags into the template.
+ */
+function injectSSRContent(
+  template: string,
+  appHtml: string,
+  headTags: string
+): string {
+  // Replace the SSR outlet placeholder with rendered React HTML
+  let html = template.replace("<!--ssr-outlet-->", appHtml);
+  // Replace the Helmet head placeholder with rendered head tags
+  html = html.replace("<!--helmet-head-->", headTags);
+  return html;
+}
+
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
     middlewareMode: true,
@@ -63,14 +78,21 @@ export async function setupVite(app: Express, server: Server) {
         "index.html"
       );
 
-      // always reload the index.html file from disk incase it changes
+      // always reload the index.html file from disk in case it changes
       let template = await fs.promises.readFile(clientTemplate, "utf-8");
       template = template.replace(
         `src="/src/main.tsx"`,
         `src="/src/main.tsx?v=${nanoid()}"`
       );
-      const page = await vite.transformIndexHtml(url, template);
-      res.status(200).set({ "Content-Type": "text/html" }).end(page);
+      template = await vite.transformIndexHtml(url, template);
+
+      // SSR: load the entry-server module and render the app
+      const { render } = await vite.ssrLoadModule("/src/entry-server.tsx");
+      const { html: appHtml, head: headTags } = render(url);
+
+      const html = injectSSRContent(template, appHtml, headTags);
+
+      res.status(200).set({ "Content-Type": "text/html" }).end(html);
     } catch (e) {
       vite.ssrFixStacktrace(e as Error);
       next(e);
@@ -89,8 +111,23 @@ export function serveStatic(app: Express) {
 
   app.use(express.static(distPath));
 
-  // fall through to index.html if the file doesn't exist
-  app.use("*", (_req, res) => {
-    res.sendFile(path.resolve(distPath, "index.html"));
+  // SSR: import the pre-built server entry and render on each request
+  const ssrEntryPath = path.resolve(__dirname, "..", "dist", "server", "entry-server.js");
+
+  // fall through to SSR if the file doesn't exist as a static asset
+  app.use("*", async (req, res, next) => {
+    try {
+      const templatePath = path.resolve(distPath, "index.html");
+      const template = await fs.promises.readFile(templatePath, "utf-8");
+
+      const { render } = await import(ssrEntryPath);
+      const { html: appHtml, head: headTags } = render(req.originalUrl);
+
+      const html = injectSSRContent(template, appHtml, headTags);
+
+      res.status(200).set({ "Content-Type": "text/html" }).end(html);
+    } catch (e) {
+      next(e);
+    }
   });
 }

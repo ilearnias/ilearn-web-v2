@@ -31,6 +31,19 @@ export default defineConfig({
     outDir: path.resolve(__dirname, "dist/public"),
     emptyOutDir: true,
   },
+  ssr: {
+    noExternal: [
+      "wouter",
+      "react-helmet",
+      "embla-carousel-react",
+      "framer-motion",
+      "lucide-react",
+      "react-icons",
+      "class-variance-authority",
+      "clsx",
+      "tailwind-merge",
+    ],
+  },
   server: {
     allowedHosts: [
       "ilearn.bairuhatech.com",

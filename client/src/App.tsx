@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import { Toaster } from "@/components/ui/toaster";
@@ -25,44 +25,45 @@ import PcmProgramPage from "@/pages/PcmProgramPage";
 import CanaProgramPage from "@/pages/CanaProgramPage";
 import NotFound from "@/pages/not-found";
 
-function Router() {
-  // Scroll to top on route change
-  const [location, setLocation] = useState<string>(window.location.pathname);
-  
+const isBrowser = typeof window !== "undefined";
+
+function ScrollToTop() {
+  const [location, setLocation] = useState<string>(
+    isBrowser ? window.location.pathname : "/"
+  );
+
   useEffect(() => {
-    // Update location state when pathname changes
+    if (!isBrowser) return;
+
     const handleLocationChange = () => {
       const newLocation = window.location.pathname;
       if (newLocation !== location) {
         setLocation(newLocation);
-        // Smooth scroll to top
-        window.scrollTo({
-          top: 0,
-          left: 0,
-          behavior: 'auto'
-        });
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
       }
     };
-    
-    // Listen for popstate (back/forward navigation)
-    window.addEventListener('popstate', handleLocationChange);
-    
-    // Create a custom hook to intercept Link clicks from wouter
+
+    window.addEventListener("popstate", handleLocationChange);
+
     const originalPushState = history.pushState;
-    // @ts-ignore TypeScript doesn't handle this type of function override well
-    history.pushState = function() {
+    // @ts-ignore
+    history.pushState = function () {
       // @ts-ignore
       const result = originalPushState.apply(this, arguments);
       handleLocationChange();
       return result;
     };
-    
+
     return () => {
-      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener("popstate", handleLocationChange);
       history.pushState = originalPushState;
     };
   }, [location]);
-  
+
+  return null;
+}
+
+function Routes() {
   return (
     <Switch>
       <Route path="/" component={HomePage} />
@@ -85,19 +86,31 @@ function Router() {
   );
 }
 
-function App() {
-  return (
+interface AppProps {
+  ssrPath?: string;
+}
+
+function App({ ssrPath }: AppProps) {
+  const content = (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <ProgressBar />
+        {isBrowser && <ProgressBar />}
         <Navbar />
-        <Router />
+        {isBrowser && <ScrollToTop />}
+        <Routes />
         <Footer />
-        <FloatingWhatsApp />
+        {isBrowser && <FloatingWhatsApp />}
       </TooltipProvider>
     </QueryClientProvider>
   );
+
+  // On the server, wrap with wouter's Router providing the URL
+  if (ssrPath) {
+    return <WouterRouter ssrPath={ssrPath}>{content}</WouterRouter>;
+  }
+
+  return content;
 }
 
 export default App;
