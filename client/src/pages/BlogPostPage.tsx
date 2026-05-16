@@ -140,6 +140,29 @@ export default function BlogPostPage() {
         {post?.tags && post.tags.map(tag => (
           <meta property="article:tag" content={tag} key={tag} />
         ))}
+        {post?.slug && (
+          <link rel="canonical" href={`https://www.ilearnias.com/blog/${post.slug}`} />
+        )}
+        {post && (
+          <script type="application/ld+json">{JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": post.title,
+            "description": post.metaDescription || post.excerpt || "",
+            "image": post.featuredImage || "https://www.ilearnias.com/assets/og-image.jpg",
+            "datePublished": post.publishedAt ? new Date(post.publishedAt).toISOString() : undefined,
+            "dateModified": post.updatedAt ? new Date(post.updatedAt).toISOString() : undefined,
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": `https://www.ilearnias.com/blog/${post.slug}`
+            },
+            "publisher": {
+              "@type": "EducationalOrganization",
+              "name": "iLearn IAS Academy",
+              "url": "https://www.ilearnias.com"
+            }
+          })}</script>
+        )}
       </Helmet>
 
       <div className="container px-4 mx-auto max-w-7xl">
@@ -215,6 +238,11 @@ export default function BlogPostPage() {
                         </div>
                       )}
                       
+                      {/* Post Title */}
+                      <h1 className="text-3xl md:text-4xl font-bold text-primary-blue mb-4">
+                        {post?.title}
+                      </h1>
+
                       {/* Post Meta */}
                       <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
                         {post?.publishedAt && (

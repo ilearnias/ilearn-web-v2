@@ -387,26 +387,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // PROGRAMS ROUTES
   // SEO: Sitemap
-  app.get("/sitemap.xml", (_req, res) => {
+  app.get("/sitemap.xml", async (_req, res) => {
     const baseUrl = "https://www.ilearnias.com";
     const today = new Date().toISOString().split("T")[0];
     const staticRoutes = [
-      { url: "/", priority: "1.0", changefreq: "weekly" },
-      { url: "/about", priority: "0.8", changefreq: "monthly" },
-      { url: "/results", priority: "0.9", changefreq: "monthly" },
-      { url: "/programs", priority: "0.9", changefreq: "monthly" },
-      { url: "/programs/prelims-cum-mains", priority: "0.9", changefreq: "monthly" },
-      { url: "/programs/current-affairs-news-analysis", priority: "0.8", changefreq: "monthly" },
-      { url: "/blog", priority: "0.8", changefreq: "weekly" },
-      { url: "/gallery", priority: "0.6", changefreq: "monthly" },
-      { url: "/app", priority: "0.7", changefreq: "monthly" },
-      { url: "/contact", priority: "0.7", changefreq: "yearly" },
+      { url: "/", priority: "1.0", changefreq: "weekly", lastmod: today },
+      { url: "/about", priority: "0.8", changefreq: "monthly", lastmod: today },
+      { url: "/results", priority: "0.9", changefreq: "monthly", lastmod: today },
+      { url: "/programs", priority: "0.9", changefreq: "monthly", lastmod: today },
+      { url: "/programs/prelims-cum-mains", priority: "0.9", changefreq: "monthly", lastmod: today },
+      { url: "/programs/current-affairs-news-analysis", priority: "0.8", changefreq: "monthly", lastmod: today },
+      { url: "/blog", priority: "0.8", changefreq: "weekly", lastmod: today },
+      { url: "/gallery", priority: "0.6", changefreq: "monthly", lastmod: today },
+      { url: "/app", priority: "0.7", changefreq: "monthly", lastmod: today },
+      { url: "/contact", priority: "0.7", changefreq: "yearly", lastmod: today },
     ];
-    const urlTags = staticRoutes
+
+    // Append dynamic routes (blog posts + programs) so Google discovers every page.
+    const dynamicRoutes: { url: string; priority: string; changefreq: string; lastmod: string }[] = [];
+    try {
+      const result = await storage.getBlogPosts();
+      const posts = Array.isArray(result) ? result : (result?.posts ?? []);
+      for (const post of posts) {
+        if (!post.slug) continue;
+        const mod = post.updatedAt || post.publishedAt;
+        dynamicRoutes.push({
+          url: `/blog/${post.slug}`,
+          priority: "0.7",
+          changefreq: "monthly",
+          lastmod: mod ? new Date(mod).toISOString().split("T")[0] : today,
+        });
+      }
+    } catch (e) {
+      console.warn("sitemap: could not load blog posts", e);
+    }
+    try {
+      const programs = await storage.getPrograms();
+      for (const program of programs) {
+        if (!program.slug) continue;
+        dynamicRoutes.push({
+          url: `/programs/${program.slug}`,
+          priority: "0.8",
+          changefreq: "monthly",
+          lastmod: today,
+        });
+      }
+    } catch (e) {
+      console.warn("sitemap: could not load programs", e);
+    }
+
+    // De-duplicate by URL (static program routes may overlap with dynamic ones).
+    const seen = new Set<string>();
+    const allRoutes = [...staticRoutes, ...dynamicRoutes].filter((r) => {
+      if (seen.has(r.url)) return false;
+      seen.add(r.url);
+      return true;
+    });
+
+    const urlTags = allRoutes
       .map(
         (r) => `  <url>
     <loc>${baseUrl}${r.url}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${r.lastmod}</lastmod>
     <changefreq>${r.changefreq}</changefreq>
     <priority>${r.priority}</priority>
   </url>`

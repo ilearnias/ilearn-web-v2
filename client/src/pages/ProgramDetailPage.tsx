@@ -771,6 +771,22 @@ const ProgramDetailPage = () => {
       <Helmet>
         <title>{program.title} | iLearn IAS Academy</title>
         <meta name="description" content={program.description} />
+        <link rel="canonical" href={`https://www.ilearnias.com/programs/${program.slug}`} />
+        <meta property="og:title" content={`${program.title} | iLearn IAS Academy`} />
+        <meta property="og:description" content={program.description} />
+        <meta property="og:url" content={`https://www.ilearnias.com/programs/${program.slug}`} />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Course",
+          "name": program.title,
+          "description": program.description,
+          "url": `https://www.ilearnias.com/programs/${program.slug}`,
+          "provider": {
+            "@type": "EducationalOrganization",
+            "name": "iLearn IAS Academy",
+            "url": "https://www.ilearnias.com"
+          }
+        })}</script>
       </Helmet>
       
       <PageTransition>
