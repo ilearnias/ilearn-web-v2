@@ -1,67 +1,21 @@
+import { API } from '@/config/api';
+import apiClient from '@/config/apiClient';
+import QUERY_KEY from '@/config/queryKeys';
 import { Testimonial } from '@/lib/constants';
+import { useQuery } from '@tanstack/react-query';
 
 const TestimonialTicker = () => {
-  // Static success stories data with proper image paths
-  const staticSuccessStories: Testimonial[] = [
-    {
-      id: 1001,
-      name: 'Dr. Akshay Raj P',
-      rank: 'UPSC Success - First Attempt',
-      program: 'PCM Classroom Program',
-      quote: 'Cracked UPSC in his very first attempt from our PCM Classroom Program',
-      year: 2024,
-      image: '/attached_assets/Akshay Ikka.jpeg',
-      video: undefined,
-      type: 'text',
-      displayOrder: 1,
-      createdAt: new Date().toISOString()
+  const { data: testimonials = [], isLoading } = useQuery({
+    queryKey: [QUERY_KEY?.SUCCESS_STORIES],
+    queryFn: async () => {
+      const response = await apiClient.get(API?.SUCCESS_STORIES + "?isActive=true&page=1&limit=50");
+      // Add error logging to help debug API response
+      console.log('API Response:', response.data);
+      return response.data.data || []; // Return empty array if data is undefined
     },
-    {
-      id: 1002,
-      name: 'Dr. Vineeth Lohidakshan',
-      rank: 'AIR 169 - First Attempt',
-      program: 'iLearn Program',
-      quote: 'Cracked UPSC with AIR 169 in his very first attempt',
-      year: 2024,
-      image: '/attached_assets/DSC07720.JPG',
-      video: undefined,
-      type: 'text',
-      displayOrder: 2,
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: 1003,
-      name: 'Rahul Raghavan',
-      rank: 'AIR 404 - 6th Attempt',
-      program: 'iLearn Program',
-      quote: 'With perseverance and iLearn support achieved AIR 404 in his 6th attempt',
-      year: 2024,
-      image: '/attached_assets/DSC02787.JPG',
-      video: undefined,
-      type: 'text',
-      displayOrder: 3,
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: 1004,
-      name: 'Alex Abraham',
-      rank: 'IPS Officer',
-      program: 'iLearn Program',
-      quote: 'In his last attempt, after a rollercoaster of wins and loses, he won his dream to become an IPS',
-      year: 2024,
-      image: '/attached_assets/Alex Ikka.png',
-      video: undefined,
-      type: 'text',
-      displayOrder: 4,
-      createdAt: new Date().toISOString()
-    }
-  ];
+  });
 
-  // Use only static testimonials to prevent constant reloading
-  const testimonials = staticSuccessStories;
-  const isLoading = false;
-
-  // For scrolling controls
+  // Scroll controls
   const scrollLeft = () => {
     const container = document.getElementById('testimonial-scroll-container');
     if (container) {
@@ -77,7 +31,6 @@ const TestimonialTicker = () => {
   };
 
   // Render image testimonial card (Success Story)
-  // This component is ONLY for image testimonials, ensuring complete separation from Video Testimonials
   const renderImageTestimonial = (testimonial: Testimonial) => {
     return (
       <div 
@@ -90,7 +43,7 @@ const TestimonialTicker = () => {
           <div className="w-full aspect-[9/16] overflow-hidden bg-gray-100 relative">
             <img 
               src={testimonial.image}
-              alt={`${testimonial.name} - ${testimonial.rank}`}
+              alt={`${testimonial.name} - ${testimonial.description || testimonial.rank}`}
               className="w-full h-full object-cover object-center"
               onError={(e) => {
                 console.log(`Failed to load image: ${testimonial.image} for ${testimonial.name}`);
@@ -102,18 +55,22 @@ const TestimonialTicker = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
             
             {/* Name and rank overlay - enhanced hover effects */}
-            {testimonial.name && testimonial.rank && (
+            {testimonial.name && (testimonial.rank || testimonial.description) && (
               <div className="absolute inset-0 flex items-end justify-center p-4">
                 <div className="text-white text-center w-full transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
                   <div className="font-bold text-lg mb-1 drop-shadow-lg">{testimonial.name}</div>
-                  <div className="text-sm font-medium text-gray-200 drop-shadow-lg">{testimonial.rank}</div>
+                  <div className="text-sm font-medium text-gray-200 drop-shadow-lg">
+                    {testimonial.rank || testimonial.description}
+                  </div>
                   
                   {/* Quote appears on hover */}
-                  <div className="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 delay-100 mt-3">
-                    <div className="text-xs text-gray-300 bg-black/30 backdrop-blur-sm rounded-lg p-2 border border-white/20">
-                      {testimonial.quote}
+                  {(testimonial.details || testimonial.quote) && (
+                    <div className="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 delay-100 mt-3">
+                      <div className="text-xs text-gray-300 bg-black/30 backdrop-blur-sm rounded-lg p-2 border border-white/20">
+                        {testimonial.details || testimonial.quote}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             )}
@@ -168,17 +125,15 @@ const TestimonialTicker = () => {
               className="flex overflow-x-auto hide-scrollbar gap-6 py-4 px-4 md:px-8 pb-6"
             >
               {testimonials.length > 0 ? (
-                // First, remove "Success Story" with id:4 and filter duplicates
                 testimonials
-                  .filter(testimonial => testimonial.id !== 4) // Remove Success Story with ID 4
-                  .filter((testimonial, index, self) => 
-                    index === self.findIndex((t) => t.name === testimonial.name)
+                  .filter((testimonial: Testimonial) => testimonial.id !== 4)
+                  .filter((testimonial: Testimonial, index: number, self: Testimonial[]) => 
+                    index === self.findIndex((t: Testimonial) => t.name === testimonial.name)
                   )
-                  // Then sort by displayOrder
-                  .sort((a, b) => {
-                    // Force displayOrder to be a number for comparison, with NaN converted to a large number
-                    const orderA = a.displayOrder !== null && a.displayOrder !== undefined ? Number(a.displayOrder) : Number.MAX_SAFE_INTEGER;
-                    const orderB = b.displayOrder !== null && b.displayOrder !== undefined ? Number(b.displayOrder) : Number.MAX_SAFE_INTEGER;
+                  .sort((a: Testimonial, b: Testimonial) => {
+                    // Use the correct property names (lowercase)
+                    const orderA = a.order !== null && a.order !== undefined ? Number(a.order) : Number.MAX_SAFE_INTEGER;
+                    const orderB = b.order !== null && b.order !== undefined ? Number(b.order) : Number.MAX_SAFE_INTEGER;
                     
                     // Sort by display order (lower numbers first)
                     if (orderA !== orderB) {
@@ -190,10 +145,10 @@ const TestimonialTicker = () => {
                     const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
                     return dateB - dateA; // Newer items first as fallback
                   })
-                  .map((testimonial) => renderImageTestimonial(testimonial))
-                ) : (
-                  <div className="text-center w-full py-4">No image testimonials available</div>
-                )}
+                  .map((testimonial: Testimonial) => renderImageTestimonial(testimonial))
+              ) : (
+                <div className="text-center w-full py-4">No success stories available</div>
+              )}
             </div>
             
             <button 

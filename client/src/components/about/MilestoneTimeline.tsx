@@ -1,112 +1,70 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
-import type { Milestone, MilestoneImage } from '@shared/schema';
+import type { Milestone as BaseMilestone, MilestoneImage } from '@shared/schema';
 import MilestoneToppersImage from './MilestoneToppersImage';
 import Milestone2024Image from './Milestone2024Image';
+import QUERY_KEY from '@/config/queryKeys';
+import apiClient from '@/config/apiClient';
+import { API } from '@/config/api';
+import VideoPlayer from '@/components/common/VideoPlayer';
+
+type Milestone = BaseMilestone & {
+  isImage: boolean;
+  media?: string;
+};
+
+// Helper to convert YouTube URLs to embed format
+function getYouTubeEmbedUrl(url: string): string {
+  if (!url) return '';
+  // youtu.be short link
+  const shortMatch = url.match(/^https?:\/\/youtu\.be\/([\w-]+)/);
+  if (shortMatch) {
+    return `https://www.youtube.com/embed/${shortMatch[1]}`;
+  }
+  // youtube.com/watch?v=...
+  const longMatch = url.match(/[?&]v=([\w-]+)/);
+  if (longMatch) {
+    return `https://www.youtube.com/embed/${longMatch[1]}`;
+  }
+  // Already an embed or other video link
+  return url;
+}
 
 const MilestoneTimeline = () => {
+  const { data, isLoading } = useQuery({
+    queryKey: [QUERY_KEY?.JOURNEY],
+    queryFn: async () => {
+      const response = await apiClient.get(API?.JOURNEY + "?isActive=true&page=1&limit=50");
+      return response.data.data; // Return only the array of toppers
+    },
+  });
+
   // State for active milestone
   const [activeMilestoneId, setActiveMilestoneId] = useState<number | null>(null);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
 
-  // Static milestone data arranged in reverse chronological order (2025 to 2015)
-  const milestones: Milestone[] = [
-    {
-      id: 9,
-      year: "2025",
-      title: "Future Vision",
-      description: "Continuing to lead civil service coaching with cutting-edge technology, personalized learning paths, and maintaining our position as Kerala's top UPSC coaching institute with unwavering commitment to student success.",
-      displayOrder: 1,
-      isDefault: true,
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: 10,
-      year: "2024",
-      title: "Strategic Growth",
-      description: "Expanded our reach and impact with enhanced digital platforms, new program offerings, and strengthened our position as Kerala's leading UPSC coaching institute with record-breaking student success rates.",
-      displayOrder: 2,
-      isDefault: false,
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: 8,
-      year: "2023",
-      title: "Innovation & Excellence",
-      description: "Continued our journey of innovation with advanced teaching methodologies and technology integration. Our commitment to excellence remains unwavering.",
-      displayOrder: 3,
-      isDefault: false,
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: 7,
-      year: "2022",
-      title: "Kerala's Best Results",
-      description: "Achieved Kerala's highest success rate in UPSC examinations through our PCM Classroom Program. Our proven methodology and dedicated faculty created history.",
-      displayOrder: 4,
-      isDefault: false,
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: 6,
-      year: "2021",
-      title: "Digital Transformation",
-      description: "Embraced digital learning platforms and hybrid teaching methods. Our adaptability during challenging times ensured uninterrupted learning for all students.",
-      displayOrder: 5,
-      isDefault: false,
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: 5,
-      year: "2020",
-      title: "Residential Campus",
-      description: "Opened our state-of-the-art residential campus, providing students with a conducive learning environment. Despite challenges, we continued to deliver quality education and support.",
-      displayOrder: 6,
-      isDefault: false,
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: 4,
-      year: "2019",
-      title: "Mentorship Program Launch",
-      description: "Launched our comprehensive mentorship program, providing personalized guidance to each student. This initiative significantly improved our success rates and student satisfaction.",
-      displayOrder: 7,
-      isDefault: false,
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: 3,
-      year: "2018",
-      title: "Expansion Year",
-      description: "With growing demand and proven results, we expanded our infrastructure and faculty. New programs were introduced to cater to diverse student needs and learning preferences.",
-      displayOrder: 8,
-      isDefault: false,
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: 2,
-      year: "2017",
-      title: "First Batch Success",
-      description: "Our first batch of students achieved remarkable success in the UPSC examinations, establishing our reputation as a reliable coaching institute. This milestone marked the beginning of our legacy of excellence.",
-      displayOrder: 9,
-      isDefault: false,
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: 1,
-      year: "2015",
-      title: "Foundation Year",
-      description: "iLearn IAS Academy was established with a vision to provide quality civil service coaching. Starting with a small team and big dreams, we laid the foundation for what would become Kerala's premier coaching institute.",
-      displayOrder: 10,
-      isDefault: false,
-      createdAt: new Date().toISOString()
-    }
-  ];
+  // Transform API data to Milestone[] and sort by latest first (newest to oldest)
+  const milestones: Milestone[] = (data || []).map((item: any) => ({
+    id: item.id,
+    year: item.year,
+    title: item.title,
+    description: item.description,
+    displayOrder: item.order, // API 'order' -> 'displayOrder'
+    isDefault: false, // You can set logic for default if needed
+    createdAt: new Date(item.createdAt),
+    isImage: item.isImage,
+    media: item.media,
+  })).sort((a: Milestone, b: Milestone) => {
+    // Sort by year first (descending), then by creation date (descending)
+    const yearComparison = parseInt(b.year) - parseInt(a.year);
+    if (yearComparison !== 0) return yearComparison;
+    return b.createdAt.getTime() - a.createdAt.getTime();
+  });
 
   const milestonesLoading = false;
-  const defaultMilestone = milestones.find(m => m.isDefault) || milestones[milestones.length - 1];
+  const defaultMilestone = milestones.find(m => m.isDefault) || milestones[0]; // Use first (latest) instead of last
   const milestoneImages: MilestoneImage[] = [];
   const imagesLoading = false;
 
@@ -116,7 +74,7 @@ const MilestoneTimeline = () => {
       setActiveMilestoneId(defaultMilestone.id);
       console.log("Setting default milestone ID:", defaultMilestone.id);
     } else if (milestones.length > 0 && !activeMilestoneId) {
-      // If no default milestone, use the first one
+      // If no default milestone, use the first one (which will be latest based on sort order)
       setActiveMilestoneId(milestones[0].id);
       console.log("Setting first milestone ID:", milestones[0].id);
     }
@@ -282,99 +240,36 @@ const MilestoneTimeline = () => {
                   <div className="w-10 h-10 border-4 border-primary-blue border-t-transparent rounded-full animate-spin"></div>
                 </div>
               )}
-              
+              {/* Title on top of image if image type */}
+              {activeMilestone.isImage && (
+                <div className="absolute top-0 left-0 w-full z-20">
+                  <div className="bg-primary-red text-white text-center font-bold py-2 px-4 text-lg md:text-xl rounded-t-xl">
+                    {activeMilestone.title}
+                  </div>
+                </div>
+              )}
               {/* Image with aspect-ratio container */}
               <div className="aspect-w-16 aspect-h-9 bg-gray-100 relative">
-                {activeMilestone && activeMilestone.year === "2025" ? (
-                  <MilestoneToppersImage />
-                ) : activeMilestone && activeMilestone.year === "2024" ? (
-                  <Milestone2024Image />
-                ) : activeMilestone && activeMilestone.year === "2023" ? (
-                  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
-                    <iframe 
-                      src="https://www.youtube.com/embed/fbfH3RAewCQ" 
-                      title="Digital Transformation 2023"
-                      frameBorder="0"
-                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                      allowFullScreen
-                    ></iframe>
-                  </div>
-                ) : activeMilestone && activeMilestone.year === "2022" ? (
-                  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
-                    <iframe 
-                      src="https://www.youtube.com/embed/TaFSTn5XfTo?rel=0" 
-                      title="Kerala's best results from PCM Classroom Program"
-                      frameBorder="0"
-                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                      allowFullScreen
-                    ></iframe>
-                  </div>
-                ) : activeMilestone.year === "2021" ? (
-                  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
-                    <iframe 
-                      src="https://www.youtube.com/embed/xVNRlQGQqWk?rel=0" 
-                      title="iLearn UPSC Achievement 2021"
-                      frameBorder="0"
-                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                      allowFullScreen
-                    ></iframe>
-                  </div>
-                ) : activeMilestone.year === "2020" ? (
-                  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
-                    <iframe 
-                      src="https://www.youtube.com/embed/cZkjyk5oloU?rel=0" 
-                      title="iLearn Residential Campus 2020"
-                      frameBorder="0"
-                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                      allowFullScreen
-                    ></iframe>
-                  </div>
-                ) : activeMilestone.year === "2019" ? (
-                  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
-                    <iframe 
-                      src="https://www.youtube.com/embed/03PnA2QsJwk?rel=0" 
-                      title="iLearn Mentorship Program 2019"
-                      frameBorder="0"
-                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                      allowFullScreen
-                    ></iframe>
-                  </div>
-                ) : activeMilestone.year === "2018" ? (
-                  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
-                    <iframe 
-                      src="https://www.youtube.com/embed/_-P0BIRarJE?rel=0" 
-                      title="iLearn Expansion Year 2018"
-                      frameBorder="0"
-                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                      allowFullScreen
-                    ></iframe>
-                  </div>
-                ) : activeMilestone.year === "2017" ? (
-                  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
-                    <iframe 
-                      src="https://www.youtube.com/embed/9NyxU2M7UUQ?rel=0" 
-                      title="iLearn First Batch Success 2017"
-                      frameBorder="0"
-                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                      allowFullScreen
-                    ></iframe>
-                  </div>
-                ) : activeMilestoneImage ? (
-                  <img 
-                    src={activeMilestoneImage.imageUrl} 
-                    alt={activeMilestoneImage.alt || `${activeMilestone.title} image`} 
-                    className="object-cover w-full h-full"
-                  />
+                {activeMilestone?.media ? (
+                  activeMilestone.isImage ? (
+                    <img
+                      src={activeMilestone.media}
+                      alt={activeMilestone.title + ' image'}
+                      className="object-cover w-full h-full"
+                    />
+                  ) : (
+                    <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
+                      <VideoPlayer
+                        url={activeMilestone.media}
+                        title="Milestone video"
+                        className="absolute inset-0 w-full h-full"
+                        allowFullScreen={true}
+                      />
+                    </div>
+                  )
                 ) : (
                   <div className="flex items-center justify-center w-full h-full bg-gray-100 text-gray-400">
-                    No image available
+                    No image or video available
                   </div>
                 )}
               </div>
@@ -405,19 +300,7 @@ const MilestoneTimeline = () => {
               >
                 {/* Milestone Description - MD3 baseline spacing */}
                 <p className="text-gray-700 text-sm md:text-lg leading-tight md:leading-relaxed mb-6 md:mb-8">
-                  {activeMilestone.year === "2022" 
-                    ? "Kerala's best results from PCM Classroom Program"
-                    : activeMilestone.year === "2023"
-                    ? "iLearn is a complete learning package"
-                    : activeMilestone.year === "2020"
-                    ? "Highest Success Rate in Kerala from Classroom Programs"
-                    : activeMilestone.year === "2019"
-                    ? "Hamna Mariyam's extraordinary success"
-                    : activeMilestone.year === "2018"
-                    ? "Hamna Mariyam's Extraordinary Success"
-                    : activeMilestone.year === "2017"
-                    ? "First Major Result : Athul Janardanan IFS became State Topper"
-                    : activeMilestone.description}
+                  {activeMilestone.description}
                 </p>
                 
                 {/* Navigation Controls - MD3 standard spacing */}

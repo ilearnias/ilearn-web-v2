@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
+import { API } from '@/config/api';
 import {
   Select,
   SelectContent,
@@ -187,10 +188,12 @@ export default function MediaUploader({
             const response = JSON.parse(xhr.responseText);
             
             // Create media entry using the uploaded file URL
-            const createMediaPromise = fetch('/api/media', {
+            const token = localStorage.getItem('adminToken');
+            const createMediaPromise = fetch(API.BASEURL + 'media', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
+                ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
               },
               body: JSON.stringify({
                 title,
@@ -211,16 +214,21 @@ export default function MediaUploader({
             .then(media => {
               // If we have a gallery event ID, associate this media with that event
               if (galleryEventId && media.id) {
-                return fetch(`/api/gallery-events/${galleryEventId}`)
+                return fetch(API.BASEURL + `admin/gallery/${galleryEventId}`, {
+                    headers: {
+                      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+                    },
+                  })
                   .then(eventRes => eventRes.json())
                   .then(event => {
                     const currentMediaIds = event.mediaIds || [];
                     const updatedMediaIds = [...currentMediaIds, media.id];
-                    
-                    return fetch(`/api/gallery-events/${galleryEventId}`, {
-                      method: 'PUT',
+
+                    return fetch(API.BASEURL + `admin/gallery/${galleryEventId}`, {
+                      method: 'PATCH',
                       headers: {
                         'Content-Type': 'application/json',
+                        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
                       },
                       body: JSON.stringify({
                         mediaIds: updatedMediaIds
@@ -243,11 +251,13 @@ export default function MediaUploader({
         xhr.onabort = () => reject(new Error('Upload was aborted'));
         
         // Use the appropriate endpoint based on media type
-        const endpoint = mediaType === 'image' 
-          ? '/api/upload/image' 
-          : '/api/upload/video';
-        
+        const endpoint = mediaType === 'image'
+          ? API.BASEURL + 'upload/image'
+          : API.BASEURL + 'upload/video';
+
         xhr.open('POST', endpoint, true);
+        const uploadToken = localStorage.getItem('adminToken');
+        if (uploadToken) xhr.setRequestHeader('Authorization', `Bearer ${uploadToken}`);
         xhr.send(formData);
       });
 

@@ -75,9 +75,9 @@ export default function VideoTestimonialsEditor() {
   
   // Query to fetch video testimonials
   const { data: testimonials, isLoading } = useQuery({
-    queryKey: ["/api/testimonials", "video"],
+    queryKey: ["testimonials", "video"],
     queryFn: () => apiRequest<Testimonial[]>({ 
-      url: "/api/testimonials?type=video"
+      url: "testimonials?type=video"
     }),
   });
 
@@ -148,13 +148,13 @@ export default function VideoTestimonialsEditor() {
   const createTestimonialMutation = useMutation({
     mutationFn: (data: TestimonialFormValues & { type: string }) => {
       return apiRequest({
-        url: "/api/testimonials",
+        url: "testimonials",
         method: "POST",
         data,
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/testimonials", "video"] });
+      queryClient.invalidateQueries({ queryKey: ["testimonials", "video"] });
       toast({
         title: "Video testimonial added",
         description: "The video testimonial has been added successfully.",
@@ -175,13 +175,13 @@ export default function VideoTestimonialsEditor() {
   const updateTestimonialMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<TestimonialFormValues> }) => {
       return apiRequest({
-        url: `/api/testimonials/${id}`,
-        method: "PUT",
+        url: `testimonials/${id}`,
+        method: "PATCH",
         data,
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/testimonials", "video"] });
+      queryClient.invalidateQueries({ queryKey: ["testimonials", "video"] });
       toast({
         title: "Video testimonial updated",
         description: "The video testimonial has been updated successfully.",
@@ -202,12 +202,12 @@ export default function VideoTestimonialsEditor() {
   const deleteTestimonialMutation = useMutation({
     mutationFn: (id: number) => {
       return apiRequest({
-        url: `/api/testimonials/${id}`,
+        url: `testimonials/${id}`,
         method: "DELETE",
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/testimonials", "video"] });
+      queryClient.invalidateQueries({ queryKey: ["testimonials", "video"] });
       toast({
         title: "Video testimonial deleted",
         description: "The video testimonial has been deleted successfully.",
@@ -279,8 +279,8 @@ export default function VideoTestimonialsEditor() {
     Promise.all(
       updatedItems.map((item, index) => 
         apiRequest({
-          url: `/api/testimonials/${item.id}`,
-          method: "PUT",
+          url: `testimonials/${item.id}`,
+          method: "PATCH",
           data: { 
             displayOrder: index,
             type: item.type || "video" // Ensure type is included
@@ -288,7 +288,7 @@ export default function VideoTestimonialsEditor() {
         })
       )
     ).then(() => {
-      queryClient.invalidateQueries({ queryKey: ["/api/testimonials", "video"] });
+      queryClient.invalidateQueries({ queryKey: ["testimonials", "video"] });
       toast({
         title: "Order updated",
         description: "The display order has been updated successfully.",

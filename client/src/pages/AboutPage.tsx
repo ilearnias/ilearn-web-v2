@@ -34,14 +34,19 @@ import parvathyImage from '../assets/faculty/Parvathy.png';
 import vishnuImage from '../assets/faculty/Vishnu.png';
 import martinImage from '../assets/faculty/Marteshhh.png';
 import abiSundarImage from '../assets/faculty/Abi Sundar.png';
+import MediaShoutouts from '@/components/home/MediaShoutouts';
+import apiClient from '@/config/apiClient';
+import { API } from '@/config/api';
+import QUERY_KEY from '@/config/queryKeys';
 
 const AboutPage = () => {
   // Fetch images for different sections of the About page
   const { data: introImages = [], isLoading: isLoadingIntroImages } = useQuery({
-    queryKey: ['/api/about-page-images', 'intro'],
-    queryFn: () => apiRequest<AboutPageImage[]>({ 
-      url: '/api/about-page-images?section=intro'
-    }),
+    queryKey: [QUERY_KEY.ABOUT_PAGE_IMAGES || 'about-page-images', 'intro'],
+    queryFn: async () => {
+      const response = await apiClient.get(API.ABOUT_PAGE_IMAGES + '?section=intro');
+      return response.data?.data || response.data || [];
+    },
   });
   
   const [introImageIndex, setIntroImageIndex] = useState(0);
@@ -222,164 +227,36 @@ const AboutPage = () => {
     }
   ];
   
-  // Data for faculty members
-  const facultyMembers = [
-    // Directors first
-    {
-      name: 'Nikhil Lohithakshan',
-      subjects: 'Director',
-      image: nikhilImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample1'
+  // Fetch team members from API
+  const { data: teamData, isLoading: isLoadingTeam, isError: isErrorTeam } = useQuery({
+    queryKey: [QUERY_KEY.TEAM_MEMBERS],
+    queryFn: async () => {
+      const response = await apiClient.get(API.TEAM_MEMBERS + "?isActive=true&page=1&limit=50");
+      return response.data;
     },
-    {
-      name: 'Mohammed Shinas S',
-      subjects: 'Director',
-      image: shinasImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample3'
-    },
-    {
-      name: 'Dias Jose',
-      subjects: 'Director',
-      image: diasImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample4'
-    },
-    {
-      name: 'Jishnu Krishna',
-      subjects: 'Director',
-      image: jishnuImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample11'
-    },
-    {
-      name: 'TJ Abraham',
-      subjects: 'Director',
-      image: null,
-      videoUrl: 'https://www.youtube.com/watch?v=sample2'
-    },
-    
-    // Faculty members
-    {
-      name: 'Mohammed Ijas',
-      subjects: 'Senior Faculty',
-      image: ijasImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample5'
-    },
-    {
-      name: 'Sreehari',
-      subjects: 'Faculty',
-      image: sreehariImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample7'
-    },
-    {
-      name: 'Anoop E K',
-      subjects: 'Faculty',
-      image: anoopImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample8'
-    },
-    {
-      name: 'Adhil Shukoor',
-      subjects: 'Faculty',
-      image: adhilImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample9'
-    },
-    {
-      name: 'Chithra Ashok',
-      subjects: 'Faculty',
-      image: chitraImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample10'
-    },
-    {
-      name: 'Akshar Narayanan',
-      subjects: 'Faculty',
-      image: aksharImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample13'
-    },
-    {
-      name: 'Reenu Anna Mathew',
-      subjects: 'Faculty',
-      image: reenuImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample18'
-    },
-    {
-      name: 'Sachin',
-      subjects: 'CSAT Faculty',
-      image: null,
-      videoUrl: 'https://www.youtube.com/watch?v=sample19'
-    },
-    {
-      name: 'Aswathy',
-      subjects: 'Faculty',
-      image: aswathyImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample22'
-    },
-    
-    // Others - Managers, Team members, etc.
-    {
-      name: 'Vishnu Sadanand',
-      subjects: 'Academic Manager',
-      image: vishnuSadanandImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample6'
-    },
-    {
-      name: 'Ajay P',
-      subjects: 'Admin Manager',
-      image: ajayImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample12'
-    },
-    {
-      name: 'Dhanya Gopan',
-      subjects: 'Manager-Admissions',
-      image: dhanyaImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample21'
-    },
-    {
-      name: 'Martin Roy',
-      subjects: 'Marketing Manager',
-      image: martinImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample25'
-    },
-    {
-      name: 'Abi Sundar',
-      subjects: 'Creative Head',
-      image: abiSundarImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample26'
-    },
-    {
-      name: 'Albin Benny',
-      subjects: 'CANA Team',
-      image: albinImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample14'
-    },
-    {
-      name: 'Parvathy Suresh',
-      subjects: 'CANA Team',
-      image: parvathyImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample23'
-    },
-    {
-      name: 'Jerrin Tomy',
-      subjects: 'Content Team',
-      image: jerrinImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample17'
-    },
-    {
-      name: 'Anandapadman',
-      subjects: 'Mentor',
-      image: anandapadmanImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample15'
-    },
-    {
-      name: 'Subin Sabu',
-      subjects: 'Mentor',
-      image: subinImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample20'
-    },
-    {
-      name: 'Vishnu Rajmohan',
-      subjects: 'Mentor',
-      image: vishnuImage,
-      videoUrl: 'https://www.youtube.com/watch?v=sample24'
-    }
-  ];
+  });
+
+  const facultyMembers = teamData?.data || [];
+
+  // Type for team member
+  type FacultyMember = {
+    id: string;
+    name: string;
+    designation: string;
+    description: string | null;
+    image: string | null;
+    email: string | null;
+    phone: string | null;
+    linkedin: string | null;
+    twitter: string | null;
+    facebook: string | null;
+    instagram: string | null;
+    order: number;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+  };
 
   return (
     <PageTransition>
@@ -593,11 +470,19 @@ const AboutPage = () => {
             <div className="relative">
               <div className="overflow-hidden md:pb-4 -mx-4 md:mx-0" ref={emblaRef}>
                 <div className="flex px-4 md:px-0 touch-pan-y">
-                  {facultyMembers.map((faculty, index) => (
-                    <div key={index} className="flex-[0_0_85%] min-w-0 sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] px-2 md:px-3">
+                  {isLoadingTeam ? (
+                    <div className="w-full flex justify-center items-center h-48">
+                      <div className="w-10 h-10 border-3 border-primary-blue border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  ) : isErrorTeam ? (
+                    <div className="w-full text-center text-red-500 py-8">Failed to load team members.</div>
+                  ) : facultyMembers.length === 0 ? (
+                    <div className="w-full text-center text-neutral-500 py-8">No team members found.</div>
+                  ) : facultyMembers.map((faculty: FacultyMember, index: number) => (
+                    <div key={faculty.id} className="flex-[0_0_85%] min-w-0 sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] px-2 md:px-3">
                       <div 
                         className="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm transition-all duration-300 hover:shadow-md h-full active:shadow-lg active:scale-[0.99] md:active:scale-100 touch-manipulation"
-                        onClick={() => isMobile && faculty.videoUrl && window.open(faculty.videoUrl, '_blank')}
+                        // No videoUrl in new API, so remove click handler
                       >
                         <div className="aspect-w-1 aspect-h-1 bg-gray-100 overflow-hidden relative">
                           {faculty.image ? (
@@ -612,23 +497,16 @@ const AboutPage = () => {
                                   e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(faculty.name)}&background=e1effe&color=1e40af&bold=true&size=200`;
                                 }}
                               />
-                              {isMobile && faculty.videoUrl && (
-                                <div className="absolute top-2 right-2 w-8 h-8 rounded-full bg-primary-red/90 flex items-center justify-center animate-pulse">
-                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                                  </svg>
-                                </div>
-                              )}
                             </>
                           ) : (
                             <div className="flex items-center justify-center w-full h-full bg-primary-blue/10 transition-colors duration-300 hover:bg-primary-blue/20">
-                              <span className="text-xl font-bold text-primary-blue">{faculty.name.split(' ').map(name => name[0]).join('')}</span>
+                              <span className="text-xl font-bold text-primary-blue">{faculty.name.split(' ').map((name: string) => name[0]).join('')}</span>
                             </div>
                           )}
                         </div>
                         <div className="p-4 md:p-5">
                           <h3 className="text-lg md:text-xl font-bold text-primary-blue">{faculty.name}</h3>
-                          <p className="text-primary-red">{faculty.subjects}</p>
+                          <p className="text-primary-red">{faculty.designation}</p>
                         </div>
                       </div>
                     </div>
@@ -694,7 +572,8 @@ const AboutPage = () => {
         </section>
         
         {/* Media Gallery Integration */}
-        <AboutMediaCarousel />
+        {/* <AboutMediaCarousel /> */}
+        <MediaShoutouts />
         
         {/* Closing Call-to-Action Section */}
         <section className="py-16 md:py-24 bg-gradient-to-br from-primary-blue/10 to-primary-red/10 relative overflow-hidden">

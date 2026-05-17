@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import { NAV_LINKS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
-import logoImage from '@/assets/uploaded/new-logo.png';
+import logoImage from '@/assets/uploaded/logo.jpg';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ScrollLink } from '@/components/ui/scroll-link';
@@ -140,7 +140,7 @@ const Navbar = () => {
           className="relative z-10"
         >
           <ScrollLink href="/" className="flex items-center gap-2">
-            <img src={logoImage} alt="iLearn IAS Logo" className="h-12 md:h-14" />
+            <img src={logoImage} alt="iLearn IAS Logo" className="h-8 md:h-10" />
           </ScrollLink>
           
           {/* Logo highlight effect */}

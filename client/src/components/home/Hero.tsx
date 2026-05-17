@@ -1,8 +1,35 @@
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import { useRef, useEffect, useState } from 'react';
 
 const Hero = () => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoLoaded, setVideoLoaded] = useState(false);
+  const [videoError, setVideoError] = useState(false);
+
+  // Ensure video autoplays when component mounts
+  useEffect(() => {
+    if (videoRef.current) {
+      const playVideo = async () => {
+        try {
+          await videoRef.current!.play();
+        } catch (error) {
+          console.log('Autoplay prevented:', error);
+          // Try to play on user interaction
+          const handleUserInteraction = () => {
+            videoRef.current?.play().catch(console.error);
+            document.removeEventListener('click', handleUserInteraction);
+            document.removeEventListener('touchstart', handleUserInteraction);
+          };
+          document.addEventListener('click', handleUserInteraction);
+          document.addEventListener('touchstart', handleUserInteraction);
+        }
+      };
+      playVideo();
+    }
+  }, []);
+
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -54,7 +81,7 @@ const Hero = () => {
                 <span className="text-[#20468D] block">
                   we make <span className="relative inline-block">
                     <span className="relative z-10">genuine</span>
-                    <span className="absolute bottom-0 left-0 h-full bg-[#ffff00] z-0 animate-highlightLeftToRight"></span>
+                    <span className="absolute bottom-0 left-0 h-full  z-0"></span>
                   </span>
                 </span>
                 <span className="text-[#20468D] block">
@@ -115,14 +142,34 @@ const Hero = () => {
               stiffness: 100
             }}
           >
-            <div className="w-full max-w-md aspect-square bg-white rounded-lg shadow-sm overflow-hidden">
-              <iframe 
-                src="https://www.youtube.com/embed/NVGwwVzTeJU?autoplay=1&loop=1&controls=0&showinfo=0&modestbranding=1&mute=1&playlist=NVGwwVzTeJU" 
-                className="w-full h-full"
-                allow="autoplay; encrypted-media"
-                frameBorder="0"
+            <div className="w-full max-w-md aspect-square bg-white rounded-lg shadow-sm overflow-hidden relative">
+              {!videoLoaded && !videoError && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#e21a24]"></div>
+                </div>
+              )}
+              {videoError && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                  <div className="text-center text-gray-500">
+                    <p>Video unavailable</p>
+                    <p className="text-sm">Please refresh the page</p>
+                  </div>
+                </div>
+              )}
+              <video 
+                ref={videoRef}
+                src="/assets/hero-video-new.mp4"
+                className="w-full h-full object-cover"
+                autoPlay={true}
+                loop
+                muted
+                playsInline
                 title="iLearn IAS Video"
-              ></iframe>
+                onLoadedData={() => setVideoLoaded(true)}
+                onError={() => setVideoError(true)}
+              >
+                Your browser does not support the video tag.
+              </video>
             </div>
           </motion.div>
         </div>

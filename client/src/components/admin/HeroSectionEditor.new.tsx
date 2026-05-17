@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { toast } from "@/hooks/use-toast";
+import { API } from "@/config/api";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -145,7 +146,9 @@ export default function HeroSectionEditor() {
         };
 
         // Open and send request
-        xhr.open('POST', '/api/upload/video', true);
+        xhr.open('POST', API.BASEURL + 'upload/video', true);
+        const token = localStorage.getItem('adminToken');
+        if (token) xhr.setRequestHeader('Authorization', `Bearer ${token}`);
         xhr.send(formData);
       });
     },
@@ -199,23 +202,23 @@ export default function HeroSectionEditor() {
 
   // Query to get current hero video settings
   const { data: heroVideoUrl, isLoading: isLoadingVideo } = useQuery({
-    queryKey: ["/api/settings/hero_video_url"],
-    queryFn: () => apiRequest({ url: "/api/settings/hero_video_url" })
+    queryKey: ["site-settings/hero_video_url"],
+    queryFn: () => apiRequest({ url: "site-settings/hero_video_url" })
   });
 
   const { data: heroVideoPoster, isLoading: isLoadingPoster } = useQuery({
-    queryKey: ["/api/settings/hero_video_poster"],
-    queryFn: () => apiRequest({ url: "/api/settings/hero_video_poster" })
+    queryKey: ["site-settings/hero_video_poster"],
+    queryFn: () => apiRequest({ url: "site-settings/hero_video_poster" })
   });
-  
+
   const { data: heroTitle, isLoading: isLoadingTitle } = useQuery({
-    queryKey: ["/api/settings/hero_title"],
-    queryFn: () => apiRequest({ url: "/api/settings/hero_title" })
+    queryKey: ["site-settings/hero_title"],
+    queryFn: () => apiRequest({ url: "site-settings/hero_title" })
   });
-  
+
   const { data: heroDescription, isLoading: isLoadingDescription } = useQuery({
-    queryKey: ["/api/settings/hero_description"],
-    queryFn: () => apiRequest({ url: "/api/settings/hero_description" })
+    queryKey: ["site-settings/hero_description"],
+    queryFn: () => apiRequest({ url: "site-settings/hero_description" })
   });
   
   // Determine if all data is loading
@@ -248,20 +251,20 @@ export default function HeroSectionEditor() {
       const results = await Promise.all([
         // Update video URL
         apiRequest({
-          url: "/api/settings/hero_video_url",
-          method: "PUT",
+          url: "site-settings/hero_video_url",
+          method: "PATCH",
           data: { value: data.mediaUrl },
         }),
         // Update title
         apiRequest({
-          url: "/api/settings/hero_title",
-          method: "PUT",
+          url: "site-settings/hero_title",
+          method: "PATCH",
           data: { value: data.title },
         }),
         // Update description
         apiRequest({
-          url: "/api/settings/hero_description",
-          method: "PUT",
+          url: "site-settings/hero_description",
+          method: "PATCH",
           data: { value: data.description },
         }),
       ]);
@@ -269,10 +272,10 @@ export default function HeroSectionEditor() {
     },
     onSuccess: () => {
       // Invalidate all hero settings queries
-      queryClient.invalidateQueries({ queryKey: ["/api/settings/hero_video_url"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/settings/hero_video_poster"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/settings/hero_title"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/settings/hero_description"] });
+      queryClient.invalidateQueries({ queryKey: ["site-settings/hero_video_url"] });
+      queryClient.invalidateQueries({ queryKey: ["site-settings/hero_video_poster"] });
+      queryClient.invalidateQueries({ queryKey: ["site-settings/hero_title"] });
+      queryClient.invalidateQueries({ queryKey: ["site-settings/hero_description"] });
       
       toast({
         title: "Hero section updated",

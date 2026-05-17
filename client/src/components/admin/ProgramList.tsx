@@ -20,15 +20,15 @@ export default function ProgramList() {
 
   // Fetch programs
   const { data: programs = [], isLoading } = useQuery({
-    queryKey: ["/api/programs"],
-    queryFn: () => apiRequest<Program[]>({ url: "/api/programs" }),
+    queryKey: ["admin/programs"],
+    queryFn: () => apiRequest<Program[]>({ url: "admin/programs" }),
   });
 
   // Handle delete program
   const handleDelete = async (id: number) => {
     try {
-      await apiRequest({ url: `/api/programs/${id}`, method: "DELETE" });
-      queryClient.invalidateQueries({ queryKey: ["/api/programs"] });
+      await apiRequest({ url: `admin/programs/${id}`, method: "DELETE" });
+      queryClient.invalidateQueries({ queryKey: ["admin/programs"] });
       toast({
         title: "Success",
         description: "Program deleted successfully",
@@ -70,7 +70,7 @@ export default function ProgramList() {
             <ProgramForm
               onSuccess={() => {
                 setIsAddDialogOpen(false);
-                queryClient.invalidateQueries({ queryKey: ["/api/programs"] });
+                queryClient.invalidateQueries({ queryKey: ["admin/programs"] });
                 toast({
                   title: "Success",
                   description: "Program added successfully",
@@ -162,7 +162,7 @@ export default function ProgramList() {
                         program={program}
                         onSuccess={() => {
                           setEditingProgram(null);
-                          queryClient.invalidateQueries({ queryKey: ["/api/programs"] });
+                          queryClient.invalidateQueries({ queryKey: ["admin/programs"] });
                           toast({
                             title: "Success",
                             description: "Program updated successfully",

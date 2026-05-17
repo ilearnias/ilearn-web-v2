@@ -109,19 +109,19 @@ export default function ImageTestimonialForm({ onSuccess, programName = "UPSC CS
   const createTestimonialMutation = useMutation({
     mutationFn: (data: any) => {
       return apiRequest({
-        url: "/api/testimonials",
+        url: "testimonials",
         method: "POST",
         data,
       });
     },
     onSuccess: () => {
       // Invalidate general testimonials queries
-      queryClient.invalidateQueries({ queryKey: ["/api/testimonials", "image"] });
+      queryClient.invalidateQueries({ queryKey: ["testimonials", "image"] });
       
       // If we have a program ID, invalidate program-specific testimonials as well
       if (programId) {
-        queryClient.invalidateQueries({ queryKey: [`/api/programs/${programId}/testimonials`] });
-        queryClient.invalidateQueries({ queryKey: [`/api/programs/${programId}/testimonials`, 'student'] });
+        queryClient.invalidateQueries({ queryKey: [`admin/programs/${programId}/testimonials`] });
+        queryClient.invalidateQueries({ queryKey: [`admin/programs/${programId}/testimonials`, 'student'] });
       }
       
       toast({

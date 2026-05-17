@@ -71,15 +71,15 @@ export default function GalleryEventEditor() {
 
   // Query: Fetch all gallery events
   const { data: galleryEvents = [], isLoading } = useQuery({
-    queryKey: ['/api/gallery-events'],
-    queryFn: () => apiRequest<GalleryEvent[]>('/api/gallery-events'),
+    queryKey: ['admin/gallery'],
+    queryFn: () => apiRequest<GalleryEvent[]>('admin/gallery'),
   });
 
   // Query: Fetch media items for a specific event
   const { data: eventMedia = [], isLoading: isMediaLoading } = useQuery({
-    queryKey: ['/api/gallery-events', selectedEventId, 'media'],
+    queryKey: ['admin/gallery', selectedEventId, 'media'],
     queryFn: () => selectedEventId 
-      ? apiRequest<Media[]>(`/api/gallery-events/${selectedEventId}/media`) 
+      ? apiRequest<Media[]>(`admin/gallery/${selectedEventId}/media`) 
       : Promise.resolve([]),
     enabled: !!selectedEventId,
   });
@@ -87,9 +87,9 @@ export default function GalleryEventEditor() {
   // Mutation: Create a new gallery event
   const createEventMutation = useMutation({
     mutationFn: (data: z.infer<typeof galleryEventSchema>) => 
-      apiRequest({ url: '/api/gallery-events', method: 'POST', data }),
+      apiRequest({ url: 'admin/gallery', method: 'POST', data }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/gallery-events'] });
+      queryClient.invalidateQueries({ queryKey: ['admin/gallery'] });
       toast({
         title: 'Success',
         description: 'Gallery event created successfully',
@@ -110,10 +110,10 @@ export default function GalleryEventEditor() {
   // Mutation: Update an existing gallery event
   const updateEventMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<z.infer<typeof galleryEventSchema>> }) => 
-      apiRequest({ url: `/api/gallery-events/${id}`, method: 'PUT', data }),
+      apiRequest({ url: `admin/gallery/${id}`, method: 'PATCH', data }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/gallery-events'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/gallery-events', selectedEventId, 'media'] });
+      queryClient.invalidateQueries({ queryKey: ['admin/gallery'] });
+      queryClient.invalidateQueries({ queryKey: ['admin/gallery', selectedEventId, 'media'] });
       toast({
         title: 'Success',
         description: 'Gallery event updated successfully',
@@ -134,11 +134,11 @@ export default function GalleryEventEditor() {
   // Mutation: Delete a gallery event
   const deleteEventMutation = useMutation({
     mutationFn: (id: number) => apiRequest({ 
-      url: `/api/gallery-events/${id}`, 
+      url: `admin/gallery/${id}`, 
       method: 'DELETE' 
     }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/gallery-events'] });
+      queryClient.invalidateQueries({ queryKey: ['admin/gallery'] });
       toast({
         title: 'Success',
         description: 'Gallery event deleted successfully',
@@ -160,12 +160,12 @@ export default function GalleryEventEditor() {
   // Mutation: Update display order of events
   const updateOrderMutation = useMutation({
     mutationFn: (ids: number[]) => apiRequest({ 
-      url: `/api/gallery-events-order`, 
-      method: 'PUT', 
+      url: `admin/gallery/order`, 
+      method: 'PATCH', 
       data: { ids } 
     }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/gallery-events'] });
+      queryClient.invalidateQueries({ queryKey: ['admin/gallery'] });
       toast({
         title: 'Success',
         description: 'Event order updated',
@@ -476,7 +476,7 @@ export default function GalleryEventEditor() {
                             // Close the dialog and refresh the media
                             setIsMediaCreatorOpen(false);
                             queryClient.invalidateQueries({ 
-                              queryKey: ['/api/gallery-events', selectedEventId, 'media'] 
+                              queryKey: ['admin/gallery', selectedEventId, 'media'] 
                             });
                           }}
                         />

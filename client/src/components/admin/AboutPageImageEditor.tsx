@@ -98,11 +98,11 @@ const AboutPageImageEditor = () => {
 
   // Fetch about page images
   const { data: aboutPageImages = [], isLoading } = useQuery({
-    queryKey: ['/api/about-page-images', selectedSection],
+    queryKey: ['about-page-images', selectedSection],
     queryFn: async () => {
       const url = selectedSection && selectedSection !== 'all'
-        ? `/api/about-page-images?section=${selectedSection}` 
-        : '/api/about-page-images';
+        ? `about-page-images?section=${selectedSection}` 
+        : 'about-page-images';
       return apiRequest<AboutPageImage[]>({ url });
     },
   });
@@ -110,7 +110,7 @@ const AboutPageImageEditor = () => {
   // Create a new about page image
   const createMutation = useMutation({
     mutationFn: (data: FormValues) => apiRequest<AboutPageImage>({
-      url: '/api/about-page-images',
+      url: 'about-page-images',
       method: 'POST',
       data
     }),
@@ -119,7 +119,7 @@ const AboutPageImageEditor = () => {
         title: 'Success',
         description: 'Image added successfully',
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/about-page-images'] });
+      queryClient.invalidateQueries({ queryKey: ['about-page-images'] });
       resetForm();
     },
     onError: (error) => {
@@ -136,8 +136,8 @@ const AboutPageImageEditor = () => {
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: FormValues }) => 
       apiRequest<AboutPageImage>({
-        url: `/api/about-page-images/${id}`,
-        method: 'PUT',
+        url: `about-page-images/${id}`,
+        method: 'PATCH',
         data
       }),
     onSuccess: () => {
@@ -145,7 +145,7 @@ const AboutPageImageEditor = () => {
         title: 'Success',
         description: 'Image updated successfully',
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/about-page-images'] });
+      queryClient.invalidateQueries({ queryKey: ['about-page-images'] });
       resetForm();
     },
     onError: (error) => {
@@ -161,7 +161,7 @@ const AboutPageImageEditor = () => {
   // Delete an about page image
   const deleteMutation = useMutation({
     mutationFn: (id: number) => apiRequest<void>({
-      url: `/api/about-page-images/${id}`,
+      url: `about-page-images/${id}`,
       method: 'DELETE'
     }),
     onSuccess: () => {
@@ -169,7 +169,7 @@ const AboutPageImageEditor = () => {
         title: 'Success',
         description: 'Image deleted successfully',
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/about-page-images'] });
+      queryClient.invalidateQueries({ queryKey: ['about-page-images'] });
       setConfirmDeleteId(null);
     },
     onError: (error) => {
@@ -185,7 +185,7 @@ const AboutPageImageEditor = () => {
   // Update the order of about page images
   const updateOrderMutation = useMutation({
     mutationFn: (ids: number[]) => apiRequest<{ message: string }>({
-      url: '/api/about-page-images-order',
+      url: 'about-page-images/order',
       method: 'POST',
       data: { ids }
     }),
@@ -194,7 +194,7 @@ const AboutPageImageEditor = () => {
         title: 'Success',
         description: 'Image order updated',
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/about-page-images'] });
+      queryClient.invalidateQueries({ queryKey: ['about-page-images'] });
     },
     onError: (error) => {
       toast({

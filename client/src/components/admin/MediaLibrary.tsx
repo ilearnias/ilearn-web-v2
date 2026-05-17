@@ -129,8 +129,8 @@ export default function MediaLibrary() {
   const [mediaFilter, setMediaFilter] = useState<string>("all");
   
   const { data: mediaItems, isLoading } = useQuery({
-    queryKey: ["/api/media"],
-    queryFn: () => apiRequest<Media[]>({ url: "/api/media" }),
+    queryKey: ["media"],
+    queryFn: () => apiRequest<Media[]>({ url: "media" }),
   });
   
   // Update items when data is loaded
@@ -185,13 +185,13 @@ export default function MediaLibrary() {
       }
       
       return apiRequest({
-        url: "/api/media",
+        url: "media",
         method: "POST",
         data: processedData,
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/media"] });
+      queryClient.invalidateQueries({ queryKey: ["media"] });
       toast({
         title: "Media created",
         description: "Media item has been created successfully.",
@@ -236,14 +236,14 @@ export default function MediaLibrary() {
       }
       
       return apiRequest({
-        url: `/api/media/${id}`,
-        method: "PUT",
+        url: `media/${id}`,
+        method: "PATCH",
         data: processedData,
       });
     },
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/media"] });
-      queryClient.invalidateQueries({ queryKey: [`/api/media/${variables.id}`] });
+      queryClient.invalidateQueries({ queryKey: ["media"] });
+      queryClient.invalidateQueries({ queryKey: [`media/${variables.id}`] });
       toast({
         title: "Media updated",
         description: "Media item has been updated successfully.",
@@ -265,12 +265,12 @@ export default function MediaLibrary() {
   const deleteMediaMutation = useMutation({
     mutationFn: (id: number) => {
       return apiRequest({
-        url: `/api/media/${id}`,
+        url: `media/${id}`,
         method: "DELETE",
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/media"] });
+      queryClient.invalidateQueries({ queryKey: ["media"] });
       toast({
         title: "Media deleted",
         description: "Media item has been deleted successfully.",

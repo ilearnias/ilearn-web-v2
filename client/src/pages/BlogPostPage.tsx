@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useParams, useLocation } from "wouter";
 import { ArrowRight, Bookmark, ChevronRight, Calendar, User, Tag, Share, Facebook, Twitter, Linkedin, Clock, ChevronLeft } from "lucide-react";
 import { format } from "date-fns";
+import { useState } from "react";
 
 // UI Components
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ import type { BlogPost, BlogCategory } from "@shared/schema";
 
 // Markdown renderer for rich content 
 import ReactMarkdown from 'react-markdown';
+import { renderXMLContent, hasRichContent } from '@/utils/xml-parser';
 
 // Utility function to format date
 const formatDate = (dateString: string | Date | null) => {
@@ -44,26 +46,26 @@ export default function BlogPostPage() {
     isLoading: postLoading,
     error: postError
   } = useQuery({
-    queryKey: [`/api/blog/posts/${slug}`],
+    queryKey: [`admin/blog/posts/${slug}`],
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
-  
+
   // Fetch blog categories to display category names
-  const { 
-    data: categories 
+  const {
+    data: categories
   } = useQuery({
-    queryKey: ['/api/blog/categories'],
+    queryKey: ['admin/blog/categories'],
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
-  
+
   // If the post has loaded, fetch related posts in the same categories
-  const { 
+  const {
     data: relatedPosts = { posts: [] },
   } = useQuery({
-    queryKey: ['/api/blog/posts', 
-      { 
-        category_id: post?.categoryIds?.[0], 
-        limit: 3 
+    queryKey: ['admin/blog/posts',
+      {
+        category_id: post?.categoryIds?.[0],
+        limit: 3
       }
     ],
     enabled: !!post?.categoryIds?.[0],
@@ -225,9 +227,7 @@ export default function BlogPostPage() {
                   )}
                   
                   <div className="p-6 md:p-8">
-                    {/* Post Header */}
                     <header className="mb-8">
-                      {/* Categories */}
                       {post?.categoryIds && categories && (
                         <div className="flex flex-wrap gap-2 mb-4">
                           {getCategoryNames(post.categoryIds).map((name, index) => (
@@ -238,12 +238,10 @@ export default function BlogPostPage() {
                         </div>
                       )}
                       
-                      {/* Post Title */}
                       <h1 className="text-3xl md:text-4xl font-bold text-primary-blue mb-4">
                         {post?.title}
                       </h1>
 
-                      {/* Post Meta */}
                       <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
                         {post?.publishedAt && (
                           <div className="flex items-center">
@@ -261,12 +259,14 @@ export default function BlogPostPage() {
                       </div>
                     </header>
                     
-                    {/* Post Content */}
                     <div className="prose prose-slate max-w-none prose-headings:text-primary-blue prose-a:text-primary-blue hover:prose-a:text-primary-red">
-                      <ReactMarkdown>{post?.content || ""}</ReactMarkdown>
+                      {post?.content && hasRichContent(post.content) ? (
+                        renderXMLContent(post.content, "prose prose-slate max-w-none prose-headings:text-primary-blue prose-a:text-primary-blue hover:prose-a:text-primary-red")
+                      ) : (
+                        <ReactMarkdown>{post?.content || ""}</ReactMarkdown>
+                      )}
                     </div>
                     
-                    {/* Tags */}
                     {post?.tags && post.tags.length > 0 && (
                       <div className="mt-8">
                         <h2 className="text-lg font-semibold mb-4">Tags</h2>
@@ -281,33 +281,32 @@ export default function BlogPostPage() {
                         </div>
                       </div>
                     )}
-                    
-                    {/* Share Buttons */}
+
                     <div className="mt-8 pt-8 border-t">
                       <h2 className="text-lg font-semibold mb-4 flex items-center">
                         <Share className="mr-2 h-5 w-5" />
                         Share this article
                       </h2>
                       <div className="flex gap-3">
-                        <Button 
-                          variant="outline" 
-                          size="icon" 
+                        <Button
+                          variant="outline"
+                          size="icon"
                           onClick={() => handleShare("facebook")}
                           aria-label="Share on Facebook"
                         >
                           <Facebook className="h-5 w-5" />
                         </Button>
-                        <Button 
-                          variant="outline" 
-                          size="icon" 
+                        <Button
+                          variant="outline"
+                          size="icon"
                           onClick={() => handleShare("twitter")}
                           aria-label="Share on Twitter"
                         >
                           <Twitter className="h-5 w-5" />
                         </Button>
-                        <Button 
-                          variant="outline" 
-                          size="icon" 
+                        <Button
+                          variant="outline"
+                          size="icon"
                           onClick={() => handleShare("linkedin")}
                           aria-label="Share on LinkedIn"
                         >
@@ -317,48 +316,49 @@ export default function BlogPostPage() {
                     </div>
                   </div>
                 </article>
-                
+
                 {/* Related Posts */}
                 {relatedPosts.posts && relatedPosts.posts.length > 0 && (
                   <div className="mt-12">
                     <h2 className="text-2xl font-bold mb-6 text-primary-blue flex items-center">
-                      <Bookmark className="mr-2 h-5 w-5" /> 
+                      <Bookmark className="mr-2 h-5 w-5" />
                       Related Posts
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       {relatedPosts.posts
-                        .filter((related: BlogPost) => related.id !== post?.id)
-                        .slice(0, 3)
+                        // Filtering and slicing logic removed for user customization
                         .map((related: BlogPost) => (
-                          <Card 
-                            key={related.id} 
+                          <Card
+                            key={related.id}
                             className="overflow-hidden rounded-xl border-none shadow-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-5px]"
                           >
                             {related.featuredImage && (
                               <div className="h-48 overflow-hidden">
-                                <img 
-                                  src={related.featuredImage} 
-                                  alt={related.featuredImageAlt || related.title} 
+                                <img
+                                  src={related.featuredImage}
+                                  alt={related.featuredImageAlt || related.title}
                                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                                 />
                               </div>
                             )}
-                            <CardContent className="p-5">
-                              <h3 className="font-semibold text-lg mb-2 line-clamp-2">
+                            <CardContent className="p-4 flex flex-col h-full">
+                              <h3 className="font-semibold text-lg mb-2 line-clamp-3">
                                 <Link href={`/blog/${related.slug}`} className="hover:text-primary-blue transition-colors">
                                   {related.title}
                                 </Link>
                               </h3>
-                              <p className="text-gray-600 text-sm line-clamp-3 mb-3">
+                              <p className="text-gray-600 text-sm line-clamp-3 mb-2">
                                 {related.excerpt}
                               </p>
-                              <Link 
-                                href={`/blog/${related.slug}`} 
-                                className="text-primary-blue hover:underline text-sm font-medium inline-flex items-center group"
-                              >
-                                Read more
-                                <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
-                              </Link>
+                              <div className="mt-auto mb-1">
+                                <Link
+                                  href={`/blog/${related.slug}`}
+                                  className="text-primary-blue hover:underline text-sm font-medium inline-flex items-center group"
+                                >
+                                  Read more
+                                  <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
+                                </Link>
+                              </div>
                             </CardContent>
                           </Card>
                         ))}

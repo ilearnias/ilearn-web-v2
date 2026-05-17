@@ -2184,4 +2184,5 @@ Remember, UPSC often asks questions that connect different periods of history or
 }
 
 // Switch from MemStorage to DatabaseStorage to use PostgreSQL database
-export const storage = new DatabaseStorage();
+// export const storage = new DatabaseStorage();
+export const storage = new MemStorage();

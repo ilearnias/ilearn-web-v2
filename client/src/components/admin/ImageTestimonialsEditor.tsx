@@ -63,9 +63,9 @@ export default function ImageTestimonialsEditor() {
   
   // Query to fetch image testimonials
   const { data: testimonials, isLoading } = useQuery({
-    queryKey: ["/api/testimonials", "image"],
+    queryKey: ["testimonials", "image"],
     queryFn: () => apiRequest<Testimonial[]>({ 
-      url: "/api/testimonials?type=image"
+      url: "testimonials?type=image"
     }),
   });
 
@@ -127,13 +127,13 @@ export default function ImageTestimonialsEditor() {
   const createTestimonialMutation = useMutation({
     mutationFn: (data: TestimonialFormValues & { type: string; name: string; rank: string; program: string; quote: string; year: number }) => {
       return apiRequest({
-        url: "/api/testimonials",
+        url: "testimonials",
         method: "POST",
         data,
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/testimonials", "image"] });
+      queryClient.invalidateQueries({ queryKey: ["testimonials", "image"] });
       // Do NOT invalidate video testimonials as they are completely separate
       toast({
         title: "Image testimonial added",
@@ -155,13 +155,13 @@ export default function ImageTestimonialsEditor() {
   const updateTestimonialMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<TestimonialFormValues> }) => {
       return apiRequest({
-        url: `/api/testimonials/${id}`,
-        method: "PUT",
+        url: `testimonials/${id}`,
+        method: "PATCH",
         data,
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/testimonials", "image"] });
+      queryClient.invalidateQueries({ queryKey: ["testimonials", "image"] });
       // Do NOT invalidate video testimonials as they are completely separate
       toast({
         title: "Image testimonial updated",
@@ -183,12 +183,12 @@ export default function ImageTestimonialsEditor() {
   const deleteTestimonialMutation = useMutation({
     mutationFn: (id: number) => {
       return apiRequest({
-        url: `/api/testimonials/${id}`,
+        url: `testimonials/${id}`,
         method: "DELETE",
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/testimonials", "image"] });
+      queryClient.invalidateQueries({ queryKey: ["testimonials", "image"] });
       // Do NOT invalidate video testimonials as they are completely separate
       toast({
         title: "Image testimonial deleted",
@@ -252,8 +252,8 @@ export default function ImageTestimonialsEditor() {
         for (let i = 0; i < updatedItems.length; i++) {
           const item = updatedItems[i];
           await apiRequest({
-            url: `/api/testimonials/${item.id}`,
-            method: "PUT",
+            url: `testimonials/${item.id}`,
+            method: "PATCH",
             data: { 
               displayOrder: i,
               type: item.type || "image" // Ensure type is included
@@ -262,7 +262,7 @@ export default function ImageTestimonialsEditor() {
         }
         
         // Force invalidate after all updates are complete
-        await queryClient.invalidateQueries({ queryKey: ["/api/testimonials", "image"] });
+        await queryClient.invalidateQueries({ queryKey: ["testimonials", "image"] });
         
         toast({
           title: "Order updated",

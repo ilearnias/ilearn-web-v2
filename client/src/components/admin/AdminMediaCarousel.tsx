@@ -29,8 +29,8 @@ export default function AdminMediaCarousel() {
 
   // Query to fetch media items with optimized cache settings
   const { data: mediaItems, isLoading } = useQuery({
-    queryKey: ["/api/media"],
-    queryFn: () => apiRequest<Media[]>({ url: "/api/media" }),
+    queryKey: ["media"],
+    queryFn: () => apiRequest<Media[]>({ url: "media" }),
     refetchInterval: 2000, // More frequent refetching to quickly reflect changes
     staleTime: 0, // Consider data stale immediately
     refetchOnMount: 'always', // Always refetch when component mounts
@@ -60,15 +60,15 @@ export default function AdminMediaCarousel() {
   const updateOrderMutation = useMutation({
     mutationFn: ({ id, displayOrder }: { id: number; displayOrder: number }) => {
       return apiRequest({
-        url: `/api/media/${id}`,
-        method: "PUT",
+        url: `media/${id}`,
+        method: "PATCH",
         data: { displayOrder },
       });
     },
     onSuccess: () => {
       // Force an immediate refetch of media data to ensure all components see the changes
-      queryClient.invalidateQueries({ queryKey: ["/api/media"] });
-      queryClient.refetchQueries({ queryKey: ["/api/media"] });
+      queryClient.invalidateQueries({ queryKey: ["media"] });
+      queryClient.refetchQueries({ queryKey: ["media"] });
       toast({
         title: "Order updated",
         description: "Media items have been reordered successfully.",
@@ -105,15 +105,15 @@ export default function AdminMediaCarousel() {
     Promise.all(
       updatedItems.map((item, index) => 
         apiRequest({
-          url: `/api/media/${item.id}`,
-          method: "PUT",
+          url: `media/${item.id}`,
+          method: "PATCH",
           data: { displayOrder: index },
         })
       )
     ).then(() => {
       // Force an immediate refetch of media data
-      queryClient.invalidateQueries({ queryKey: ["/api/media"] });
-      queryClient.refetchQueries({ queryKey: ["/api/media"] });
+      queryClient.invalidateQueries({ queryKey: ["media"] });
+      queryClient.refetchQueries({ queryKey: ["media"] });
       toast({
         title: "Order updated",
         description: "All media items have been reordered successfully.",

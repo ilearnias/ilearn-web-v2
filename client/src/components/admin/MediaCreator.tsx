@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
+import { API } from '@/config/api';
 import MediaUploader from './MediaUploader';
 
 type MediaCreatorProps = {
@@ -28,9 +29,9 @@ export default function MediaCreator({ galleryEventId, onComplete }: MediaCreato
   // Handle upload completion
   const handleUploadComplete = (mediaId: number) => {
     // Invalidate relevant queries
-    queryClient.invalidateQueries({ queryKey: ['/api/media'] });
+    queryClient.invalidateQueries({ queryKey: ['media'] });
     queryClient.invalidateQueries({ 
-      queryKey: ['/api/gallery-events', galleryEventId, 'media'] 
+      queryKey: ['admin/gallery', galleryEventId, 'media'] 
     });
     
     // Notify of success and close the dialog
@@ -60,10 +61,12 @@ export default function MediaCreator({ galleryEventId, onComplete }: MediaCreato
     try {
       setIsSubmitting(true);
       
-      const response = await fetch('/api/media', {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(API.BASEURL + 'media', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({
           title: imageTitle,
@@ -84,16 +87,21 @@ export default function MediaCreator({ galleryEventId, onComplete }: MediaCreato
       
       // If a gallery event ID was provided, associate this media with that event
       if (galleryEventId && result.id) {
-        const eventResponse = await fetch(`/api/gallery-events/${galleryEventId}`);
+        const eventResponse = await fetch(API.BASEURL + `admin/gallery/${galleryEventId}`, {
+          headers: {
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+          },
+        });
         if (eventResponse.ok) {
           const event = await eventResponse.json();
           const currentMediaIds = event.mediaIds || [];
           const updatedMediaIds = [...currentMediaIds, result.id];
-          
-          await fetch(`/api/gallery-events/${galleryEventId}`, {
-            method: 'PUT',
+
+          await fetch(API.BASEURL + `admin/gallery/${galleryEventId}`, {
+            method: 'PATCH',
             headers: {
               'Content-Type': 'application/json',
+              ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
             },
             body: JSON.stringify({
               mediaIds: updatedMediaIds
@@ -103,9 +111,9 @@ export default function MediaCreator({ galleryEventId, onComplete }: MediaCreato
       }
       
       // Invalidate relevant queries
-      queryClient.invalidateQueries({ queryKey: ['/api/media'] });
+      queryClient.invalidateQueries({ queryKey: ['media'] });
       queryClient.invalidateQueries({ 
-        queryKey: ['/api/gallery-events', galleryEventId, 'media'] 
+        queryKey: ['admin/gallery', galleryEventId, 'media'] 
       });
       
       toast({
@@ -156,10 +164,12 @@ export default function MediaCreator({ galleryEventId, onComplete }: MediaCreato
       // Detect if this is a shorts video (you may need to adjust this logic)
       const isShort = youtubeUrl.includes('/shorts/');
       
-      const response = await fetch('/api/media/youtube', {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(API.BASEURL + 'media/youtube', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({
           youtubeUrl,
@@ -178,9 +188,9 @@ export default function MediaCreator({ galleryEventId, onComplete }: MediaCreato
       const result = await response.json();
       
       // Invalidate relevant queries
-      queryClient.invalidateQueries({ queryKey: ['/api/media'] });
+      queryClient.invalidateQueries({ queryKey: ['media'] });
       queryClient.invalidateQueries({ 
-        queryKey: ['/api/gallery-events', galleryEventId, 'media'] 
+        queryKey: ['admin/gallery', galleryEventId, 'media'] 
       });
       
       toast({

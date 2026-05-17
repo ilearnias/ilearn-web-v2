@@ -8,7 +8,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
 import ProgressBar from "@/components/layout/ProgressBar";
-
+import IgnitePage from "@/pages/ignitePage";
 // Pages
 import HomePage from "@/pages/HomePage";
 import AboutPage from "@/pages/AboutPage";
@@ -20,9 +20,19 @@ import GalleryPage from "@/pages/GalleryPage";
 import ContactPage from "@/pages/ContactPage";
 import BlogPage from "@/pages/BlogPage";
 import BlogPostPage from "@/pages/BlogPostPage";
+import BlogPostDetailPage from "@/pages/BlogPostDetailPage";
 import AdminPage from "@/pages/AdminPage";
 import PcmProgramPage from "@/pages/PcmProgramPage";
 import CanaProgramPage from "@/pages/CanaProgramPage";
+import FoundationCoursePage from "@/pages/FoundationCoursePage";
+import InterviewGuidanceProgram from "@/pages/Interview_Guidance_Program ";
+import IntegratedPrelimsTestSeries from "@/pages/Integrated_Prelims_Test_Series";
+import GeographyOptional from "@/pages/Geography_Optional";
+import SociologyOptional from "@/pages/sociology-optional";
+import PoliticalScienceIROptional from "@/pages/Political_Science_IR_Optional";
+import MalayalamOptional from "@/pages/Malayalam_Optional";
+import PublicAdministrationOptional from "@/pages/Public_Administration_Optional";
+import JuniorPage from "@/pages/JuniorPage";
 import NotFound from "@/pages/not-found";
 
 const isBrowser = typeof window !== "undefined";
@@ -71,16 +81,55 @@ function Routes() {
       <Route path="/results" component={ResultsPage} />
       <Route path="/programs" component={ProgramsPage} />
       <Route path="/programs/prelims-cum-mains" component={PcmProgramPage} />
-      <Route path="/programs/current-affairs-news-analysis" component={CanaProgramPage} />
+      <Route
+        path="/programs/current-affairs-news-analysis"
+        component={CanaProgramPage}
+      />
+      <Route
+        path="/foundation"
+        component={FoundationCoursePage}
+      />
+      <Route
+        path="/programs/interview-guidance-program"
+        component={InterviewGuidanceProgram}
+      />
+      <Route
+        path="/programs/integrated-prelims-test-series"
+        component={IntegratedPrelimsTestSeries}
+      />
+
+      <Route
+        path="/programs/geography-optional"
+        component={GeographyOptional}
+      />
+      <Route
+        path="/programs/sociology-optional"
+        component={SociologyOptional}
+      />
+      <Route
+        path="/programs/political-science-ir-optional"
+        component={PoliticalScienceIROptional}
+      />
+      <Route
+        path="/programs/malayalam-optional"
+        component={MalayalamOptional}
+      />
+      <Route
+        path="/programs/public-administration-optional"
+        component={PublicAdministrationOptional}
+      />
       <Route path="/programs/:slug" component={ProgramDetailPage} />
       <Route path="/app" component={AppPage} />
       <Route path="/gallery" component={GalleryPage} />
       <Route path="/contact" component={ContactPage} />
       <Route path="/blog" component={BlogPage} />
+      <Route path="/foundation/ignite" component={IgnitePage} />
       <Route path="/blog/category/:categorySlug" component={BlogPage} />
       <Route path="/blog/tag/:tag" component={BlogPage} />
+      <Route path="/blog/post/:slug" component={BlogPostDetailPage} />
       <Route path="/blog/:slug" component={BlogPostPage} />
       <Route path="/admin" component={AdminPage} />
+      <Route path="/foundation/junior" component={JuniorPage} />
       <Route component={NotFound} />
     </Switch>
   );
